@@ -47,6 +47,8 @@ typedef struct proofstatecell
    GCAdmin_p     gc_terms;
    FormulaSet_p  f_ax_archive;
    FormulaSet_p  f_axioms;
+   FormulaSet_p  unprocessed_formulas;
+   FormulaSet_p  processed_formulas;
    ClauseSet_p   axioms;
    ClauseSet_p   ax_archive;
    ClauseSet_p   processed_pos_rules;

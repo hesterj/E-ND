@@ -1,0 +1,1228 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  us/call  us/call  name    
+ 69.46     27.70    27.70 11824346     2.34     2.85  nd_label_symbols
+ 14.97     33.67     5.97 1514106848     0.00     0.00  splay_tree.lto_priv.235
+ 10.76     37.96     4.29 23998313     0.18     0.18  tb_termtop_insert.lto_priv.260
+  3.13     39.21     1.25                             NDSaturateLoop.constprop.128
+  0.75     39.51     0.30                             FormulaSetFree
+  0.38     39.66     0.15     8036    18.67    18.67  nd_collect_subterms
+  0.33     39.79     0.13                             StrTreeFree
+  0.10     39.83     0.04 23633831     0.00     0.00  TFormulaFCodeAlloc
+  0.08     39.86     0.03 35655742     0.00     0.00  SecureMalloc
+  0.03     39.87     0.01    12424     0.80     5.88  TBInsertNoProps
+  0.03     39.88     0.01    11416     0.88     0.88  TFormulaVarIsFree
+  0.00     39.88     0.00   285386     0.00     0.00  TermStructEqual
+  0.00     39.88     0.00   177244     0.00     0.00  TermIsSubterm
+  0.00     39.88     0.00    68485     0.00     0.00  SizeMallocReal.lto_priv.197.lto_priv.358
+  0.00     39.88     0.00    43480     0.00     0.00  scan_token
+  0.00     39.88     0.00    43480     0.00     0.00  scan_token_follow_includes
+  0.00     39.88     0.00    26868     0.00     0.00  NextToken
+  0.00     39.88     0.00    24340     0.00     0.00  TermPrint.constprop.183
+  0.00     39.88     0.00    21284     0.00     0.00  TermPrint
+  0.00     39.88     0.00    20184     0.00     0.00  TermIsSubterm.constprop.135
+  0.00     39.88     0.00    13217     0.00     0.00  TBPrintTerm
+  0.00     39.88     0.00    11259     0.00     0.00  EqnAlloc
+  0.00     39.88     0.00     8036     0.00     0.00  var_bank_var_alloc
+  0.00     39.88     0.00     6212     0.00     0.00  TFormulaCollectFreeVars
+  0.00     39.88     0.00     5441     0.00     0.00  CheckInpTokNoSkip
+  0.00     39.88     0.00     4686     0.00     0.00  ParseInt
+  0.00     39.88     0.00     4589     0.00     0.00  ParseFloat
+  0.00     39.88     0.00     4452     0.00     0.00  scan_ident
+  0.00     39.88     0.00     4031     0.00     0.00  VarBankGetFreshVar
+  0.00     39.88     0.00     2182     0.00     0.00  TFormulaTPTPPrint
+  0.00     39.88     0.00     2009     0.00     0.00  SizeMallocReal.constprop.193
+  0.00     39.88     0.00     2009     0.00     0.00  TermIsUntyped
+  0.00     39.88     0.00     2009     0.00     0.00  WFormulaTSTPPrint
+  0.00     39.88     0.00     1774     0.00     0.00  parse_single_wfcb_item
+  0.00     39.88     0.00     1765     0.00     0.00  ParsePrioFun
+  0.00     39.88     0.00     1765     0.00     0.00  WeightFunDefParse
+  0.00     39.88     0.00      614     0.00     0.00  ConjectureRelativeSymbolWeightParse
+  0.00     39.88     0.00      465     0.00     0.02  HeuristicDefParse
+  0.00     39.88     0.00      406     0.00     0.00  FIFOEvalParse
+  0.00     39.88     0.00      402     0.00     0.00  PDArrayEnlarge
+  0.00     39.88     0.00      377     0.00     0.00  SecureRealloc
+  0.00     39.88     0.00      345     0.00     0.00  FuncSymbParse
+  0.00     39.88     0.00      345     0.00     0.06  TBTermParseReal
+  0.00     39.88     0.00      311     0.00     0.00  ClauseRefinedWeightParse
+  0.00     39.88     0.00      189     0.00     0.00  tb_subterm_parse
+  0.00     39.88     0.00      160     0.00     0.12  literal_tform_tstp_parse
+  0.00     39.88     0.00      155     0.00     0.00  ClauseWeightParse
+  0.00     39.88     0.00      127     0.00     0.00  TypeInferSort
+  0.00     39.88     0.00      108     0.00     0.01  SigInsertId
+  0.00     39.88     0.00      100     0.00     0.00  CheckInpTok
+  0.00     39.88     0.00       95     0.00     0.15  TFormulaTSTPParse
+  0.00     39.88     0.00       81     0.00     0.00  PStackGrow
+  0.00     39.88     0.00       79     0.00     0.00  ConjectureSymbolWeightParse
+  0.00     39.88     0.00       72     0.00     0.16  eqn_parse_infix.lto_priv.306
+  0.00     39.88     0.00       72     0.00     0.00  eqn_parse_real
+  0.00     39.88     0.00       71     0.00     0.00  VarBankPopEnv
+  0.00     39.88     0.00       70     0.00     0.00  RelevanceLevelWeightParse2
+  0.00     39.88     0.00       58     0.00     0.00  PNRefinedWeightParse
+  0.00     39.88     0.00       55     0.00     0.00  EqnTermsTBTermEncode
+  0.00     39.88     0.00       51     0.00     0.00  CheckInpId
+  0.00     39.88     0.00       50     0.00     0.00  TestId
+  0.00     39.88     0.00       44     0.00     0.00  OrientLMaxWeightParse
+  0.00     39.88     0.00       42     0.00     0.00  DStrAppendChar
+  0.00     39.88     0.00       42     0.00     0.00  StreamNextChar
+  0.00     39.88     0.00       40     0.00     0.56  quantified_tform_tstp_parse
+  0.00     39.88     0.00       33     0.00     0.00  SigDeclareType
+  0.00     39.88     0.00       32     0.00     0.00  splay_type.lto_priv.259
+  0.00     39.88     0.00       30     0.00     0.00  TypeNewFunction
+  0.00     39.88     0.00       25     0.00     0.00  ClauseTypeParse
+  0.00     39.88     0.00       25     0.00     0.00  SecureStrdup
+  0.00     39.88     0.00       24     0.00     0.00  push.lto_priv.210.lto_priv.311
+  0.00     39.88     0.00       17     0.00     0.00  PTreeStore
+  0.00     39.88     0.00       17     0.00     0.00  splay_ptree.lto_priv.293
+  0.00     39.88     0.00       16     0.00     0.00  PStackAlloc.lto_priv.215.lto_priv.281
+  0.00     39.88     0.00       16     0.00     0.01  SigInsertId.constprop.176
+  0.00     39.88     0.00       14     0.00     0.00  ClauseSetAlloc
+  0.00     39.88     0.00       14     0.00     0.00  ClauseWeightAgeParse
+  0.00     39.88     0.00        8     0.00     0.00  GetFPIndexFunction
+  0.00     39.88     0.00        7     0.00     0.01  SortTableInsert
+  0.00     39.88     0.00        7     0.00     0.01  StrTreeStore
+  0.00     39.88     0.00        6     0.00     0.00  FormulaSetAlloc
+  0.00     39.88     0.00        6     0.00     0.00  RelevanceLevelWeightParse
+  0.00     39.88     0.00        5     0.00     0.00  FPIndexAlloc
+  0.00     39.88     0.00        5     0.00     0.00  FVIAnchorAlloc
+  0.00     39.88     0.00        5     0.00     0.00  FixedDArrayAlloc
+  0.00     39.88     0.00        5     0.00     0.00  OpenStackedInput
+  0.00     39.88     0.00        4     0.00     0.00  CreateScanner.constprop.170
+  0.00     39.88     0.00        4     0.00     0.00  DestroyScanner
+  0.00     39.88     0.00        4     0.00     0.00  FixedDArrayCopy
+  0.00     39.88     0.00        4     0.00     0.00  TBInsert.constprop.172
+  0.00     39.88     0.00        4     0.00     0.00  TermFree.part.3
+  0.00     39.88     0.00        3     0.00     0.00  FreqVectorAlloc
+  0.00     39.88     0.00        3     0.00     0.00  FreqVectorFreeReal
+  0.00     39.88     0.00        3     0.00     0.00  FreqVectorInitialize
+  0.00     39.88     0.00        3     0.00     0.01  PDTreeAlloc
+  0.00     39.88     0.00        3     0.00     0.00  PStackFree.lto_priv.239.lto_priv.338
+  0.00     39.88     0.00        2     0.00     0.00  DefaultWeightParse
+  0.00     39.88     0.00        2     0.00     0.00  FVCollectAlloc
+  0.00     39.88     0.00        2     0.00     0.01  GetHeuristic
+  0.00     39.88     0.00        2     0.00     0.00  PDArrayAlloc
+  0.00     39.88     0.00        2     0.00     0.00  SymTypeWeightParse
+  0.00     39.88     0.00        2     0.00     0.37  TBAlloc
+  0.00     39.88     0.00        2     0.00     0.00  TypeNewConstant
+  0.00     39.88     0.00        1     0.00     0.00  ClauseSetCountEquational
+  0.00     39.88     0.00        1     0.00     0.00  ClauseSetFree
+  0.00     39.88     0.00        1     0.00     0.00  ConjectureSimplifiedSymbolWeightParse
+  0.00     39.88     0.00        1     0.00     0.00  FCodeFeatureArrayAlloc
+  0.00     39.88     0.00        1     0.00     0.00  GlobalIndicesInit
+  0.00     39.88     0.00        1     0.00     0.00  LIFOEvalParse
+  0.00     39.88     0.00        1     0.00     0.00  OCBAlloc
+  0.00     39.88     0.00        1     0.00     0.00  PDIntArrayAlloc
+  0.00     39.88     0.00        1     0.00     0.01  TOCreateOrdering
+  0.00     39.88     0.00        1     0.00     0.00  TOGeneratePrecedence
+  0.00     39.88     0.00        1     0.00     0.00  TOGenerateWeights
+  0.00     39.88     0.00        1     0.00     0.00  TSMWeightParse
+  0.00     39.88     0.00        1     0.00     0.00  TypeNewFunction.constprop.181
+  0.00     39.88     0.00        1     0.00     0.00  UniqWeightParse
+  0.00     39.88     0.00        1     0.00     0.00  compute_precedence_from_array.isra.2.lto_priv.272
+  0.00     39.88     0.00        1     0.00     0.00  find_max_symbols.lto_priv.275
+  0.00     39.88     0.00        1     0.00     0.02  fvi_param_init
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.03% of 39.88 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     98.9    1.25   38.20                 NDSaturateLoop.constprop.128 [1]
+               27.70    5.97 11824346/11824346     nd_label_symbols [2]
+                4.23    0.00 23646134/23998313     tb_termtop_insert.lto_priv.260 [4]
+                0.15    0.00    8036/8036        nd_collect_subterms [6]
+                0.01    0.06   12424/12424       TBInsertNoProps [8]
+                0.04    0.02 23633710/23633831     TFormulaFCodeAlloc [9]
+                0.01    0.00   11416/11416       TFormulaVarIsFree [11]
+                0.01    0.00 11824323/35655742     SecureMalloc [10]
+                0.00    0.00    4018/4031        VarBankGetFreshVar [24]
+                0.00    0.00    2009/2009        WFormulaTSTPPrint [48]
+                0.00    0.00       6/16          PStackAlloc.lto_priv.215.lto_priv.281 [45]
+                0.00    0.00       6/81          PStackGrow [41]
+                0.00    0.00    6212/6212        TFormulaCollectFreeVars [75]
+                0.00    0.00  285386/285386      TermStructEqual [89]
+                0.00    0.00  139592/177244      TermIsSubterm [90]
+                0.00    0.00   32884/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+                0.00    0.00    3128/20184       TermIsSubterm.constprop.135 [97]
+                0.00    0.00      24/24          push.lto_priv.210.lto_priv.311 [118]
+                0.00    0.00       2/3           PStackFree.lto_priv.239.lto_priv.338 [125]
+-----------------------------------------------
+                             457513863             nd_label_symbols [2]
+               27.70    5.97 11824346/11824346     NDSaturateLoop.constprop.128 [1]
+[2]     84.4   27.70    5.97 11824346+457513863 nd_label_symbols [2]
+                5.97    0.00 1514106426/1514106848     splay_tree.lto_priv.235 [3]
+                0.00    0.00      53/81          PStackGrow [41]
+                             457513863             nd_label_symbols [2]
+-----------------------------------------------
+                0.00    0.00       6/1514106848     SortTableInsert [40]
+                0.00    0.00       6/1514106848     StrTreeStore [43]
+                0.00    0.00      30/1514106848     SigInsertId.constprop.176 [34]
+                0.00    0.00     132/1514106848     SigInsertId [30]
+                0.00    0.00     248/1514106848     TBTermParseReal <cycle 1> [16]
+                5.97    0.00 1514106426/1514106848     nd_label_symbols [2]
+[3]     15.0    5.97    0.00 1514106848         splay_tree.lto_priv.235 [3]
+-----------------------------------------------
+                0.00    0.00       4/23998313     TBAlloc [28]
+                0.00    0.00      58/23998313     literal_tform_tstp_parse <cycle 2> [17]
+                0.00    0.00      64/23998313     TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      71/23998313     quantified_tform_tstp_parse <cycle 2> [14]
+                0.00    0.00     108/23998313     TBTermParseReal <cycle 1> [16]
+                0.06    0.00  351874/23998313     TBInsertNoProps [8]
+                4.23    0.00 23646134/23998313     NDSaturateLoop.constprop.128 [1]
+[4]     10.8    4.29    0.00 23998313         tb_termtop_insert.lto_priv.260 [4]
+                0.00    0.00     108/127         TypeInferSort [46]
+-----------------------------------------------
+                                                 <spontaneous>
+[5]      0.8    0.30    0.00                 FormulaSetFree [5]
+-----------------------------------------------
+                                8400             nd_collect_subterms [6]
+                0.15    0.00    8036/8036        NDSaturateLoop.constprop.128 [1]
+[6]      0.4    0.15    0.00    8036+8400    nd_collect_subterms [6]
+                                8400             nd_collect_subterms [6]
+-----------------------------------------------
+                                                 <spontaneous>
+[7]      0.3    0.13    0.00                 StrTreeFree [7]
+-----------------------------------------------
+                              135996             TBInsertNoProps [8]
+                0.01    0.06   12424/12424       NDSaturateLoop.constprop.128 [1]
+[8]      0.2    0.01    0.06   12424+135996  TBInsertNoProps [8]
+                0.06    0.00  351874/23998313     tb_termtop_insert.lto_priv.260 [4]
+                0.00    0.00  212175/35655742     SecureMalloc [10]
+                              135996             TBInsertNoProps [8]
+-----------------------------------------------
+                0.00    0.00       3/23633831     literal_tform_tstp_parse <cycle 2> [17]
+                0.00    0.00      47/23633831     TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      71/23633831     quantified_tform_tstp_parse <cycle 2> [14]
+                0.04    0.02 23633710/23633831     NDSaturateLoop.constprop.128 [1]
+[9]      0.2    0.04    0.02 23633831         TFormulaFCodeAlloc [9]
+                0.02    0.00 23607184/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       1/35655742     TermIsUntyped [85]
+                0.00    0.00       1/35655742     UniqWeightParse [88]
+                0.00    0.00       1/35655742     fvi_param_init [55]
+                0.00    0.00       1/35655742     TypeNewFunction.constprop.181 [87]
+                0.00    0.00       1/35655742     LIFOEvalParse [86]
+                0.00    0.00       2/35655742     OpenStackedInput [77]
+                0.00    0.00       2/35655742     TypeNewConstant [79]
+                0.00    0.00       2/35655742     VarBankGetFreshVar [24]
+                0.00    0.00       2/35655742     FVIAnchorAlloc [76]
+                0.00    0.00       2/35655742     TFormulaCollectFreeVars [75]
+                0.00    0.00       2/35655742     DefaultWeightParse [78]
+                0.00    0.00       2/35655742     process_options [84]
+                0.00    0.00       2/35655742     PDIntArrayAlloc [81]
+                0.00    0.00       2/35655742     ConjectureSimplifiedSymbolWeightParse [80]
+                0.00    0.00       2/35655742     GetHeuristic [59]
+                0.00    0.00       2/35655742     find_max_symbols.lto_priv.275 [83]
+                0.00    0.00       4/35655742     FPIndexAlloc [68]
+                0.00    0.00       4/35655742     FVCollectAlloc [70]
+                0.00    0.00       4/35655742     PDArrayAlloc [71]
+                0.00    0.00       4/35655742     TBInsert.constprop.172 [69]
+                0.00    0.00       4/35655742     TSMWeightParse [74]
+                0.00    0.00       4/35655742     SymTypeWeightParse [72]
+                0.00    0.00       5/35655742     FCodeFeatureArrayAlloc [65]
+                0.00    0.00       5/35655742     OCBAlloc [66]
+                0.00    0.00       6/35655742     FreqVectorAlloc [64]
+                0.00    0.00       9/35655742     FixedDArrayAlloc [62]
+                0.00    0.00      10/35655742     ProofStateAlloc [26]
+                0.00    0.00      12/35655742     RelevanceLevelWeightParse [60]
+                0.00    0.00      14/35655742     PDTreeAlloc [49]
+                0.00    0.00      14/35655742     StrTreeStore [43]
+                0.00    0.00      16/35655742     TypeInferSort [46]
+                0.00    0.00      17/35655742     PTreeStore [58]
+                0.00    0.00      19/35655742     CreateScanner.constprop.170 [56]
+                0.00    0.00      20/35655742     TypeNewFunction [57]
+                0.00    0.00      23/35655742     FormulaSetAlloc [54]
+                0.00    0.00      24/35655742     TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      25/35655742     TBAlloc [28]
+                0.00    0.00      25/35655742     DefaultWFormulaAlloc [53]
+                0.00    0.00      25/35655742     SecureStrdup [52]
+                0.00    0.00      27/35655742     EqnAlloc [50]
+                0.00    0.00      28/35655742     ClauseWeightAgeParse [47]
+                0.00    0.00      31/35655742     SigInsertId [30]
+                0.00    0.00      32/35655742     SigInsertId.constprop.176 [34]
+                0.00    0.00      35/35655742     PStackAlloc.lto_priv.215.lto_priv.281 [45]
+                0.00    0.00      51/35655742     FormulaAndClauseSetParse [12]
+                0.00    0.00      65/35655742     ClauseSetAlloc [42]
+                0.00    0.00      67/35655742     PStackGrow [41]
+                0.00    0.00      74/35655742     EqnTermsTBTermEncode [39]
+                0.00    0.00      88/35655742     OrientLMaxWeightParse [38]
+                0.00    0.00     116/35655742     PNRefinedWeightParse [37]
+                0.00    0.00     140/35655742     RelevanceLevelWeightParse2 [36]
+                0.00    0.00     158/35655742     ConjectureSymbolWeightParse [35]
+                0.00    0.00     224/35655742     TBTermParseReal <cycle 1> [16]
+                0.00    0.00     308/35655742     ClauseWeightParse [33]
+                0.00    0.00     402/35655742     PDArrayEnlarge [32]
+                0.00    0.00     618/35655742     ClauseRefinedWeightParse [31]
+                0.00    0.00     811/35655742     FIFOEvalParse [29]
+                0.00    0.00    1228/35655742     ConjectureRelativeSymbolWeightParse [27]
+                0.00    0.00    1776/35655742     WeightFunDefParse [23]
+                0.00    0.00    2590/35655742     var_bank_var_alloc [25]
+                0.00    0.00    2871/35655742     HeuristicDefParse [21]
+                0.00    0.00  212175/35655742     TBInsertNoProps [8]
+                0.01    0.00 11824323/35655742     NDSaturateLoop.constprop.128 [1]
+                0.02    0.00 23607184/35655742     TFormulaFCodeAlloc [9]
+[10]     0.1    0.03    0.00 35655742         SecureMalloc [10]
+-----------------------------------------------
+                0.01    0.00   11416/11416       NDSaturateLoop.constprop.128 [1]
+[11]     0.0    0.01    0.00   11416         TFormulaVarIsFree [11]
+                0.00    0.00   17056/20184       TermIsSubterm.constprop.135 [97]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     0.0    0.00    0.00                 FormulaAndClauseSetParse [12]
+                0.00    0.00      25/25          TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      51/35655742     SecureMalloc [10]
+                0.00    0.00      25/25          SecureStrdup [52]
+                0.00    0.00     175/26868       NextToken [94]
+                0.00    0.00     100/100         CheckInpTok [108]
+                0.00    0.00      50/50          TestId [112]
+                0.00    0.00      25/51          CheckInpId [111]
+                0.00    0.00      25/25          ClauseTypeParse [117]
+-----------------------------------------------
+[13]     0.0    0.00    0.00      25+270     <cycle 2 as a whole> [13]
+                0.00    0.00      40+31          quantified_tform_tstp_parse <cycle 2> [14]
+                0.00    0.00     160+3           literal_tform_tstp_parse <cycle 2> [17]
+                0.00    0.00      95             TFormulaTSTPParse <cycle 2> [18]
+-----------------------------------------------
+                                  31             quantified_tform_tstp_parse <cycle 2> [14]
+                                   5             TFormulaTSTPParse <cycle 2> [18]
+                                  35             literal_tform_tstp_parse <cycle 2> [17]
+[14]     0.0    0.00    0.00      40+31      quantified_tform_tstp_parse <cycle 2> [14]
+                0.00    0.00      71/23998313     tb_termtop_insert.lto_priv.260 [4]
+                0.00    0.00      71/156         TBTermParseReal <cycle 1> [16]
+                0.00    0.00      71/23633831     TFormulaFCodeAlloc [9]
+                0.00    0.00     111/26868       NextToken [94]
+                0.00    0.00      71/71          VarBankPopEnv [110]
+                                  40             literal_tform_tstp_parse <cycle 2> [17]
+                                  31             quantified_tform_tstp_parse <cycle 2> [14]
+-----------------------------------------------
+[15]     0.0    0.00    0.00     156+378     <cycle 1 as a whole> [15]
+                0.00    0.00     345             TBTermParseReal <cycle 1> [16]
+                0.00    0.00     189             tb_subterm_parse <cycle 1> [107]
+-----------------------------------------------
+                                 189             tb_subterm_parse <cycle 1> [107]
+                0.00    0.00      71/156         quantified_tform_tstp_parse <cycle 2> [14]
+                0.00    0.00      85/156         eqn_parse_infix.lto_priv.306 [19]
+[16]     0.0    0.00    0.00     345         TBTermParseReal <cycle 1> [16]
+                0.00    0.00     108/23998313     tb_termtop_insert.lto_priv.260 [4]
+                0.00    0.00     248/1514106848     splay_tree.lto_priv.235 [3]
+                0.00    0.00     108/108         SigInsertId [30]
+                0.00    0.00     224/35655742     SecureMalloc [10]
+                0.00    0.00      13/4031        VarBankGetFreshVar [24]
+                0.00    0.00     345/345         FuncSymbParse [106]
+                0.00    0.00     291/26868       NextToken [94]
+                0.00    0.00     102/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+                                 189             tb_subterm_parse <cycle 1> [107]
+-----------------------------------------------
+                                   3             literal_tform_tstp_parse <cycle 2> [17]
+                                  40             quantified_tform_tstp_parse <cycle 2> [14]
+                                 120             TFormulaTSTPParse <cycle 2> [18]
+[17]     0.0    0.00    0.00     160+3       literal_tform_tstp_parse <cycle 2> [17]
+                0.00    0.00      58/23998313     tb_termtop_insert.lto_priv.260 [4]
+                0.00    0.00      55/72          eqn_parse_infix.lto_priv.306 [19]
+                0.00    0.00      55/55          EqnTermsTBTermEncode [39]
+                0.00    0.00       3/23633831     TFormulaFCodeAlloc [9]
+                0.00    0.00      55/11259       EqnAlloc [50]
+                0.00    0.00     213/26868       NextToken [94]
+                0.00    0.00      55/72          eqn_parse_real [109]
+                                  70             TFormulaTSTPParse <cycle 2> [18]
+                                  35             quantified_tform_tstp_parse <cycle 2> [14]
+                                   3             literal_tform_tstp_parse <cycle 2> [17]
+-----------------------------------------------
+                                  70             literal_tform_tstp_parse <cycle 2> [17]
+                0.00    0.00      25/25          FormulaAndClauseSetParse [12]
+[18]     0.0    0.00    0.00      95         TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      64/23998313     tb_termtop_insert.lto_priv.260 [4]
+                0.00    0.00      17/72          eqn_parse_infix.lto_priv.306 [19]
+                0.00    0.00      47/23633831     TFormulaFCodeAlloc [9]
+                0.00    0.00      24/35655742     SecureMalloc [10]
+                0.00    0.00      17/11259       EqnAlloc [50]
+                0.00    0.00      35/26868       NextToken [94]
+                0.00    0.00      23/43480       scan_token_follow_includes [93]
+                0.00    0.00      17/72          eqn_parse_real [109]
+                                 120             literal_tform_tstp_parse <cycle 2> [17]
+                                   5             quantified_tform_tstp_parse <cycle 2> [14]
+-----------------------------------------------
+                0.00    0.00      17/72          TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      55/72          literal_tform_tstp_parse <cycle 2> [17]
+[19]     0.0    0.00    0.00      72         eqn_parse_infix.lto_priv.306 [19]
+                0.00    0.00      85/156         TBTermParseReal <cycle 1> [16]
+                0.00    0.00      19/127         TypeInferSort [46]
+                0.00    0.00       6/30          TypeNewFunction [57]
+                0.00    0.00      13/26868       NextToken [94]
+                0.00    0.00       6/33          SigDeclareType [115]
+-----------------------------------------------
+                                                 <spontaneous>
+[20]     0.0    0.00    0.00                 ProofControlInit [20]
+                0.00    0.00     465/465         HeuristicDefParse [21]
+                0.00    0.00      11/1765        WeightFunDefParse [23]
+                0.00    0.00       1/1           TOCreateOrdering [61]
+                0.00    0.00       2/4           CreateScanner.constprop.170 [56]
+                0.00    0.00       1/2           GetHeuristic [59]
+                0.00    0.00       2/4           DestroyScanner [121]
+                0.00    0.00       1/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+                0.00    0.00       1/1           ClauseSetCountEquational [126]
+-----------------------------------------------
+                0.00    0.00     465/465         ProofControlInit [20]
+[21]     0.0    0.00    0.00     465         HeuristicDefParse [21]
+                0.00    0.00    1774/1774        parse_single_wfcb_item [22]
+                0.00    0.00    2871/35655742     SecureMalloc [10]
+                0.00    0.00       4/81          PStackGrow [41]
+                0.00    0.00    2239/43480       scan_token_follow_includes [93]
+                0.00    0.00     930/26868       NextToken [94]
+-----------------------------------------------
+                0.00    0.00    1774/1774        HeuristicDefParse [21]
+[22]     0.0    0.00    0.00    1774         parse_single_wfcb_item [22]
+                0.00    0.00    1754/1765        WeightFunDefParse [23]
+                0.00    0.00     384/402         PDArrayEnlarge [32]
+                0.00    0.00    3568/26868       NextToken [94]
+-----------------------------------------------
+                0.00    0.00      11/1765        ProofControlInit [20]
+                0.00    0.00    1754/1765        parse_single_wfcb_item [22]
+[23]     0.0    0.00    0.00    1765         WeightFunDefParse [23]
+                0.00    0.00    1776/35655742     SecureMalloc [10]
+                0.00    0.00     614/614         ConjectureRelativeSymbolWeightParse [27]
+                0.00    0.00     406/406         FIFOEvalParse [29]
+                0.00    0.00     311/311         ClauseRefinedWeightParse [31]
+                0.00    0.00     155/155         ClauseWeightParse [33]
+                0.00    0.00      79/79          ConjectureSymbolWeightParse [35]
+                0.00    0.00      70/70          RelevanceLevelWeightParse2 [36]
+                0.00    0.00      58/58          PNRefinedWeightParse [37]
+                0.00    0.00      44/44          OrientLMaxWeightParse [38]
+                0.00    0.00      14/14          ClauseWeightAgeParse [47]
+                0.00    0.00       6/6           RelevanceLevelWeightParse [60]
+                0.00    0.00       8/81          PStackGrow [41]
+                0.00    0.00       2/2           SymTypeWeightParse [72]
+                0.00    0.00       1/1           TSMWeightParse [74]
+                0.00    0.00       2/2           DefaultWeightParse [78]
+                0.00    0.00       1/1           ConjectureSimplifiedSymbolWeightParse [80]
+                0.00    0.00       1/1           UniqWeightParse [88]
+                0.00    0.00       1/1           LIFOEvalParse [86]
+                0.00    0.00    1772/43480       scan_token_follow_includes [93]
+                0.00    0.00      22/26868       NextToken [94]
+-----------------------------------------------
+                0.00    0.00      13/4031        TBTermParseReal <cycle 1> [16]
+                0.00    0.00    4018/4031        NDSaturateLoop.constprop.128 [1]
+[24]     0.0    0.00    0.00    4031         VarBankGetFreshVar [24]
+                0.00    0.00    8036/8036        var_bank_var_alloc [25]
+                0.00    0.00       9/402         PDArrayEnlarge [32]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+                0.00    0.00       1/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00    8036/8036        VarBankGetFreshVar [24]
+[25]     0.0    0.00    0.00    8036         var_bank_var_alloc [25]
+                0.00    0.00    2590/35655742     SecureMalloc [10]
+                0.00    0.00       9/402         PDArrayEnlarge [32]
+                0.00    0.00      10/81          PStackGrow [41]
+                0.00    0.00       1/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                                                 <spontaneous>
+[26]     0.0    0.00    0.00                 ProofStateAlloc [26]
+                0.00    0.00       2/2           TBAlloc [28]
+                0.00    0.00      16/16          SigInsertId.constprop.176 [34]
+                0.00    0.00       7/7           SortTableInsert [40]
+                0.00    0.00      13/14          ClauseSetAlloc [42]
+                0.00    0.00       3/3           PDTreeAlloc [49]
+                0.00    0.00       6/6           FormulaSetAlloc [54]
+                0.00    0.00      17/17          PTreeStore [58]
+                0.00    0.00      10/35655742     SecureMalloc [10]
+                0.00    0.00       3/16          PStackAlloc.lto_priv.215.lto_priv.281 [45]
+                0.00    0.00       2/2           PDArrayAlloc [71]
+                0.00    0.00       2/2           TypeNewConstant [79]
+                0.00    0.00       1/1           PDIntArrayAlloc [81]
+                0.00    0.00       1/1           TypeNewFunction.constprop.181 [87]
+                0.00    0.00       3/33          SigDeclareType [115]
+                0.00    0.00       1/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00     614/614         WeightFunDefParse [23]
+[27]     0.0    0.00    0.00     614         ConjectureRelativeSymbolWeightParse [27]
+                0.00    0.00    1228/35655742     SecureMalloc [10]
+                0.00    0.00    6140/26868       NextToken [94]
+                0.00    0.00    2456/4589        ParseFloat [101]
+                0.00    0.00    2456/4686        ParseInt [100]
+                0.00    0.00     614/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00       2/2           ProofStateAlloc [26]
+[28]     0.0    0.00    0.00       2         TBAlloc [28]
+                0.00    0.00       4/23998313     tb_termtop_insert.lto_priv.260 [4]
+                0.00    0.00      25/35655742     SecureMalloc [10]
+                0.00    0.00       4/4           TBInsert.constprop.172 [69]
+                0.00    0.00       4/4           TermFree.part.3 [122]
+                0.00    0.00       2/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00     406/406         WeightFunDefParse [23]
+[29]     0.0    0.00    0.00     406         FIFOEvalParse [29]
+                0.00    0.00     811/35655742     SecureMalloc [10]
+                0.00    0.00    1432/43480       scan_token_follow_includes [93]
+                0.00    0.00     406/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00     108/108         TBTermParseReal <cycle 1> [16]
+[30]     0.0    0.00    0.00     108         SigInsertId [30]
+                0.00    0.00     132/1514106848     splay_tree.lto_priv.235 [3]
+                0.00    0.00      31/35655742     SecureMalloc [10]
+                0.00    0.00       2/377         SecureRealloc [105]
+-----------------------------------------------
+                0.00    0.00     311/311         WeightFunDefParse [23]
+[31]     0.0    0.00    0.00     311         ClauseRefinedWeightParse [31]
+                0.00    0.00     618/35655742     SecureMalloc [10]
+                0.00    0.00    2177/26868       NextToken [94]
+                0.00    0.00     933/4589        ParseFloat [101]
+                0.00    0.00     622/4686        ParseInt [100]
+                0.00    0.00     311/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00       9/402         var_bank_var_alloc [25]
+                0.00    0.00       9/402         VarBankGetFreshVar [24]
+                0.00    0.00     384/402         parse_single_wfcb_item [22]
+[32]     0.0    0.00    0.00     402         PDArrayEnlarge [32]
+                0.00    0.00     402/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00     155/155         WeightFunDefParse [23]
+[33]     0.0    0.00    0.00     155         ClauseWeightParse [33]
+                0.00    0.00     308/35655742     SecureMalloc [10]
+                0.00    0.00     910/43480       scan_token_follow_includes [93]
+                0.00    0.00     310/4686        ParseInt [100]
+                0.00    0.00     155/1765        ParsePrioFun [104]
+                0.00    0.00     155/4589        ParseFloat [101]
+-----------------------------------------------
+                0.00    0.00      16/16          ProofStateAlloc [26]
+[34]     0.0    0.00    0.00      16         SigInsertId.constprop.176 [34]
+                0.00    0.00      30/1514106848     splay_tree.lto_priv.235 [3]
+                0.00    0.00      32/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00      79/79          WeightFunDefParse [23]
+[35]     0.0    0.00    0.00      79         ConjectureSymbolWeightParse [35]
+                0.00    0.00     158/35655742     SecureMalloc [10]
+                0.00    0.00     948/26868       NextToken [94]
+                0.00    0.00     553/4686        ParseInt [100]
+                0.00    0.00     237/4589        ParseFloat [101]
+                0.00    0.00      79/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00      70/70          WeightFunDefParse [23]
+[36]     0.0    0.00    0.00      70         RelevanceLevelWeightParse2 [36]
+                0.00    0.00     140/35655742     SecureMalloc [10]
+                0.00    0.00     910/26868       NextToken [94]
+                0.00    0.00     420/4589        ParseFloat [101]
+                0.00    0.00     350/4686        ParseInt [100]
+                0.00    0.00      70/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00      58/58          WeightFunDefParse [23]
+[37]     0.0    0.00    0.00      58         PNRefinedWeightParse [37]
+                0.00    0.00     116/35655742     SecureMalloc [10]
+                0.00    0.00     522/26868       NextToken [94]
+                0.00    0.00     232/4686        ParseInt [100]
+                0.00    0.00     174/4589        ParseFloat [101]
+                0.00    0.00      58/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00      44/44          WeightFunDefParse [23]
+[38]     0.0    0.00    0.00      44         OrientLMaxWeightParse [38]
+                0.00    0.00      88/35655742     SecureMalloc [10]
+                0.00    0.00     308/26868       NextToken [94]
+                0.00    0.00     132/4589        ParseFloat [101]
+                0.00    0.00      88/4686        ParseInt [100]
+                0.00    0.00      44/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00      55/55          literal_tform_tstp_parse <cycle 2> [17]
+[39]     0.0    0.00    0.00      55         EqnTermsTBTermEncode [39]
+                0.00    0.00      74/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       7/7           ProofStateAlloc [26]
+[40]     0.0    0.00    0.00       7         SortTableInsert [40]
+                0.00    0.00       7/7           StrTreeStore [43]
+                0.00    0.00       6/1514106848     splay_tree.lto_priv.235 [3]
+-----------------------------------------------
+                0.00    0.00       4/81          HeuristicDefParse [21]
+                0.00    0.00       6/81          NDSaturateLoop.constprop.128 [1]
+                0.00    0.00       8/81          WeightFunDefParse [23]
+                0.00    0.00      10/81          var_bank_var_alloc [25]
+                0.00    0.00      53/81          nd_label_symbols [2]
+[41]     0.0    0.00    0.00      81         PStackGrow [41]
+                0.00    0.00      67/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       1/14          ProofStateInit [44]
+                0.00    0.00      13/14          ProofStateAlloc [26]
+[42]     0.0    0.00    0.00      14         ClauseSetAlloc [42]
+                0.00    0.00      65/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       7/7           SortTableInsert [40]
+[43]     0.0    0.00    0.00       7         StrTreeStore [43]
+                0.00    0.00       6/1514106848     splay_tree.lto_priv.235 [3]
+                0.00    0.00      14/35655742     SecureMalloc [10]
+-----------------------------------------------
+                                                 <spontaneous>
+[44]     0.0    0.00    0.00                 ProofStateInit [44]
+                0.00    0.00       1/1           fvi_param_init [55]
+                0.00    0.00       1/2           GetHeuristic [59]
+                0.00    0.00       1/14          ClauseSetAlloc [42]
+                0.00    0.00       1/1           GlobalIndicesInit [73]
+                0.00    0.00       1/16          PStackAlloc.lto_priv.215.lto_priv.281 [45]
+                0.00    0.00       1/1           ClauseSetFree [127]
+                0.00    0.00       1/3           PStackFree.lto_priv.239.lto_priv.338 [125]
+-----------------------------------------------
+                0.00    0.00       1/16          ProofStateInit [44]
+                0.00    0.00       3/16          ProofStateAlloc [26]
+                0.00    0.00       6/16          PDTreeAlloc [49]
+                0.00    0.00       6/16          NDSaturateLoop.constprop.128 [1]
+[45]     0.0    0.00    0.00      16         PStackAlloc.lto_priv.215.lto_priv.281 [45]
+                0.00    0.00      35/35655742     SecureMalloc [10]
+                0.00    0.00      27/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00      19/127         eqn_parse_infix.lto_priv.306 [19]
+                0.00    0.00     108/127         tb_termtop_insert.lto_priv.260 [4]
+[46]     0.0    0.00    0.00     127         TypeInferSort [46]
+                0.00    0.00      16/35655742     SecureMalloc [10]
+                0.00    0.00      24/30          TypeNewFunction [57]
+                0.00    0.00      24/33          SigDeclareType [115]
+-----------------------------------------------
+                0.00    0.00      14/14          WeightFunDefParse [23]
+[47]     0.0    0.00    0.00      14         ClauseWeightAgeParse [47]
+                0.00    0.00      28/35655742     SecureMalloc [10]
+                0.00    0.00     112/43480       scan_token_follow_includes [93]
+                0.00    0.00      28/4686        ParseInt [100]
+                0.00    0.00      28/4589        ParseFloat [101]
+                0.00    0.00      14/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00    2009/2009        NDSaturateLoop.constprop.128 [1]
+[48]     0.0    0.00    0.00    2009         WFormulaTSTPPrint [48]
+                0.00    0.00    2182/2182        TFormulaTPTPPrint [51]
+                0.00    0.00    2009/2009        TermIsUntyped [85]
+-----------------------------------------------
+                0.00    0.00       3/3           ProofStateAlloc [26]
+[49]     0.0    0.00    0.00       3         PDTreeAlloc [49]
+                0.00    0.00      14/35655742     SecureMalloc [10]
+                0.00    0.00       6/16          PStackAlloc.lto_priv.215.lto_priv.281 [45]
+-----------------------------------------------
+                0.00    0.00      17/11259       TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      55/11259       literal_tform_tstp_parse <cycle 2> [17]
+                0.00    0.00   11187/11259       TFormulaTPTPPrint [51]
+[50]     0.0    0.00    0.00   11259         EqnAlloc [50]
+                0.00    0.00      27/35655742     SecureMalloc [10]
+-----------------------------------------------
+                               24884             TFormulaTPTPPrint [51]
+                0.00    0.00    2182/2182        WFormulaTSTPPrint [48]
+[51]     0.0    0.00    0.00    2182+24884   TFormulaTPTPPrint [51]
+                0.00    0.00   11187/11259       EqnAlloc [50]
+                0.00    0.00   24340/24340       TermPrint.constprop.183 [95]
+                0.00    0.00   13217/13217       TBPrintTerm [98]
+                               24884             TFormulaTPTPPrint [51]
+-----------------------------------------------
+                0.00    0.00      25/25          FormulaAndClauseSetParse [12]
+[52]     0.0    0.00    0.00      25         SecureStrdup [52]
+                0.00    0.00      25/35655742     SecureMalloc [10]
+-----------------------------------------------
+                                                 <spontaneous>
+[53]     0.0    0.00    0.00                 DefaultWFormulaAlloc [53]
+                0.00    0.00      25/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       6/6           ProofStateAlloc [26]
+[54]     0.0    0.00    0.00       6         FormulaSetAlloc [54]
+                0.00    0.00      23/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       1/1           ProofStateInit [44]
+[55]     0.0    0.00    0.00       1         fvi_param_init [55]
+                0.00    0.00       4/4           FixedDArrayCopy [63]
+                0.00    0.00       3/3           FreqVectorAlloc [64]
+                0.00    0.00       2/2           FVCollectAlloc [70]
+                0.00    0.00       5/5           FVIAnchorAlloc [76]
+                0.00    0.00       1/5           FixedDArrayAlloc [62]
+                0.00    0.00       1/35655742     SecureMalloc [10]
+                0.00    0.00       3/3           FreqVectorInitialize [124]
+                0.00    0.00       3/3           FreqVectorFreeReal [123]
+                0.00    0.00       1/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00       2/4           ProofControlInit [20]
+                0.00    0.00       2/4           GetHeuristic [59]
+[56]     0.0    0.00    0.00       4         CreateScanner.constprop.170 [56]
+                0.00    0.00      19/35655742     SecureMalloc [10]
+                0.00    0.00       5/5           OpenStackedInput [77]
+                0.00    0.00      29/43480       scan_token_follow_includes [93]
+                0.00    0.00       2/377         SecureRealloc [105]
+-----------------------------------------------
+                0.00    0.00       6/30          eqn_parse_infix.lto_priv.306 [19]
+                0.00    0.00      24/30          TypeInferSort [46]
+[57]     0.0    0.00    0.00      30         TypeNewFunction [57]
+                0.00    0.00      20/35655742     SecureMalloc [10]
+                0.00    0.00      30/32          splay_type.lto_priv.259 [116]
+-----------------------------------------------
+                0.00    0.00      17/17          ProofStateAlloc [26]
+[58]     0.0    0.00    0.00      17         PTreeStore [58]
+                0.00    0.00      17/35655742     SecureMalloc [10]
+                0.00    0.00      15/17          splay_ptree.lto_priv.293 [119]
+-----------------------------------------------
+                0.00    0.00       1/2           ProofStateInit [44]
+                0.00    0.00       1/2           ProofControlInit [20]
+[59]     0.0    0.00    0.00       2         GetHeuristic [59]
+                0.00    0.00       2/4           CreateScanner.constprop.170 [56]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+                0.00    0.00       2/4           DestroyScanner [121]
+                0.00    0.00       2/26868       NextToken [94]
+-----------------------------------------------
+                0.00    0.00       6/6           WeightFunDefParse [23]
+[60]     0.0    0.00    0.00       6         RelevanceLevelWeightParse [60]
+                0.00    0.00      12/35655742     SecureMalloc [10]
+                0.00    0.00      78/26868       NextToken [94]
+                0.00    0.00      36/4589        ParseFloat [101]
+                0.00    0.00      30/4686        ParseInt [100]
+                0.00    0.00       6/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00       1/1           ProofControlInit [20]
+[61]     0.0    0.00    0.00       1         TOCreateOrdering [61]
+                0.00    0.00       1/1           OCBAlloc [66]
+                0.00    0.00       1/1           TOGeneratePrecedence [67]
+                0.00    0.00       1/1           TOGenerateWeights [82]
+-----------------------------------------------
+                0.00    0.00       1/5           fvi_param_init [55]
+                0.00    0.00       4/5           FixedDArrayCopy [63]
+[62]     0.0    0.00    0.00       5         FixedDArrayAlloc [62]
+                0.00    0.00       9/35655742     SecureMalloc [10]
+                0.00    0.00       5/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00       4/4           fvi_param_init [55]
+[63]     0.0    0.00    0.00       4         FixedDArrayCopy [63]
+                0.00    0.00       4/5           FixedDArrayAlloc [62]
+-----------------------------------------------
+                0.00    0.00       3/3           fvi_param_init [55]
+[64]     0.0    0.00    0.00       3         FreqVectorAlloc [64]
+                0.00    0.00       6/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       1/1           TOGeneratePrecedence [67]
+[65]     0.0    0.00    0.00       1         FCodeFeatureArrayAlloc [65]
+                0.00    0.00       5/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       1/1           TOCreateOrdering [61]
+[66]     0.0    0.00    0.00       1         OCBAlloc [66]
+                0.00    0.00       5/35655742     SecureMalloc [10]
+                0.00    0.00       1/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00       1/1           TOCreateOrdering [61]
+[67]     0.0    0.00    0.00       1         TOGeneratePrecedence [67]
+                0.00    0.00       1/1           FCodeFeatureArrayAlloc [65]
+                0.00    0.00       1/1           compute_precedence_from_array.isra.2.lto_priv.272 [128]
+-----------------------------------------------
+                0.00    0.00       5/5           GlobalIndicesInit [73]
+[68]     0.0    0.00    0.00       5         FPIndexAlloc [68]
+                0.00    0.00       4/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       4/4           TBAlloc [28]
+[69]     0.0    0.00    0.00       4         TBInsert.constprop.172 [69]
+                0.00    0.00       4/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       2/2           fvi_param_init [55]
+[70]     0.0    0.00    0.00       2         FVCollectAlloc [70]
+                0.00    0.00       4/35655742     SecureMalloc [10]
+                0.00    0.00       2/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00       2/2           ProofStateAlloc [26]
+[71]     0.0    0.00    0.00       2         PDArrayAlloc [71]
+                0.00    0.00       4/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       2/2           WeightFunDefParse [23]
+[72]     0.0    0.00    0.00       2         SymTypeWeightParse [72]
+                0.00    0.00       4/35655742     SecureMalloc [10]
+                0.00    0.00      18/26868       NextToken [94]
+                0.00    0.00       8/4686        ParseInt [100]
+                0.00    0.00       6/4589        ParseFloat [101]
+                0.00    0.00       2/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00       1/1           ProofStateInit [44]
+[73]     0.0    0.00    0.00       1         GlobalIndicesInit [73]
+                0.00    0.00       5/5           FPIndexAlloc [68]
+                0.00    0.00       8/8           GetFPIndexFunction [120]
+-----------------------------------------------
+                0.00    0.00       1/1           WeightFunDefParse [23]
+[74]     0.0    0.00    0.00       1         TSMWeightParse [74]
+                0.00    0.00       4/35655742     SecureMalloc [10]
+                0.00    0.00      22/26868       NextToken [94]
+                0.00    0.00       9/4589        ParseFloat [101]
+                0.00    0.00       4/4686        ParseInt [100]
+                0.00    0.00       1/1765        ParsePrioFun [104]
+                0.00    0.00       1/51          CheckInpId [111]
+                0.00    0.00       1/43480       scan_token_follow_includes [93]
+-----------------------------------------------
+                               66545             TFormulaCollectFreeVars [75]
+                0.00    0.00    6212/6212        NDSaturateLoop.constprop.128 [1]
+[75]     0.0    0.00    0.00    6212+66545   TFormulaCollectFreeVars [75]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+                0.00    0.00   35456/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+                               66545             TFormulaCollectFreeVars [75]
+-----------------------------------------------
+                0.00    0.00       5/5           fvi_param_init [55]
+[76]     0.0    0.00    0.00       5         FVIAnchorAlloc [76]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       5/5           CreateScanner.constprop.170 [56]
+[77]     0.0    0.00    0.00       5         OpenStackedInput [77]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+                0.00    0.00       5/377         SecureRealloc [105]
+-----------------------------------------------
+                0.00    0.00       2/2           WeightFunDefParse [23]
+[78]     0.0    0.00    0.00       2         DefaultWeightParse [78]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+                0.00    0.00       7/43480       scan_token_follow_includes [93]
+                0.00    0.00       2/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00       2/2           ProofStateAlloc [26]
+[79]     0.0    0.00    0.00       2         TypeNewConstant [79]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+                0.00    0.00       1/32          splay_type.lto_priv.259 [116]
+-----------------------------------------------
+                0.00    0.00       1/1           WeightFunDefParse [23]
+[80]     0.0    0.00    0.00       1         ConjectureSimplifiedSymbolWeightParse [80]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+                0.00    0.00      10/26868       NextToken [94]
+                0.00    0.00       5/4686        ParseInt [100]
+                0.00    0.00       3/4589        ParseFloat [101]
+                0.00    0.00       1/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00       1/1           ProofStateAlloc [26]
+[81]     0.0    0.00    0.00       1         PDIntArrayAlloc [81]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00       1/1           TOCreateOrdering [61]
+[82]     0.0    0.00    0.00       1         TOGenerateWeights [82]
+                0.00    0.00       1/1           find_max_symbols.lto_priv.275 [83]
+-----------------------------------------------
+                0.00    0.00       1/1           TOGenerateWeights [82]
+[83]     0.0    0.00    0.00       1         find_max_symbols.lto_priv.275 [83]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+                0.00    0.00       1/68485       SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                                                 <spontaneous>
+[84]     0.0    0.00    0.00                 process_options [84]
+                0.00    0.00       2/35655742     SecureMalloc [10]
+-----------------------------------------------
+                0.00    0.00    2009/2009        WFormulaTSTPPrint [48]
+[85]     0.0    0.00    0.00    2009         TermIsUntyped [85]
+                0.00    0.00       1/35655742     SecureMalloc [10]
+                0.00    0.00    2009/2009        SizeMallocReal.constprop.193 [103]
+-----------------------------------------------
+                0.00    0.00       1/1           WeightFunDefParse [23]
+[86]     0.0    0.00    0.00       1         LIFOEvalParse [86]
+                0.00    0.00       1/35655742     SecureMalloc [10]
+                0.00    0.00       3/43480       scan_token_follow_includes [93]
+                0.00    0.00       1/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00       1/1           ProofStateAlloc [26]
+[87]     0.0    0.00    0.00       1         TypeNewFunction.constprop.181 [87]
+                0.00    0.00       1/35655742     SecureMalloc [10]
+                0.00    0.00       1/32          splay_type.lto_priv.259 [116]
+-----------------------------------------------
+                0.00    0.00       1/1           WeightFunDefParse [23]
+[88]     0.0    0.00    0.00       1         UniqWeightParse [88]
+                0.00    0.00       1/35655742     SecureMalloc [10]
+                0.00    0.00       4/43480       scan_token_follow_includes [93]
+                0.00    0.00       1/1765        ParsePrioFun [104]
+-----------------------------------------------
+                0.00    0.00  285386/285386      NDSaturateLoop.constprop.128 [1]
+[89]     0.0    0.00    0.00  285386         TermStructEqual [89]
+-----------------------------------------------
+                               17450             TermIsSubterm [90]
+                0.00    0.00   37652/177244      TermIsSubterm.constprop.135 [97]
+                0.00    0.00  139592/177244      NDSaturateLoop.constprop.128 [1]
+[90]     0.0    0.00    0.00  177244+17450   TermIsSubterm [90]
+                               17450             TermIsSubterm [90]
+-----------------------------------------------
+                0.00    0.00       1/68485       var_bank_var_alloc [25]
+                0.00    0.00       1/68485       VarBankGetFreshVar [24]
+                0.00    0.00       1/68485       OCBAlloc [66]
+                0.00    0.00       1/68485       ProofStateAlloc [26]
+                0.00    0.00       1/68485       fvi_param_init [55]
+                0.00    0.00       1/68485       ProofControlInit [20]
+                0.00    0.00       1/68485       find_max_symbols.lto_priv.275 [83]
+                0.00    0.00       2/68485       TBAlloc [28]
+                0.00    0.00       2/68485       FVCollectAlloc [70]
+                0.00    0.00       5/68485       FixedDArrayAlloc [62]
+                0.00    0.00      27/68485       PStackAlloc.lto_priv.215.lto_priv.281 [45]
+                0.00    0.00     102/68485       TBTermParseReal <cycle 1> [16]
+                0.00    0.00   32884/68485       NDSaturateLoop.constprop.128 [1]
+                0.00    0.00   35456/68485       TFormulaCollectFreeVars [75]
+[91]     0.0    0.00    0.00   68485         SizeMallocReal.lto_priv.197.lto_priv.358 [91]
+-----------------------------------------------
+                0.00    0.00   43480/43480       scan_token_follow_includes [93]
+[92]     0.0    0.00    0.00   43480         scan_token [92]
+                0.00    0.00    4452/4452        scan_ident [102]
+                0.00    0.00      42/42          DStrAppendChar [113]
+                0.00    0.00      42/42          StreamNextChar [114]
+                0.00    0.00      17/377         SecureRealloc [105]
+-----------------------------------------------
+                0.00    0.00       1/43480       TSMWeightParse [74]
+                0.00    0.00       3/43480       LIFOEvalParse [86]
+                0.00    0.00       4/43480       UniqWeightParse [88]
+                0.00    0.00       7/43480       DefaultWeightParse [78]
+                0.00    0.00      23/43480       TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      29/43480       CreateScanner.constprop.170 [56]
+                0.00    0.00      44/43480       ClauseTypeParse [117]
+                0.00    0.00     112/43480       ClauseWeightAgeParse [47]
+                0.00    0.00     910/43480       ClauseWeightParse [33]
+                0.00    0.00    1432/43480       FIFOEvalParse [29]
+                0.00    0.00    1772/43480       WeightFunDefParse [23]
+                0.00    0.00    1979/43480       ParsePrioFun [104]
+                0.00    0.00    2239/43480       HeuristicDefParse [21]
+                0.00    0.00    5220/43480       ParseInt [100]
+                0.00    0.00   29705/43480       NextToken [94]
+[93]     0.0    0.00    0.00   43480         scan_token_follow_includes [93]
+                0.00    0.00   43480/43480       scan_token [92]
+-----------------------------------------------
+                0.00    0.00       2/26868       GetHeuristic [59]
+                0.00    0.00      10/26868       ConjectureSimplifiedSymbolWeightParse [80]
+                0.00    0.00      13/26868       eqn_parse_infix.lto_priv.306 [19]
+                0.00    0.00      18/26868       SymTypeWeightParse [72]
+                0.00    0.00      22/26868       WeightFunDefParse [23]
+                0.00    0.00      22/26868       TSMWeightParse [74]
+                0.00    0.00      35/26868       TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      78/26868       RelevanceLevelWeightParse [60]
+                0.00    0.00     111/26868       quantified_tform_tstp_parse <cycle 2> [14]
+                0.00    0.00     175/26868       FormulaAndClauseSetParse [12]
+                0.00    0.00     213/26868       literal_tform_tstp_parse <cycle 2> [17]
+                0.00    0.00     291/26868       TBTermParseReal <cycle 1> [16]
+                0.00    0.00     308/26868       OrientLMaxWeightParse [38]
+                0.00    0.00     345/26868       FuncSymbParse [106]
+                0.00    0.00     522/26868       PNRefinedWeightParse [37]
+                0.00    0.00     910/26868       RelevanceLevelWeightParse2 [36]
+                0.00    0.00     930/26868       HeuristicDefParse [21]
+                0.00    0.00     948/26868       ConjectureSymbolWeightParse [35]
+                0.00    0.00    2177/26868       ClauseRefinedWeightParse [31]
+                0.00    0.00    3568/26868       parse_single_wfcb_item [22]
+                0.00    0.00    6140/26868       ConjectureRelativeSymbolWeightParse [27]
+                0.00    0.00   10030/26868       ParseFloat [101]
+[94]     0.0    0.00    0.00   26868         NextToken [94]
+                0.00    0.00   29705/43480       scan_token_follow_includes [93]
+-----------------------------------------------
+                0.00    0.00   24340/24340       TFormulaTPTPPrint [51]
+[95]     0.0    0.00    0.00   24340         TermPrint.constprop.183 [95]
+                0.00    0.00   21284/21284       TermPrint [96]
+-----------------------------------------------
+                                8091             TermPrint [96]
+                0.00    0.00   21284/21284       TermPrint.constprop.183 [95]
+[96]     0.0    0.00    0.00   21284+8091    TermPrint [96]
+                                8091             TermPrint [96]
+-----------------------------------------------
+                0.00    0.00    3128/20184       NDSaturateLoop.constprop.128 [1]
+                0.00    0.00   17056/20184       TFormulaVarIsFree [11]
+[97]     0.0    0.00    0.00   20184         TermIsSubterm.constprop.135 [97]
+                0.00    0.00   37652/177244      TermIsSubterm [90]
+-----------------------------------------------
+                0.00    0.00   13217/13217       TFormulaTPTPPrint [51]
+[98]     0.0    0.00    0.00   13217         TBPrintTerm [98]
+-----------------------------------------------
+                0.00    0.00    5441/5441        ParseFloat [101]
+[99]     0.0    0.00    0.00    5441         CheckInpTokNoSkip [99]
+-----------------------------------------------
+                0.00    0.00       4/4686        TSMWeightParse [74]
+                0.00    0.00       5/4686        ConjectureSimplifiedSymbolWeightParse [80]
+                0.00    0.00       8/4686        SymTypeWeightParse [72]
+                0.00    0.00      28/4686        ClauseWeightAgeParse [47]
+                0.00    0.00      30/4686        RelevanceLevelWeightParse [60]
+                0.00    0.00      88/4686        OrientLMaxWeightParse [38]
+                0.00    0.00     232/4686        PNRefinedWeightParse [37]
+                0.00    0.00     310/4686        ClauseWeightParse [33]
+                0.00    0.00     350/4686        RelevanceLevelWeightParse2 [36]
+                0.00    0.00     553/4686        ConjectureSymbolWeightParse [35]
+                0.00    0.00     622/4686        ClauseRefinedWeightParse [31]
+                0.00    0.00    2456/4686        ConjectureRelativeSymbolWeightParse [27]
+[100]    0.0    0.00    0.00    4686         ParseInt [100]
+                0.00    0.00    5220/43480       scan_token_follow_includes [93]
+-----------------------------------------------
+                0.00    0.00       3/4589        ConjectureSimplifiedSymbolWeightParse [80]
+                0.00    0.00       6/4589        SymTypeWeightParse [72]
+                0.00    0.00       9/4589        TSMWeightParse [74]
+                0.00    0.00      28/4589        ClauseWeightAgeParse [47]
+                0.00    0.00      36/4589        RelevanceLevelWeightParse [60]
+                0.00    0.00     132/4589        OrientLMaxWeightParse [38]
+                0.00    0.00     155/4589        ClauseWeightParse [33]
+                0.00    0.00     174/4589        PNRefinedWeightParse [37]
+                0.00    0.00     237/4589        ConjectureSymbolWeightParse [35]
+                0.00    0.00     420/4589        RelevanceLevelWeightParse2 [36]
+                0.00    0.00     933/4589        ClauseRefinedWeightParse [31]
+                0.00    0.00    2456/4589        ConjectureRelativeSymbolWeightParse [27]
+[101]    0.0    0.00    0.00    4589         ParseFloat [101]
+                0.00    0.00   10030/26868       NextToken [94]
+                0.00    0.00    5441/5441        CheckInpTokNoSkip [99]
+                0.00    0.00       2/377         SecureRealloc [105]
+-----------------------------------------------
+                0.00    0.00    4452/4452        scan_token [92]
+[102]    0.0    0.00    0.00    4452         scan_ident [102]
+                0.00    0.00       4/377         SecureRealloc [105]
+-----------------------------------------------
+                0.00    0.00    2009/2009        TermIsUntyped [85]
+[103]    0.0    0.00    0.00    2009         SizeMallocReal.constprop.193 [103]
+-----------------------------------------------
+                0.00    0.00       1/1765        UniqWeightParse [88]
+                0.00    0.00       1/1765        TSMWeightParse [74]
+                0.00    0.00       1/1765        LIFOEvalParse [86]
+                0.00    0.00       1/1765        ConjectureSimplifiedSymbolWeightParse [80]
+                0.00    0.00       2/1765        DefaultWeightParse [78]
+                0.00    0.00       2/1765        SymTypeWeightParse [72]
+                0.00    0.00       6/1765        RelevanceLevelWeightParse [60]
+                0.00    0.00      14/1765        ClauseWeightAgeParse [47]
+                0.00    0.00      44/1765        OrientLMaxWeightParse [38]
+                0.00    0.00      58/1765        PNRefinedWeightParse [37]
+                0.00    0.00      70/1765        RelevanceLevelWeightParse2 [36]
+                0.00    0.00      79/1765        ConjectureSymbolWeightParse [35]
+                0.00    0.00     155/1765        ClauseWeightParse [33]
+                0.00    0.00     311/1765        ClauseRefinedWeightParse [31]
+                0.00    0.00     406/1765        FIFOEvalParse [29]
+                0.00    0.00     614/1765        ConjectureRelativeSymbolWeightParse [27]
+[104]    0.0    0.00    0.00    1765         ParsePrioFun [104]
+                0.00    0.00    1979/43480       scan_token_follow_includes [93]
+-----------------------------------------------
+                0.00    0.00       2/377         ParseFloat [101]
+                0.00    0.00       2/377         SigInsertId [30]
+                0.00    0.00       2/377         CreateScanner.constprop.170 [56]
+                0.00    0.00       4/377         scan_ident [102]
+                0.00    0.00       5/377         OpenStackedInput [77]
+                0.00    0.00      17/377         scan_token [92]
+                0.00    0.00     345/377         FuncSymbParse [106]
+[105]    0.0    0.00    0.00     377         SecureRealloc [105]
+-----------------------------------------------
+                0.00    0.00     345/345         TBTermParseReal <cycle 1> [16]
+[106]    0.0    0.00    0.00     345         FuncSymbParse [106]
+                0.00    0.00     345/26868       NextToken [94]
+                0.00    0.00     345/377         SecureRealloc [105]
+-----------------------------------------------
+                                 189             TBTermParseReal <cycle 1> [16]
+[107]    0.0    0.00    0.00     189         tb_subterm_parse <cycle 1> [107]
+                                 189             TBTermParseReal <cycle 1> [16]
+-----------------------------------------------
+                0.00    0.00     100/100         FormulaAndClauseSetParse [12]
+[108]    0.0    0.00    0.00     100         CheckInpTok [108]
+-----------------------------------------------
+                0.00    0.00      17/72          TFormulaTSTPParse <cycle 2> [18]
+                0.00    0.00      55/72          literal_tform_tstp_parse <cycle 2> [17]
+[109]    0.0    0.00    0.00      72         eqn_parse_real [109]
+-----------------------------------------------
+                0.00    0.00      71/71          quantified_tform_tstp_parse <cycle 2> [14]
+[110]    0.0    0.00    0.00      71         VarBankPopEnv [110]
+-----------------------------------------------
+                0.00    0.00       1/51          TSMWeightParse [74]
+                0.00    0.00      25/51          ClauseTypeParse [117]
+                0.00    0.00      25/51          FormulaAndClauseSetParse [12]
+[111]    0.0    0.00    0.00      51         CheckInpId [111]
+-----------------------------------------------
+                0.00    0.00      50/50          FormulaAndClauseSetParse [12]
+[112]    0.0    0.00    0.00      50         TestId [112]
+-----------------------------------------------
+                0.00    0.00      42/42          scan_token [92]
+[113]    0.0    0.00    0.00      42         DStrAppendChar [113]
+-----------------------------------------------
+                0.00    0.00      42/42          scan_token [92]
+[114]    0.0    0.00    0.00      42         StreamNextChar [114]
+-----------------------------------------------
+                0.00    0.00       3/33          ProofStateAlloc [26]
+                0.00    0.00       6/33          eqn_parse_infix.lto_priv.306 [19]
+                0.00    0.00      24/33          TypeInferSort [46]
+[115]    0.0    0.00    0.00      33         SigDeclareType [115]
+-----------------------------------------------
+                0.00    0.00       1/32          TypeNewConstant [79]
+                0.00    0.00       1/32          TypeNewFunction.constprop.181 [87]
+                0.00    0.00      30/32          TypeNewFunction [57]
+[116]    0.0    0.00    0.00      32         splay_type.lto_priv.259 [116]
+-----------------------------------------------
+                0.00    0.00      25/25          FormulaAndClauseSetParse [12]
+[117]    0.0    0.00    0.00      25         ClauseTypeParse [117]
+                0.00    0.00      44/43480       scan_token_follow_includes [93]
+                0.00    0.00      25/51          CheckInpId [111]
+-----------------------------------------------
+                0.00    0.00      24/24          NDSaturateLoop.constprop.128 [1]
+[118]    0.0    0.00    0.00      24         push.lto_priv.210.lto_priv.311 [118]
+-----------------------------------------------
+                0.00    0.00       2/17          PTreeDeleteEntry [345]
+                0.00    0.00      15/17          PTreeStore [58]
+[119]    0.0    0.00    0.00      17         splay_ptree.lto_priv.293 [119]
+-----------------------------------------------
+                0.00    0.00       8/8           GlobalIndicesInit [73]
+[120]    0.0    0.00    0.00       8         GetFPIndexFunction [120]
+-----------------------------------------------
+                0.00    0.00       2/4           ProofControlInit [20]
+                0.00    0.00       2/4           GetHeuristic [59]
+[121]    0.0    0.00    0.00       4         DestroyScanner [121]
+-----------------------------------------------
+                0.00    0.00       4/4           TBAlloc [28]
+[122]    0.0    0.00    0.00       4         TermFree.part.3 [122]
+-----------------------------------------------
+                0.00    0.00       3/3           fvi_param_init [55]
+[123]    0.0    0.00    0.00       3         FreqVectorFreeReal [123]
+-----------------------------------------------
+                0.00    0.00       3/3           fvi_param_init [55]
+[124]    0.0    0.00    0.00       3         FreqVectorInitialize [124]
+-----------------------------------------------
+                0.00    0.00       1/3           ProofStateInit [44]
+                0.00    0.00       2/3           NDSaturateLoop.constprop.128 [1]
+[125]    0.0    0.00    0.00       3         PStackFree.lto_priv.239.lto_priv.338 [125]
+-----------------------------------------------
+                0.00    0.00       1/1           ProofControlInit [20]
+[126]    0.0    0.00    0.00       1         ClauseSetCountEquational [126]
+-----------------------------------------------
+                0.00    0.00       1/1           ProofStateInit [44]
+[127]    0.0    0.00    0.00       1         ClauseSetFree [127]
+-----------------------------------------------
+                0.00    0.00       1/1           TOGeneratePrecedence [67]
+[128]    0.0    0.00    0.00       1         compute_precedence_from_array.isra.2.lto_priv.272 [128]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+ [111] CheckInpId             [38] OrientLMaxWeightParse  [74] TSMWeightParse
+ [108] CheckInpTok            [71] PDArrayAlloc          [122] TermFree.part.3
+  [99] CheckInpTokNoSkip      [32] PDArrayEnlarge         [90] TermIsSubterm
+  [31] ClauseRefinedWeightParse [81] PDIntArrayAlloc      [97] TermIsSubterm.constprop.135
+  [42] ClauseSetAlloc         [49] PDTreeAlloc            [85] TermIsUntyped
+ [126] ClauseSetCountEquational [37] PNRefinedWeightParse [96] TermPrint
+ [127] ClauseSetFree          [45] PStackAlloc.lto_priv.215.lto_priv.281 [95] TermPrint.constprop.183
+ [117] ClauseTypeParse       [125] PStackFree.lto_priv.239.lto_priv.338 [89] TermStructEqual
+  [47] ClauseWeightAgeParse   [41] PStackGrow            [112] TestId
+  [33] ClauseWeightParse      [58] PTreeStore             [46] TypeInferSort
+  [27] ConjectureRelativeSymbolWeightParse [101] ParseFloat [79] TypeNewConstant
+  [80] ConjectureSimplifiedSymbolWeightParse [100] ParseInt [57] TypeNewFunction
+  [35] ConjectureSymbolWeightParse [104] ParsePrioFun     [87] TypeNewFunction.constprop.181
+  [56] CreateScanner.constprop.170 [60] RelevanceLevelWeightParse [88] UniqWeightParse
+ [113] DStrAppendChar         [36] RelevanceLevelWeightParse2 [24] VarBankGetFreshVar
+  [78] DefaultWeightParse     [10] SecureMalloc          [110] VarBankPopEnv
+ [121] DestroyScanner        [105] SecureRealloc          [48] WFormulaTSTPPrint
+  [50] EqnAlloc               [52] SecureStrdup           [23] WeightFunDefParse
+  [39] EqnTermsTBTermEncode  [115] SigDeclareType        [128] compute_precedence_from_array.isra.2.lto_priv.272
+  [65] FCodeFeatureArrayAlloc [30] SigInsertId            [19] eqn_parse_infix.lto_priv.306
+  [29] FIFOEvalParse          [34] SigInsertId.constprop.176 [109] eqn_parse_real
+  [68] FPIndexAlloc          [103] SizeMallocReal.constprop.193 [83] find_max_symbols.lto_priv.275
+  [70] FVCollectAlloc         [91] SizeMallocReal.lto_priv.197.lto_priv.358 [55] fvi_param_init
+  [76] FVIAnchorAlloc         [40] SortTableInsert        [17] literal_tform_tstp_parse
+  [62] FixedDArrayAlloc        [7] StrTreeFree             [6] nd_collect_subterms
+  [63] FixedDArrayCopy        [43] StrTreeStore            [2] nd_label_symbols
+  [54] FormulaSetAlloc       [114] StreamNextChar         [22] parse_single_wfcb_item
+   [5] FormulaSetFree         [72] SymTypeWeightParse    [118] push.lto_priv.210.lto_priv.311
+  [64] FreqVectorAlloc        [28] TBAlloc                [14] quantified_tform_tstp_parse
+ [123] FreqVectorFreeReal     [69] TBInsert.constprop.172 [102] scan_ident
+ [124] FreqVectorInitialize    [8] TBInsertNoProps        [92] scan_token
+ [106] FuncSymbParse          [98] TBPrintTerm            [93] scan_token_follow_includes
+ [120] GetFPIndexFunction     [16] TBTermParseReal       [119] splay_ptree.lto_priv.293
+  [59] GetHeuristic           [75] TFormulaCollectFreeVars [3] splay_tree.lto_priv.235
+  [73] GlobalIndicesInit       [9] TFormulaFCodeAlloc    [116] splay_type.lto_priv.259
+  [21] HeuristicDefParse      [51] TFormulaTPTPPrint     [107] tb_subterm_parse
+  [86] LIFOEvalParse          [18] TFormulaTSTPParse       [4] tb_termtop_insert.lto_priv.260
+   [1] NDSaturateLoop.constprop.128 [11] TFormulaVarIsFree [25] var_bank_var_alloc
+  [94] NextToken              [61] TOCreateOrdering       [15] <cycle 1>
+  [66] OCBAlloc               [67] TOGeneratePrecedence   [13] <cycle 2>
+  [77] OpenStackedInput       [82] TOGenerateWeights

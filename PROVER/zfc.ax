@@ -56,24 +56,9 @@ fof(infinity, axiom,
 ).
 
 
-% Universal Choice
-
-fof(choice,axiom,
-    ( ? [XF] :
-        ( function(XF)
-        & ! [Y] :( Y = null_class
-              | member(apply(XF,Y),Y) ) ) ) ).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DEFINITIONS
 
-% Complement
-/*
-fof(complement,axiom,
-    ( ! [X,Z] :
-        ( member(Z,complement(X))
-      <=> ( ~ member(Z,X) ) ) )).
-*/
-% Intersection
 
 
 fof(intersection,axiom,
@@ -212,8 +197,29 @@ fof(strict_well_order,axiom,(
               & ? [X] : member(X,A) )
            => ? [Y] : least(Y,R,A) ) ) ) )).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
 
+%CHOICE:
+
+fof(well_order_theorem,axiom,![X]:?[R]: strict_well_order(R,X)).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/* incomplete
+fof(linear_order,axiom,
+	![R,E] :
+	(
+		linear_order(R,E) <=> 
+		![X,Y] :
+		(
+		  member(X,E)
+		& member(Y,E)
+		)
+		=> (member(ordered_pair(X,Y),R)
+			| member(ordered_pair(Y,X),R)
+		)
+	)
+).
+*/
 % Test Conjecture
 /*
 fof(test,conjecture,![X]:(member(X,omega)=>member(successor(X),omega))).

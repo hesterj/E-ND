@@ -253,6 +253,7 @@ bool SubstComputeMgu(Term_p t1, Term_p t2, Subst_p subst)
             /* Sort check and occur check - remember, variables are elementary and shared! */
             if((t1->sort != t2->sort) || occur_check(t2, t1))
             {
+			   printf("\nsort mgu failure\n");
                res = false;
                break;
             }
@@ -266,6 +267,8 @@ bool SubstComputeMgu(Term_p t1, Term_p t2, Subst_p subst)
       {
          if(t1->f_code != t2->f_code)
          {
+			printf("\nf_code mgu failure\n");
+			printf("%ld %ld\n",t1->f_code,t2->f_code);
             res = false;
             break;
          }

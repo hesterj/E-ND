@@ -428,6 +428,7 @@ int main(int argc, char* argv[])
    }
    FormulaSetArchive(proofstate->f_axioms, proofstate->f_ax_archive);
    //printf("Alive (-2)!\n");
+   
    if((neg_conjectures =
        FormulaSetPreprocConjectures(proofstate->f_axioms,
                                     proofstate->f_ax_archive,
@@ -436,8 +437,9 @@ int main(int argc, char* argv[])
    {
       VERBOUT("Negated conjectures.\n");
    }
+   
    //printf("Alive (-1)!\n");
-
+   /*
    if(new_cnf)
    {
       cnf_size = FormulaSetCNF2(proofstate->f_axioms,
@@ -457,7 +459,7 @@ int main(int argc, char* argv[])
                                proofstate->freshvars,
                                proofstate->gc_terms);
    }
-
+   */
    //printf("Alive (0)!\n");
 
    if(cnf_size)
@@ -467,7 +469,7 @@ int main(int argc, char* argv[])
 
    raw_clause_no = proofstate->axioms->members;
    ProofStateLoadWatchlist(proofstate, watchlist_filename, parse_format);
-
+   /*
    if(!no_preproc)
    {
       ClauseSetArchiveCopy(proofstate->ax_archive, proofstate->axioms);
@@ -482,6 +484,7 @@ int main(int argc, char* argv[])
                                             eqdef_incrlimit,
                                             eqdef_maxclauses);
    }
+   */
    //printf("Alive (0.5)!\n");
    proofcontrol = ProofControlAlloc();
    ProofControlInit(proofstate, proofcontrol, h_parms,
@@ -506,6 +509,7 @@ int main(int argc, char* argv[])
    {
       fprintf(GlobalOut, "# Preprocessing time       : %.3f s\n", preproc_time);
    }
+   /*
    if(proofcontrol->heuristic_parms.presat_interreduction)
    {
       LiteralSelectionFun sel_strat =
@@ -522,22 +526,25 @@ int main(int argc, char* argv[])
          ProofStateResetProcessed(proofstate, proofcontrol);
       }
    }
+   */
    PERF_CTR_ENTRY(SatTimer);
-
+   
    if(!success)
    {
-      success = Saturate(proofstate, proofcontrol, step_limit,
+      success = NDSaturate(proofstate, proofcontrol, step_limit,
                          proc_limit, unproc_limit, total_limit,
                          generated_limit, tb_insert_limit, answer_limit);
    }
+   
    PERF_CTR_EXIT(SatTimer);
 
    if(SigHasUnimplementedInterpretedSymbols(proofstate->signature))
    {
       inf_sys_complete = false;
    }
-
+   
    out_of_clauses = ClauseSetEmpty(proofstate->unprocessed);
+   /*
    if(filter_sat)
    {
       filter_success = ProofStateFilterUnprocessed(proofstate,
@@ -549,7 +556,7 @@ int main(int argc, char* argv[])
          PStackPushP(proofstate->extract_roots, success);
       }
    }
-
+   */
    if(success||proofstate->answer_count)
    {
       assert(!PStackEmpty(proofstate->extract_roots));

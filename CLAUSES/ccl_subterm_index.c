@@ -124,6 +124,7 @@ static void subterm_index_insert_set(SubtermIndex_p index,
                                      PTree_p terms, bool restricted)
 {
    PStack_p stack = PTreeTraverseInit(terms);
+   
    PTree_p   cell;
 
    while((cell = PTreeTraverseNext(stack)))

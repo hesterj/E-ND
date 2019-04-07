@@ -153,6 +153,8 @@ ProofState_p ProofStateAlloc(FunctionProperties free_symb_prop)
    VarBankPairShadow(handle->terms->vars, handle->freshvars);
    handle->f_axioms             = FormulaSetAlloc();
    handle->f_ax_archive         = FormulaSetAlloc();
+   handle->unprocessed_formulas = FormulaSetAlloc();
+   handle->processed_formulas   = FormulaSetAlloc();
    handle->ax_archive           = ClauseSetAlloc();
    handle->axioms               = ClauseSetAlloc();
    handle->processed_pos_rules  = ClauseSetAlloc();

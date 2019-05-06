@@ -45,6 +45,8 @@ typedef struct wformula_cell
    struct formula_set_cell* set;      /* Is the formula in a set? */
    struct wformula_cell* pred;        /* For fomula sets = doubly  */
    struct wformula_cell* succ;        /* linked lists */
+   
+   float score;
 }WFormulaCell, *WFormula_p;
 
 

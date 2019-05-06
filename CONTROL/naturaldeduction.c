@@ -81,7 +81,7 @@ void ProofTest(ND_p ndcontrol)
    bool success_2 = NDUnify(ndcontrol,subst,f8->tformula,f7->tformula);
    
    //printf("\nsuccess: %d success2: %d\n",success,success_2);
-   printf("\nsuccess: %d\n",success_2);
+   printf("\nsuccess: %d\n",success);
 
 }
 
@@ -93,11 +93,11 @@ void ProofTest(ND_p ndcontrol)
 
 bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
 {
-	printf("\nAttempting to unify:\n");
-	TermPrint(GlobalOut,s,control->signature,DEREF_NEVER);
-	printf("\n");
-	TermPrint(GlobalOut,t,control->signature,DEREF_NEVER);
-	printf("\n");
+	//printf("\nAttempting to unify:\n");
+	//TermPrint(GlobalOut,s,control->signature,DEREF_NEVER);
+	//printf("\n");
+	//TermPrint(GlobalOut,t,control->signature,DEREF_NEVER);
+	//printf("\n");
 	if (TermIsVar(s))
 	{
 		s = TermCopy(s,control->terms->vars,DEREF_NEVER);
@@ -120,18 +120,18 @@ bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
 				bool temp1 = NDUnify(control, subst, s->args[i],t->args[i]);
 				if (!temp1) 
 				{
-					printf("\ntemp1 fail\n");
+					//printf("\ntemp1 fail\n");
 					return false;
 				}
 			}
 		}
 		else
 		{
-			printf("\nf_code fail\n");
-			printf("\narities: %d %d\n",s->arity,t->arity);
-			TermPrint(GlobalOut,s,control->signature,DEREF_NEVER);
-			printf("\n");
-			TermPrint(GlobalOut,t,control->signature,DEREF_NEVER);
+			//printf("\nf_code fail\n");
+			//printf("\narities: %d %d\n",s->arity,t->arity);
+			//TermPrint(GlobalOut,s,control->signature,DEREF_NEVER);
+			//printf("\n");
+			//TermPrint(GlobalOut,t,control->signature,DEREF_NEVER);
 			//printf("\n%s %s\n",SigFindName(control->signature,s->f_code),SigFindName(control->signature,t->f_code));
 			return false;
 		}
@@ -141,13 +141,13 @@ bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
 		bool temp2 = NDUnify(control,subst,t,s);
 		if (!temp2)
 		{ 
-			printf("\ntemp2 fail\n");
+			//printf("\ntemp2 fail\n");
 			return false;
 		}
 	}
 	else if (TBTermIsSubterm(t,s))
 	{
-		printf("\nsubterm fail\n");
+		//printf("\nsubterm fail\n");
 		return false;
 	}
 	else
@@ -260,11 +260,16 @@ long nd_collect_subterms2(ND_p control, Sig_p sig, Term_p term, PStack_p collect
 void FormulaSetUpdateControlSymbols(ND_p control, FormulaSet_p target)
 {
 	WFormula_p handle = target->anchor->succ;
-	printf("\nLabelling formulas...");
+	printf("\nLabelling formulas... %ld of them\n",target->members);
 	while (handle!= target->anchor)
 	{
+		TFormula_p temporary = TermCopyKeepVars(handle->tformula,DEREF_NEVER);
+		//printf("\nf_code: %ld\n",handle->tformula->f_code);
+		//printf("\nf_code: %%\n",SigFindName(control->signature,handle->tformula->f_code));
+		//printf("\n");
 		//WFormulaPrint(GlobalOut,handle,true);
-		nd_label_symbols(control,handle->tformula);
+		nd_label_symbols(control,temporary);
+		TermFree(temporary);
 		handle = handle->succ;
 	}
 	printf("\nUpdating control symbols...");
@@ -312,6 +317,36 @@ void NDSaturateLoop(ND_p ndcontrol, long loops)
    }
 }
 
+/*  Generate the possible inferences with handle and the generated formulas
+ * 
+ * 
+*/
+
+void NDGenerateAndScoreFormulas(ND_p ndcontrol,WFormula_p handle)
+{
+	//FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_generated);
+	printf("\n");
+	WFormulaPrint(GlobalOut,handle,true);
+	printf("\n");
+	
+	NDAndIntProcess(ndcontrol,ndcontrol->terms,handle);
+	NDOrIntProcess(ndcontrol,ndcontrol->terms,handle);
+	NDImplIntProcess(ndcontrol,ndcontrol->terms,handle);
+	NDNegIntProcess(ndcontrol,ndcontrol->terms,handle);
+	NDUniversalIntProcess(ndcontrol,ndcontrol->terms,handle);
+	NDExistentialIntProcess(ndcontrol,ndcontrol->terms,handle);
+	NDOrElimProcess(ndcontrol,ndcontrol->terms,handle);
+	NDAndElimProcess(ndcontrol,ndcontrol->terms,handle);
+	NDImplElimProcess(ndcontrol,ndcontrol->terms,handle);
+	NDNegElimProcess(ndcontrol,ndcontrol->terms,handle);
+	
+	//printf("\ndumping %ld previous formulas...",ndcontrol->nd_generated->members);
+	//FormulaSetFreeFormulas(ndcontrol->nd_generated);
+	//printf("\ninserting %ld temporary formulas...",ndcontrol->nd_temporary_formulas->members);
+	FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_temporary_formulas);
+	FormulaSetInsertSet(ndcontrol->nd_generated,ndcontrol->nd_temporary_formulas);
+}
+
 /*  Push the elements of source to target, unless they are skip
  * 
  * 
@@ -336,14 +371,22 @@ void pstack_push_skip(PStack_p target, PStack_p source, Term_p skip)
 long nd_label_symbols(ND_p control,Term_p term)
 {
 	Sig_p sig = control->signature;
-	//printf("\nlabelling: ");
+	//printf("\nlabelling\n");
 	//TermPrint(GlobalOut,term,sig,DEREF_NEVER);
-	//printf("\n");
-	
+	//printf("\n%s\n",SigFindName(sig,term->f_code));
+	//printf("\n%ld\n",term->f_code);
+	//printf("\neqn: %ld neqn: %ld\n",sig->eqn_code,sig->neqn_code);
+	//printf("\n%d\n",term->arity);
+	/*
 	if (term->arity == 2 && ((term->args[0]->f_code == SigFindFCode(sig,"$true"))
 				|| (term->args[1]->f_code == SigFindFCode(sig,"$true"))
 				|| (term->args[0]->f_code == SigFindFCode(sig,"$false"))
 				|| (term->args[1]->f_code == SigFindFCode(sig,"$false"))))
+	*/
+	if (term->arity == 2 && ((term->args[0]->f_code == SIG_TRUE_CODE)
+				|| (term->args[1]->f_code == SIG_TRUE_CODE)
+				|| (term->args[0]->f_code == SIG_FALSE_CODE)
+				|| (term->args[1]->f_code == SIG_FALSE_CODE)))
 	{
 		//printf("\nfound a predicate\n");
 		PStackPushInt(control->predicates,term->args[0]->f_code);
@@ -834,12 +877,13 @@ WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p
 long NDAndIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
-	FormulaSet_p target = control->nd_generated;
+	//FormulaSet_p target = control->nd_generated;
+	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
 	long counter = 0;
 	//printf("\nNEW ITERATION\n");
-	while(handle!=target->anchor && counter != 1000)
+	while(handle!=target->anchor)
 	{
 		WFormula_p generated = NDAndIntroduction(control,bank,selected,handle);
 		if (generated)
@@ -861,12 +905,12 @@ long NDAndIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 long NDOrIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
-	FormulaSet_p target = control->nd_generated;
+	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
 	//printf("\nNEW ITERATION\n");
 	long counter = 0;
-	while(handle!=target->anchor && counter!=1000)
+	while(handle!=target->anchor)
 	{
 		WFormula_p generated = NDOrIntroduction(control,bank,selected,handle);
 		if (generated)
@@ -888,12 +932,12 @@ long NDOrIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 long NDImplIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
-	FormulaSet_p target = control->nd_generated;
+	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
 	//printf("\nNEW ITERATION\n");
 	long counter = 0;
-	while(handle!=target->anchor && counter!=1000)
+	while(handle!=target->anchor)
 	{
 		WFormula_p generated = NDImplIntroduction(control,bank,selected,handle);
 		if (generated)
@@ -916,13 +960,13 @@ long NDImplIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 long NDNegIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle,alt_handle;
-	FormulaSet_p target = control->nd_generated;
+	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
 	alt_handle = target->anchor->succ;
 	long counter=0;
 	//printf("\nNEW ITERATION\n");
-	while(handle!=target->anchor && counter!=1000)
+	while(handle!=target->anchor)
 	{
 		while (alt_handle!=target->anchor)
 		{
@@ -1028,7 +1072,7 @@ long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 
 long NDAndElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
-	FormulaSet_p target = control->nd_generated;
+	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	WFormula_p generated0 = NDAndElimination(control,bank,selected,0);
 	WFormula_p generated1 = NDAndElimination(control,bank,selected,1);
@@ -1047,11 +1091,11 @@ long NDOrElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
 	long counter = 0;
-	FormulaSet_p target = control->nd_generated;
+	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
 	//printf("\nNEW ITERATION\n");
-	while(handle!=target->anchor && counter!=1000)
+	while(handle!=target->anchor)
 	{
 		WFormula_p generated = NDOrElimination(control,bank,selected,handle);
 		if (generated)
@@ -1073,12 +1117,12 @@ long NDOrElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
-	FormulaSet_p target = control->nd_generated;
+	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
 	long counter = 0;
 	//printf("\nNEW ITERATION\n");
-	while(handle!=target->anchor && counter!=1000)
+	while(handle!=target->anchor)
 	{
 		WFormula_p generated = NDImplElimination(control,bank,selected,handle);
 		if (generated)
@@ -1122,32 +1166,38 @@ long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 //Check generated set for contradictory formulas
 //Iterates through formulaset, checking the rest to see if they are the negation of handle
 
-bool NDCheckForContradictions(ND_p control, FormulaSet_p formulaset)
+bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
 {
 	TB_p bank = control->terms;
-	WFormula_p handle = formulaset->anchor->succ,res;
-	TFormula_p negated_handle;
-	Subst_p subst = SubstAlloc();
+	WFormula_p handle = formulaset->anchor->succ;
+	WFormula_p res = formulaset->anchor->succ;
+	TFormula_p negated_handle,negated_res;
+	//Subst_p subst = SubstAlloc();
 	while (handle != formulaset->anchor)
 	{
 		negated_handle = TFormulaFCodeAlloc(bank,bank->sig->not_code,handle->tformula,NULL);
-		res = formulaset->anchor->succ;
 		while (res != formulaset->anchor)
 		{
-			if (SubstComputeMgu(negated_handle,handle->tformula,subst))
+			//if (SubstComputeMgu(negated_handle,handle->tformula,subst))
+			Subst_p subst = SubstAlloc();
+			negated_res = TFormulaFCodeAlloc(bank,bank->sig->not_code,res->tformula,NULL);
+			if (NDUnify(control,subst,negated_handle,res->tformula) || 
+				NDUnify(control,subst,negated_res,handle->tformula))
 			{
-				TermFree(negated_handle);
+				//TermFree(negated_handle);
+				SubstFree(subst);
 				return true;
 			}
+			SubstFree(subst);
 			res = res->succ;
 		}
-		TermFree(negated_handle);
+		//TermFree(negated_handle);
 		handle = handle->succ;
 	}
 	return false;
 }
 
-/*  A saturation algorithm for natural deduction calculus
+/*  A test saturation algorithm for natural deduction calculus
  * 
  * 
  * 
@@ -1162,18 +1212,125 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
                   long answer_limit)          
 {
    ND_p ndcontrol = NDAlloc(state);
+   WFormula_p selected = NULL;
+   WFormula_p free_handle = NULL;
+   ND_Derivation_p derivation = NDDerivationAlloc(state,NULL);
    long res = 0;
-   Clause_p unsatisfiable,select = NULL;
-   printf("\ngenerated: %ld\n",ndcontrol->nd_generated->members);
-   FormulaSetInsertSet(ndcontrol->nd_generated,state->f_axioms);
-   FormulaSetPrint(GlobalOut,ndcontrol->nd_generated,true);
-   printf("\ngenerated: %ld\n",ndcontrol->nd_generated->members);
-   //ProofTest(ndcontrol);
-   NDSaturateLoop(ndcontrol,10);  //value larger than 2 causes memory to be used up, and takes long time to label 12 million formulas
-   printf("\nmembers of generated: %ld\n",ndcontrol->nd_generated->members);
+   Clause_p unsatisfiable = NULL;
+   bool success = false;
+   //printf("\neqn: %ld neqn: %ld\n",state->signature->eqn_code,state->signature->neqn_code);
+   //FormulaSetInsertSet(ndcontrol->nd_generated,state->f_axioms);
+   //printf("\n");
+   //FormulaSetPrint(GlobalOut,ndcontrol->nd_generated,true);
+   //printf("\n");
+   //NDSaturateLoop(ndcontrol,1);  //value larger than 2 causes memory to be used up, and takes long time to label 12 million formulas
+   NDPInitializeDerivationGoal(ndcontrol,state->f_axioms);
+   FormulaSetInsertSet(ndcontrol->nd_derivation,state->f_axioms);
+   FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_derivation);
+   selected = NDSelectHighestScoreRandomly(ndcontrol->nd_derivation);
+   bool running = 0;
+   
+   while (success == false)
+   {
+	  printf("\nselecting formulas\n");
+	  if (running)
+	  {
+	      selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);  //nd_generated pointer list is getting fucked up somewhere
+      }
+	  running = 1;
+	  FormulaSetInsert(ndcontrol->nd_derivation,selected);
+	  //printf("\ncopy form\n");
+	  //selected = TermCopyKeepVars(selected,DEREF_NEVER);
+	  //printf("\nfree generated\n");
+	  printf("\ngenerated formulas: %ld\n",ndcontrol->nd_generated->members);
+	  
+	  // NEED TO FREE ND_GENERATED HERE
+	  // FormulaSetFreeFormulas method does not work correctly
+	  
+	  printf("\nprinting: \n");
+	  WFormulaPrint(GlobalOut,selected,true);
+	  printf("\n");
+	  printf("\ngenerating and scoring\n");
+	  NDGenerateAndScoreFormulas(ndcontrol,selected);
+	  printf("\nchecking for contradiction\n");
+	  if (NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_derivation))
+	  {
+		  printf("\nfoun contradiction\n");
+		  success = true;
+	  }
+	  printf("\nchecking for goal reach\n");
+	  if (NDPDerivationGoalIsReached(ndcontrol))
+	  {
+		  printf("\nreached goal\n");
+		  success = true;
+	  }
+   }
+   
+   printf("\nsuccess: %d\n",success);
    FormulaSetFree(ndcontrol->nd_generated);
-   //FormulaSetFree(ndcontrol->nd_temporary_formulas);
+   FormulaSetFree(ndcontrol->nd_temporary_formulas);
    //FormulaSetFree(ndcontrol->derivation);
    return unsatisfiable;
+}
+
+bool NDDerivationGoalIsReached(ND_p control, ND_Derivation_p derivation)
+{
+	WFormula_p handle = derivation->nd_derivation->anchor->succ;
+	while (handle != derivation->nd_derivation->anchor)
+	{
+		Subst_p subst = SubstAlloc();
+		if (NDUnify(control,subst,handle->tformula,derivation->goal->tformula))
+		{
+			return true;
+		}
+		SubstFree(subst);
+		handle = handle->succ;
+	}
+	return false;
+}
+
+void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source)
+{
+	WFormula_p handle = source->anchor->succ;
+	WFormula_p goal = NULL;
+	while(handle!=source->anchor)
+	{
+		if (FormulaQueryType(handle) == CPTypeNegConjecture)
+		{
+			goal = WTFormulaAlloc(input->terms,handle->tformula->args[0]);
+			printf("\nFound goal:\n");
+			WFormulaPrint(GlobalOut,goal,true);
+			break;
+		}
+		if (FormulaQueryType(handle) == CPTypeConjecture)
+		{
+			goal = handle;
+			printf("\nFound goal:\n");
+			WFormulaPrint(GlobalOut,goal,true);
+			break;
+		}
+		handle = handle->succ;
+	}
+	if (!goal)
+	{
+		printf("\nFailed to find a goal!\n");
+	}
+	input->goal = goal;
+}
+
+bool NDPDerivationGoalIsReached(ND_p control)
+{
+	WFormula_p handle = control->nd_derivation->anchor->succ;
+	while (handle != control->nd_derivation->anchor)
+	{
+		Subst_p subst = SubstAlloc();
+		if (NDUnify(control,subst,handle->tformula,control->goal->tformula))
+		{
+			return true;
+		}
+		SubstFree(subst);
+		handle = handle->succ;
+	}
+	return false;
 }
 

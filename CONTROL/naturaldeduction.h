@@ -13,6 +13,7 @@
 #include <cco_interpreted.h>
 #include <ccl_satinterface.h>
 #include <zfc.h>
+#include <nd_derivation.h>
 
 typedef struct ndcell 
 {
@@ -30,6 +31,8 @@ typedef struct ndcell
 	VarBank_p     freshvars;
 	TB_p          terms;
 	Sig_p         signature;
+	
+	WFormula_p goal;
 	
 }NDCell, *ND_p;
 
@@ -68,8 +71,15 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
                   total_limit,  long generated_limit, long tb_insert_limit,
                   long answer_limit);
                   
-bool NDCheckForContradictions(ND_p control, FormulaSet_p formulaset);
+void NDGenerateAndScoreFormulas(ND_p ndcontrol, WFormula_p handle);
+void NDProofSearch(ND_p control,ND_Derivation_p derivation);
+bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset);
 bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t);
+bool NDDerivationCheckForContradictions(ND_Derivation_p derivation);
+bool NDDerivationGoalIsReached(ND_p control,ND_Derivation_p derivation);
+
+void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source);
+bool NDPDerivationGoalIsReached(ND_p control);
                   
 // inline functions
                   

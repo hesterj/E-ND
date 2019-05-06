@@ -76,6 +76,8 @@ WFormula_p DefaultWFormulaAlloc(void)
    handle->set        = NULL;
    handle->pred       = NULL;
    handle->succ       = NULL;
+   
+   handle->score = 0;
 
    return handle;
 }

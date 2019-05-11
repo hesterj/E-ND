@@ -261,7 +261,7 @@ long nd_collect_subterms2(ND_p control, Sig_p sig, Term_p term, PStack_p collect
 void FormulaSetUpdateControlSymbols(ND_p control, FormulaSet_p target)
 {
 	WFormula_p handle = target->anchor->succ;
-	printf("\nLabelling formulas... %ld of them\n",target->members);
+	//printf("\nLabelling formulas... %ld of them\n",target->members);
 	while (handle!= target->anchor)
 	{
 		TFormula_p temporary = TermCopyKeepVars(handle->tformula,DEREF_NEVER);
@@ -273,7 +273,7 @@ void FormulaSetUpdateControlSymbols(ND_p control, FormulaSet_p target)
 		TermFree(temporary);
 		handle = handle->succ;
 	}
-	printf("\nUpdating control symbols...");
+	//printf("\nUpdating control symbols...");
 	UpdateControlSymbols(control);
 }
 
@@ -1236,8 +1236,8 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
    
    while (success == false)
    {
-      printf("\nselecting and scoring\n");
-	  FormulaSetPrint(GlobalOut,ndcontrol->nd_generated,true);
+      //printf("\nselecting and scoring\n");
+	  //FormulaSetPrint(GlobalOut,ndcontrol->nd_generated,true);
 	  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
 	  selected_copy = WFormulaFlatCopy(selected);
 	  FormulaSetInsert(ndcontrol->nd_derivation,selected_copy);
@@ -1249,21 +1249,20 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 	  // NEED TO FREE ND_GENERATED HERE
 	  // FormulaSetFreeFormulas method does not work correctly
 	  
-	  printf("\nprinting: \n");
 	  WFormulaPrint(GlobalOut,selected,true);
-	  printf("\n");
-	  printf("\ngenerating and scoring\n");
+	  //printf("\n");
+	  //printf("\ngenerating and scoring\n");
 	  NDGenerateAndScoreFormulas(ndcontrol,selected);
-	  printf("\nchecking for contradiction\n");
+	  //printf("\nchecking for contradiction\n");
 	  if (NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_derivation))
 	  {
-		  printf("\nfoun contradiction\n");
+		  //printf("\nfoun contradiction\n");
 		  success = true;
 	  }
-	  printf("\nchecking for goal reach\n");
+	  //printf("\nchecking for goal reach\n");
 	  if (NDPDerivationGoalIsReached(ndcontrol))
 	  {
-		  printf("\nreached goal\n");
+		  //printf("\nreached goal\n");
 		  success = true;
 	  }
    }

@@ -169,7 +169,8 @@ static void PStackPrintTerms(ND_p control, PStack_p handle)
 		Term_p term = PStackElementP(handle,i);
 		if (term)
 		{
-			TermPrint(GlobalOut,control->signature,term,DEREF_NEVER);
+			// This term print is bugged
+			//TermPrint(GlobalOut,control->signature,term,DEREF_NEVER);
 		}
 		//TFormulaTPTPPrint(GlobalOut,control->terms,term,true,true);
 	}
@@ -763,7 +764,7 @@ WFormula_p NDImplElimination(ND_p control,TB_p bank, WFormula_p a,WFormula_p b)
 		{
 			return NULL;
 		}
-		if (TermStructEqual(assumption,sequent->tformula->args[0]))
+		if (TermStructEqual(assumption->tformula,sequent->tformula->args[0]))
 		{
 			tform = sequent->tformula->args[1];
 			target = WTFormulaAlloc(bank,tform);
@@ -779,7 +780,7 @@ WFormula_p NDImplElimination(ND_p control,TB_p bank, WFormula_p a,WFormula_p b)
 		{
 			return NULL;
 		}
-		if (TermStructEqual(assumption,sequent->tformula->args[0]))
+		if (TermStructEqual(assumption->tformula,sequent->tformula->args[0]))
 		{
 			tform = sequent->tformula->args[1];
 			target = WTFormulaAlloc(bank,tform);
@@ -994,7 +995,7 @@ long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	if (!selected)
 	{
-		return NULL;
+		return 0;
 	}
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	long res = 0;
@@ -1034,7 +1035,7 @@ long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	if (!selected)
 	{
-		return NULL;
+		return 0;
 	}
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	long res = 0;
@@ -1157,10 +1158,14 @@ long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 
 long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
+	printf("\nunimplemented\n");
+	return 0;
 }
 
 long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
+	printf("\nunimplemented\n");
+	return 0;
 }
 
 //Check generated set for contradictory formulas
@@ -1213,7 +1218,7 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 {
    ND_p ndcontrol = NDAlloc(state);
    WFormula_p selected = NULL;
-   WFormula_p free_handle = NULL;
+   WFormula_p selected_copy = NULL;
    ND_Derivation_p derivation = NDDerivationAlloc(state,NULL);
    long res = 0;
    Clause_p unsatisfiable = NULL;
@@ -1225,20 +1230,17 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
    //printf("\n");
    //NDSaturateLoop(ndcontrol,1);  //value larger than 2 causes memory to be used up, and takes long time to label 12 million formulas
    NDPInitializeDerivationGoal(ndcontrol,state->f_axioms);
-   FormulaSetInsertSet(ndcontrol->nd_derivation,state->f_axioms);
-   FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_derivation);
-   selected = NDSelectHighestScoreRandomly(ndcontrol->nd_derivation);
-   bool running = 0;
+   FormulaSetInsertSet(ndcontrol->nd_generated,state->f_axioms);
+   FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_generated);
+   //selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
    
    while (success == false)
    {
-	  printf("\nselecting formulas\n");
-	  if (running)
-	  {
-	      selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);  //nd_generated pointer list is getting fucked up somewhere
-      }
-	  running = 1;
-	  FormulaSetInsert(ndcontrol->nd_derivation,selected);
+      printf("\nselecting and scoring\n");
+	  FormulaSetPrint(GlobalOut,ndcontrol->nd_generated,true);
+	  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+	  selected_copy = WFormulaFlatCopy(selected);
+	  FormulaSetInsert(ndcontrol->nd_derivation,selected_copy);
 	  //printf("\ncopy form\n");
 	  //selected = TermCopyKeepVars(selected,DEREF_NEVER);
 	  //printf("\nfree generated\n");
@@ -1265,8 +1267,7 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 		  success = true;
 	  }
    }
-   
-   printf("\nsuccess: %d\n",success);
+
    FormulaSetFree(ndcontrol->nd_generated);
    FormulaSetFree(ndcontrol->nd_temporary_formulas);
    //FormulaSetFree(ndcontrol->derivation);

@@ -43,6 +43,7 @@ void NDScoreFormulaSetRandomly(FormulaSet_p input)
 WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input)
 {
 	NDScoreFormulaSetRandomly(input);
+	printf("\nsuccessfully scored.  seleccting highest score\n");
 	WFormula_p handle = input->anchor->succ;
 	WFormula_p res = input->anchor->succ;
 	float maxscore = res->score;

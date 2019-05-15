@@ -14,6 +14,7 @@
 #include <ccl_satinterface.h>
 #include <zfc.h>
 #include <nd_derivation.h>
+#include <time.h>
 
 typedef struct ndcell 
 {
@@ -37,7 +38,11 @@ typedef struct ndcell
 }NDCell, *ND_p;
 
 #define NDCellAlloc() (NDCell*)SizeMalloc(sizeof(NDCell))
+#define NDCellFree(junk) SizeFree(junk, sizeof(NDCell))
 ND_p NDAlloc(ProofState_p initial);
+ND_p NDAllocAssumption(ND_p initial);
+void NDAssumptionFree(ND_p initial);
+void NDFree(ND_p initial);
 
 WFormula_p NDAndIntroduction(ND_p control, TB_p bank, WFormula_p a, WFormula_p b);
 WFormula_p NDOrIntroduction(ND_p control, TB_p bank, WFormula_p a, WFormula_p b);
@@ -72,6 +77,8 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
                   long answer_limit);
                   
 void NDGenerateAndScoreFormulas(ND_p ndcontrol, WFormula_p handle);
+int NDStartNewAssumption(ND_p ndcontrol);
+
 void NDProofSearch(ND_p control,ND_Derivation_p derivation);
 bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset);
 bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t);

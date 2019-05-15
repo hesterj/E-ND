@@ -25,6 +25,10 @@ ND_Derivation_p NDDerivationAlloc(ProofState_p initial, WFormula_p goal)
 void NDScoreFormulaRandomly(WFormula_p input)
 {
 	float score = (float)rand()/(float)(RAND_MAX);
+	//float denom = (float) input->tformula->v_count;
+	//denom += (float) input->tformula->f_count;
+	//score = score/denom;
+	//score = (float)rand()*score;
 	input->score = score;
 }
 
@@ -73,13 +77,18 @@ void NDInitializeDerivationGoal(ND_Derivation_p input, FormulaSet_p source)
 			goal = WTFormulaAlloc(input->terms,handle->tformula->args[0]);
 			printf("\nFound goal:\n");
 			WFormulaPrint(GlobalOut,goal,true);
+			printf("\nExtracting negated conjecture:");
+			FormulaSetExtractEntry(handle);
+			printf("\n");
 			break;
 		}
 		if (FormulaQueryType(handle) == CPTypeConjecture)
 		{
 			goal = handle;
-			printf("\nFound goal:\n");
+			printf("\nFound goal:\n");;
 			WFormulaPrint(GlobalOut,goal,true);
+			printf("\nExtracting conjecture:");
+			FormulaSetExtractEntry(handle);
 			break;
 		}
 		handle = handle->succ;
@@ -87,6 +96,7 @@ void NDInitializeDerivationGoal(ND_Derivation_p input, FormulaSet_p source)
 	if (!goal)
 	{
 		printf("\nFailed to find a goal!\n");
+		exit(0);
 	}
 	input->goal = goal;
 }

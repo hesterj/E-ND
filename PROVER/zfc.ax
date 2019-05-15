@@ -222,5 +222,5 @@ fof(linear_order,axiom,
 */
 % Test Conjecture
 
-fof(test,conjecture,![X]:(member(X,omega)=>member(successor(X),omega))).
+fof(test,conjecture,~(![X]:(member(X,omega)=>member(successor(X),omega)))).
 

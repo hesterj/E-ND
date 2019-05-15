@@ -64,6 +64,7 @@ bool TFormulaIsPropConst(Sig_p sig, TFormula_p form, bool positive);
 
 #define    TFormulaGCMarkCells(bank, form) TBGCMarkTerm((bank),(form))
 TFormula_p TFormulaFCodeAlloc(TB_p bank, FunCode op, TFormula_p arg1, TFormula_p arg2);
+TFormula_p TFormulaFCodeAllocNoShare(TB_p bank, FunCode op, TFormula_p arg1, TFormula_p arg2);
 TFormula_p TFormulaLitAlloc(Eqn_p literal);
 TFormula_p TFormulaPropConstantAlloc(TB_p bank, bool positive);
 TFormula_p TFormulaQuantorAlloc(TB_p bank, FunCode quantor, Term_p var, TFormula_p arg);

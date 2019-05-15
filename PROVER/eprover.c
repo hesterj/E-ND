@@ -426,7 +426,7 @@ int main(int argc, char* argv[])
    {
       proofstate->state_is_complete = false;
    }
-   FormulaSetArchive(proofstate->f_axioms, proofstate->f_ax_archive);
+   //FormulaSetArchive(proofstate->f_axioms, proofstate->f_ax_archive);
    //printf("Alive (-2)!\n");
    
    if((neg_conjectures =
@@ -534,6 +534,15 @@ int main(int argc, char* argv[])
       success = NDSaturate(proofstate, proofcontrol, step_limit,
                          proc_limit, unproc_limit, total_limit,
                          generated_limit, tb_insert_limit, answer_limit);
+      //goto cleanup1;
+      ProofStateFree(proofstate);
+      CLStateFree(state);
+      PStackFree(hcb_definitions);
+      PStackFree(wfcb_definitions);
+      FVIndexParmsFree(fvi_parms);
+      HeuristicParmsFree(h_parms);
+      ProofControlFree(proofcontrol);
+      exit(0);
    }
    
    PERF_CTR_EXIT(SatTimer);

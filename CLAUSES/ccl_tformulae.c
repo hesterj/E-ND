@@ -578,6 +578,38 @@ TFormula_p TFormulaFCodeAlloc(TB_p bank, FunCode op, TFormula_p arg1, TFormula_p
    return res;
 }
 
+// Same as above but no sharing the term in the termbank
+// Good for temporary formulas
+
+TFormula_p TFormulaFCodeAllocNoShare(TB_p bank, FunCode op, TFormula_p arg1, TFormula_p arg2)
+{
+   int arity = SigFindArity(bank->sig, op);
+   TFormula_p res;
+
+   assert(bank);
+   assert((arity == 1) || (arity == 2));
+   assert(EQUIV((arity==2), arg2));
+
+   res = TermTopAlloc(op,arity);
+   res->sort = STBool;
+   if(SigIsPredicate(bank->sig, op))
+   {
+      TermCellSetProp(res, TPPredPos);
+   }
+   if(arity > 0)
+   {
+      res->args[0] = arg1;
+      if(arity > 1)
+      {
+         res->args[1] = arg2;
+      }
+   }
+   //assert(bank);
+   //res = TBTermTopInsert(bank, res);
+
+   return res;
+}
+
 
 /*-----------------------------------------------------------------------
 //

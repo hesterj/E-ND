@@ -65,6 +65,7 @@ WFormula_p   FormulaSetExtractFirst(FormulaSet_p set);
              FormulaSetExtractEntry(form);FormulaSetInsert((set), (form))
 
 void         FormulaSetDeleteEntry(WFormula_p form);
+void FormulaSetCopyFormulas(FormulaSet_p to, FormulaSet_p from); 	
 
 void         FormulaSetPrint(FILE* out, FormulaSet_p set,
                              bool fullterms);

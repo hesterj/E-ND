@@ -3,5 +3,7 @@ fof(goal,axiom, ((![X]:(P(X)&Q(X)))
 =>((![X]:P(X))&(![X]:Q(X))))).
 
 %contradiction for checking to see unification works
-fof(goal2,axiom, ~((![X]:(P(X)&Q(X)))
-=>((![X]:P(X))&(![X]:Q(X))))).
+%fof(goal2,axiom, ~((![X]:(P(X)&Q(X)))
+%=>((![X]:P(X))&(![X]:Q(X))))).
+
+fof(goal3,conjecture, ![X]:P(X)).

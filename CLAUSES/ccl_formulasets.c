@@ -45,6 +45,19 @@ Changes
 /*                         Exported Functions                          */
 /*---------------------------------------------------------------------*/
 
+void FormulaSetCopyFormulas(FormulaSet_p to, FormulaSet_p from)
+{
+   WFormula_p handle = NULL;
+   WFormula_p copy_handle = NULL;
+   handle = from->anchor->succ;
+   while (handle != from->anchor)
+   {
+	   copy_handle = WFormulaFlatCopy(handle);
+	   FormulaSetInsert(to,copy_handle);
+	   handle = handle->succ;
+   }
+}
+
 
 /*-----------------------------------------------------------------------
 //

@@ -12,7 +12,7 @@ long compute_schemas_tform(ProofControl_p control, TB_p bank, OCB_p ocb, Clause_
 	}
 	
 	long numfreevars = 0;
-	long res = 0;
+	//long res = 0;
 	TFormula_p clauseasformula;
 	TFormula_p schemaformula = NULL;
 	PTree_p freevars = NULL;
@@ -41,7 +41,7 @@ long compute_schemas_tform(ProofControl_p control, TB_p bank, OCB_p ocb, Clause_
                         final, bank, state->freshvars);
         
 		//res = WFormulaCNF(schemaaswformula,final,state->terms,state->freshvars);
-		while (tobeevaluated = ClauseSetExtractFirst(final))
+		while ((tobeevaluated = ClauseSetExtractFirst(final)))
 		{
 		  tobeevaluated->properties = CPIsSchema;
 		  ClauseSetInsert(state->tmp_store, tobeevaluated);
@@ -160,7 +160,7 @@ ClauseSet_p tformula_replacement(TB_p bank, ProofState_p state, ClauseSet_p fina
 	
 	WFormula_p schemaaswformula = WTFormulaAlloc(bank,temp8);
 	
-	long res = WFormulaCNF(schemaaswformula,final,state->terms,state->freshvars);
+	WFormulaCNF(schemaaswformula,final,state->terms,state->freshvars);
 	
 	ClauseFree(substitutedclause);
 	WFormulaFree(schemaaswformula);
@@ -212,7 +212,7 @@ Clause_p ClauseMergeVars(Clause_p clause,  TB_p bank, Term_p x, Term_p y)
 WFormula_p FormulaMergeVars(WFormula_p formula,  TB_p bank, Term_p x, Term_p y)
 {
    Subst_p  subst = SubstAlloc();
-   Clause_p new_clause;
+   //Clause_p new_clause;
    WFormula_p new_formula;
    TFormula_p new_tform;
    

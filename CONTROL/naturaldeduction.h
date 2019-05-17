@@ -98,7 +98,7 @@ static __inline__ PStack_p PStackRemoveDuplicatesInt(PStack_p handle);
 static __inline__ PStack_p PStackRemoveDuplicatesTerm(PStack_p handle);
 static __inline__ void PStackPrintFunCodes(ND_p control, PStack_p handle);
 static __inline__ void UpdateControlSymbols(ND_p control);
-static void PStackPrintTerms(ND_p control, PStack_p handle);
+//static void PStackPrintTerms(ND_p control, PStack_p handle);
 
 // remove duplicates in the predicates and function stacks
 

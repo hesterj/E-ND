@@ -360,8 +360,8 @@ int main(int argc, char* argv[])
    CLState_p        state;
    ProofState_p     proofstate;
    ProofControl_p   proofcontrol;
-   Clause_p         success = NULL,
-      filter_success;
+   Clause_p         success = NULL;
+   //   filter_success;
    bool             out_of_clauses;
    char             *finals_state = "exists",
       *sat_status = "Derivation";

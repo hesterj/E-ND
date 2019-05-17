@@ -408,7 +408,7 @@ SysDate pdt_verify_age_constraint(PDTNode_p node)
 // Side Effects    : Changes tree
 //
 /----------------------------------------------------------------------*/
-
+/*
 static long  delete_clause_entries(PTree_p *root, Clause_p clause)
 {
    long        res = 0;
@@ -438,7 +438,7 @@ static long  delete_clause_entries(PTree_p *root, Clause_p clause)
    PStackFree(store);
    return res;
 }
-
+*/
 
 /*-----------------------------------------------------------------------
 //
@@ -985,10 +985,10 @@ void PDTreeInsert(PDTree_p tree, ClausePos_p demod_side)
 
 long PDTreeDelete(PDTree_p tree, Term_p term, Clause_p clause)
 {
-   long res;
-   PStack_p  del_stack = PStackAlloc();
-   Term_p    curr;
-   PDTNode_p node, prev, *next, *del;
+   long res = 0;
+   //PStack_p  del_stack = PStackAlloc();
+   //Term_p    curr;
+   //PDTNode_p node, prev, *next, *del;
 
    assert(tree);
    assert(tree->tree);
@@ -1004,7 +1004,7 @@ long PDTreeDelete(PDTree_p tree, Term_p term, Clause_p clause)
       TBPrintTerm(stdout, clause->literals->bank, term, true);
    }
    printf("\n"); 
-   /*
+   
 
    TermLRTraverseInit(tree->term_stack, term);
    node = tree->tree;
@@ -1059,7 +1059,7 @@ long PDTreeDelete(PDTree_p tree, Term_p term, Clause_p clause)
    }
    PStackFree(del_stack);
    tree->clause_count-=res;
-   /* printf("...removed\n"); */
+    printf("...removed\n"); */
 
    // printf("DSizeConstr %p: %ld\n", tree, pdt_verify_size_constraint(tree->tree));
    // printf("DDateConstr %p: %ld\n", tree, pdt_verify_age_constraint(tree->tree));

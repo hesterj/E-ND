@@ -668,14 +668,32 @@ WFormula_p NDNegIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b,
 	TFormula_p c_tform = c->tformula;
 	TFormula_p a_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,a_tform,NULL);
 	TFormula_p b_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,b_tform,NULL);
-	//TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
-	
+	TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
+	/*
 	if (TFormulaEqual(a_tform,b_neg) || TFormulaEqual(a_neg,b_tform))
 	{
 		TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
 		WFormula_p handle = WTFormulaAlloc(bank,c_neg);
 		return handle;
 	}
+	*/
+	Subst_p subst1 = SubstAlloc();
+	Subst_p subst2 = SubstAlloc();
+	if (NDUnify(control,subst1,a_tform,b_neg) || NDUnify(control,subst2,a_neg,b_tform))
+	{
+		TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
+		WFormula_p handle = WTFormulaAlloc(bank,c_neg);
+		SubstFree(subst1);
+		SubstFree(subst2);
+		//TermTopFree(a_neg);
+		//TermTopFree(b_neg);
+		return handle;
+	}
+	SubstFree(subst1);
+	SubstFree(subst2);
+	//TermTopFree(a_neg);
+	//TermTopFree(b_neg);
+	//TermTopFree(c_neg);
 	
 	return NULL;
 }
@@ -1041,7 +1059,9 @@ long NDImplIntProcess(ND_p control,TB_p bank,WFormula_p selected)
  *  This will need to be introduced differently with assumption trees,
  *  specifically the idea that if a contradiction is found, the negation introduced should be the
  *  negation of the most recent assumption
-*/
+ * 
+ * Need to check that the formula alt_handle is ONLY the most recent nondiscarded assumption in the proof
+*/  
 
 long NDNegIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
@@ -1075,6 +1095,7 @@ long NDNegIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 }
 
 //replace an arbitrary constant with a fresh variable
+// need to adjust this for flagged variables (?)
 
 long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
@@ -1327,11 +1348,15 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
    FormulaSetCopyFormulas(axiom_archive,ndcontrol->nd_generated);
    
    srand(time(0));
+   printf("\n%ld\n",ndcontrol->nd_generated->members);
+   int counter = 0;
    restart:
    
    while (success == false)
    {
+	  counter++;
 	  bool start_new_assumption = rand()%2;
+	  /*
 	  if (start_new_assumption)
 	  {
 		  // assumption status is 0 if assumption attempt is abandoned
@@ -1339,7 +1364,7 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 		  // 2 if goal was reached by lhs of sequent assumption
 		  printf("\nstart new assumption\n");
 		  assumption_status = 0;
-		  assumption_status = NDStartNewAssumption(ndcontrol);
+		  //assumption_status = NDStartNewAssumption(ndcontrol);
 		  printf("\nexit assumption\n");
 		  if (assumption_status == 0)
 		  {
@@ -1356,13 +1381,14 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 			  success = true;
 		  }
 	  }
+	  */
 	  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
 	  selected_copy = WFormulaFlatCopy(selected);
 	  FormulaSetInsert(ndcontrol->nd_derivation,selected_copy);
-	  printf("\ngenerated formulas in main loop: %ld\n",ndcontrol->nd_generated->members);
-	  
+	  //printf("\ngenerated formulas in main loop: %ld\n",ndcontrol->nd_generated->members);
+	  printf("\n");
 	  WFormulaPrint(GlobalOut,selected,true);
-	  printf("\n___generating___\n");
+	  //printf("\n___generating___\n");
 	  NDGenerateAndScoreFormulas(ndcontrol,selected);
 	  if (NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_derivation))
 	  {
@@ -1375,7 +1401,7 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 		  printf("\nreached goal\n");
 		  success = true;
 	  }
-	  if (ndcontrol->nd_derivation->members > 10)
+	  if (ndcontrol->nd_derivation->members > 40)
 	  {
 		  printf("\nmax derivation length\n");
 		  FormulaSetFreeFormulas(ndcontrol->nd_derivation);

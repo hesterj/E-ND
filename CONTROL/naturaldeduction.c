@@ -584,6 +584,7 @@ void NDFree(ND_p initial)
 ND_p NDAllocAssumption(ND_p initial)
 {
 	ND_p handle = NDCellAlloc();
+	handle->last_assumption = NULL;
 	handle->derivation = PStackAlloc();
 	handle->absolutely_flagged_variables = initial->absolutely_flagged_variables;
 	handle->relatively_flagged_variables = initial->relatively_flagged_variables;
@@ -613,6 +614,7 @@ void NDAssumptionFree(ND_p initial)
 	FormulaSetFree(initial->nd_generated);
 	FormulaSetFree(initial->nd_temporary_formulas);
 	NDCellFree(initial);
+	WFormulaFree(initial->last_assumption);
 }
 
 WFormula_p NDAndIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
@@ -1137,6 +1139,9 @@ long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	return res;
 }
 
+//replace the terms of selected with existentially quantified variables
+// need to check that they do not replace terms that are already bound
+
 long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	if (!selected)
@@ -1321,7 +1326,7 @@ bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
  * 
 */
 
-Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
+int NDSaturate(ProofState_p state, ProofControl_p control, long
                   step_limit, long proc_limit, long unproc_limit, long
                   total_limit, long generated_limit, long tb_insert_limit,
                   long answer_limit)          
@@ -1329,11 +1334,6 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
    ND_p ndcontrol = NDAlloc(state);
    WFormula_p selected = NULL;
    WFormula_p selected_copy = NULL;
-   //WFormula_p copy_handle = NULL;
-   //WFormula_p handle = NULL;
-   //ND_Derivation_p derivation = NDDerivationAlloc(state,NULL);
-   //long res = 0;
-   Clause_p unsatisfiable = NULL;
    bool success = false;
    int assumption_status = 0;
    
@@ -1350,6 +1350,7 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
    srand(time(0));
    printf("\n%ld\n",ndcontrol->nd_generated->members);
    int counter = 0;
+   int success_state = 0;
    restart:
    
    while (success == false)
@@ -1364,7 +1365,7 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 		  // 2 if goal was reached by lhs of sequent assumption
 		  printf("\nstart new assumption\n");
 		  assumption_status = 0;
-		  //assumption_status = NDStartNewAssumption(ndcontrol);
+		  assumption_status = NDStartNewAssumption(ndcontrol);
 		  printf("\nexit assumption\n");
 		  if (assumption_status == 0)
 		  {
@@ -1392,13 +1393,15 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 	  NDGenerateAndScoreFormulas(ndcontrol,selected);
 	  if (NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_derivation))
 	  {
-		  printf("\nfound contradiction\n");
+		  //printf("\nfound contradiction\n");
+		  success_state = 1;
 		  success = true;
 	  }
 	  //printf("\nchecking for goal reach\n");
-	  if (NDPDerivationGoalIsReached(ndcontrol))
+	  if ((ndcontrol->goal) && NDPDerivationGoalIsReached(ndcontrol))
 	  {
-		  printf("\nreached goal\n");
+		  //printf("\nreached goal\n");
+		  success_state = 2;
 		  success = true;
 	  }
 	  if (ndcontrol->nd_derivation->members > 40)
@@ -1416,13 +1419,32 @@ Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
 	  }
    }
    
-   printf("\n Here is the derivation the loop succeeded in finding:\n");
-   FormulaSetPrint(GlobalOut,ndcontrol->nd_derivation,true);
+   //printf("\n Here is the derivation the loop succeeded in finding:\n");
+   //FormulaSetPrint(GlobalOut,ndcontrol->nd_derivation,true);
+   switch (success_state)
+   {
+	   case 0:
+	      printf("\nfailure\n");
+	      NDFree(ndcontrol);
+	      FormulaSetFree(axiom_archive);
+	      return 0;
+	      
+	   case 1: 
+	      printf("\ncontradiction\n");
+	      NDFree(ndcontrol);
+	      FormulaSetFree(axiom_archive);
+	      return 1;
+	   case 2:
+	      printf("\nreached goal\n");
+	      NDFree(ndcontrol);
+	      FormulaSetFree(axiom_archive);
+	      return 2;
+   }
    NDFree(ndcontrol);
    FormulaSetFree(axiom_archive);
    //FormulaSetFree(ndcontrol->nd_generated);
    //FormulaSetFree(ndcontrol->nd_temporary_formulas);
-   return unsatisfiable;
+   return 0;
 }
 
 bool NDDerivationGoalIsReached(ND_p control, ND_Derivation_p derivation)
@@ -1444,6 +1466,7 @@ bool NDDerivationGoalIsReached(ND_p control, ND_Derivation_p derivation)
 int NDStartNewAssumption(ND_p ndcontrol)
 {
 	TFormula_p assumption = NULL;
+	WFormula_p assumption_formula = NULL;
 	bool success = false;
 	WFormula_p selected = NULL;
 	WFormula_p selected_copy = NULL;
@@ -1458,7 +1481,12 @@ int NDStartNewAssumption(ND_p ndcontrol)
 									ndcontrol->terms->sig->not_code,
 									ndcontrol->goal->tformula,
 									NULL);
-	assumption_control->goal = WTFormulaAlloc(ndcontrol->terms,assumption);
+	assumption_formula = WTFormulaAlloc(ndcontrol->terms,assumption);
+	FormulaSetInsert(assumption_control->nd_derivation,assumption_formula);
+	assumption_control->last_assumption = assumption_formula;
+	
+	//assumption_control->goal = WTFormulaAlloc(ndcontrol->terms,assumption);
+	assumption_control->goal = ndcontrol->goal;
 	FormulaSetCopyFormulas(assumption_control->nd_generated,ndcontrol->nd_derivation);
 	
 	FormulaSetUpdateControlSymbols(assumption_control,assumption_control->nd_generated);
@@ -1536,6 +1564,12 @@ void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source)
 	{
 		if (FormulaQueryType(handle) == CPTypeNegConjecture)
 		{
+			if (handle->tformula->f_code != input->terms->sig->not_code)
+			{
+				printf("\nnegated conjecture is not a negation, searching for contradiction\n");
+				//goal = handle;
+				break;
+			}
 			goal = WTFormulaAlloc(input->terms,handle->tformula->args[0]);
 			printf("\nFound negated goal:\n");
 			WFormulaPrint(GlobalOut,goal,true);

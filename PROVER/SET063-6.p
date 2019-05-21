@@ -28,8 +28,8 @@ include('Axioms/zfc.ax').
 %--------------------------------------------------------------------------
 cnf(prove_corollary_of_null_class_is_subclass_1,negated_conjecture,
     ( subclass(x,null_class) )).
-/*
-cnf(prove_corollary_of_null_class_is_subclass_2,negated_conjecture,
-    (  x != null_class )).
-*/
+
+%cnf(prove_corollary_of_null_class_is_subclass_2,negated_conjecture,
+%    (  x != null_class )).
+
 %--------------------------------------------------------------------------

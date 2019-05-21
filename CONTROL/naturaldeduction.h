@@ -22,6 +22,8 @@ typedef struct ndcell
 	PStack_p absolutely_flagged_variables;
 	PStack_p relatively_flagged_variables;
 	
+	WFormula_p last_assumption;
+	
 	PStack_p predicates;
 	PStack_p functions;
 	
@@ -71,7 +73,7 @@ long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 
-Clause_p NDSaturate(ProofState_p state, ProofControl_p control, long
+int NDSaturate(ProofState_p state, ProofControl_p control, long
                   step_limit, long proc_limit, long unproc_limit, long
                   total_limit,  long generated_limit, long tb_insert_limit,
                   long answer_limit);

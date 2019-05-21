@@ -528,31 +528,35 @@ int main(int argc, char* argv[])
    }
    */
    PERF_CTR_ENTRY(SatTimer);
-   
+   int int_success = 0;
    if(!success)
    {
-      success = NDSaturate(proofstate, proofcontrol, step_limit,
+      int_success = NDSaturate(proofstate, proofcontrol, step_limit,
                          proc_limit, unproc_limit, total_limit,
                          generated_limit, tb_insert_limit, answer_limit);
       //goto cleanup1;
-      ProofStateFree(proofstate);
+      if (int_success > 0)
+      {
+		  success = true;
+	  }
+      //ProofStateFree(proofstate);
       CLStateFree(state);
       PStackFree(hcb_definitions);
       PStackFree(wfcb_definitions);
       FVIndexParmsFree(fvi_parms);
       HeuristicParmsFree(h_parms);
       ProofControlFree(proofcontrol);
-      exit(0);
+      //exit(0);
    }
    
    PERF_CTR_EXIT(SatTimer);
-
+   /*
    if(SigHasUnimplementedInterpretedSymbols(proofstate->signature))
    {
       inf_sys_complete = false;
    }
-   
-   out_of_clauses = ClauseSetEmpty(proofstate->unprocessed);
+   */
+   //out_of_clauses = ClauseSetEmpty(proofstate->unprocessed);
    /*
    if(filter_sat)
    {
@@ -571,15 +575,25 @@ int main(int argc, char* argv[])
       assert(!PStackEmpty(proofstate->extract_roots));
       if(success)
       {
-         DocClauseQuoteDefault(2, success, "proof");
+         //DocClauseQuoteDefault(2, success, "proof");
       }
       fprintf(GlobalOut, "\n# Proof found!\n");
       if(!proofstate->status_reported)
       {
-         TSTPOUT(GlobalOut, neg_conjectures?"Theorem":"Unsatisfiable");
+         //TSTPOUT(GlobalOut, neg_conjectures?"Theorem":"Unsatisfiable");
+         if (int_success == 2)
+         {
+			 printf("# SZS Status Theorem\n");
+		 }
+		 else
+		 {
+			 printf("# SZS Status Unsatisfiable\n");
+		 }
          proofstate->status_reported = true;
          retval = PROOF_FOUND;
       }
+      //PrintProofObject = NULL;
+      /*
       if(PrintProofObject)
       {
          if(print_full_deriv)
@@ -605,6 +619,7 @@ int main(int argc, char* argv[])
          ProofStateTrain(proofstate, proc_training_data&TSPrintPos,
                          proc_training_data&TSPrintNeg);
       }
+      */
    }
    else if(proofstate->watchlist && ClauseSetEmpty(proofstate->watchlist))
    {
@@ -731,7 +746,7 @@ int main(int argc, char* argv[])
 
    if(success)
    {
-      ClauseFree(success);
+      //ClauseFree(success);
    }
    fflush(GlobalOut);
 
@@ -761,7 +776,7 @@ int main(int argc, char* argv[])
            sizeof(PDArrayCell));
    fprintf(GlobalOut, "# Estimated memory usage: %ld\n",
            ProofStateStorage(proofstate));
-   MemFreeListPrint(GlobalOut);
+   MemFreeListPrint(GlobalOut); 
 #endif
    ProofControlFree(proofcontrol);
 #endif

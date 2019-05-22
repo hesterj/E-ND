@@ -13,6 +13,7 @@
 #include <cco_interpreted.h>
 #include <ccl_satinterface.h>
 #include <zfc.h>
+#include <cio_network.h>
 
 typedef struct derivationcell 
 {
@@ -41,5 +42,7 @@ WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input);
 void NDScoreFormulaRandomly(WFormula_p input);
 void NDScoreFormulaSetRandomly(FormulaSet_p input);
 void NDInitializeDerivationGoal(ND_Derivation_p input, FormulaSet_p source);
+
+WFormula_p NDSelectHighestScoreThroughSocket(FormulaSet_p input, int port);
 
 #endif

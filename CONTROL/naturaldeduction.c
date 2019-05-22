@@ -1383,7 +1383,15 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 		  }
 	  }
 	  */
-	  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+	  
+	  /*  Go through a socket to get the highest score from the scoring server
+	   *  Message sent is the string representation of the formula in ND generated, message received is the corresponding score.  
+	   *  Choose highest score...
+	  */ 
+	  //selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+	  selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,40001);
+	  /*
+	  */
 	  selected_copy = WFormulaFlatCopy(selected);
 	  FormulaSetInsert(ndcontrol->nd_derivation,selected_copy);
 	  //printf("\ngenerated formulas in main loop: %ld\n",ndcontrol->nd_generated->members);

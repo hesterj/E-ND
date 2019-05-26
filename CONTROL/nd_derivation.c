@@ -1,6 +1,6 @@
 
 #include "naturaldeduction.h"
-#include <arpa/inet.h>
+
 
 ND_Derivation_p NDDerivationAlloc(ProofState_p initial, WFormula_p goal)
 {
@@ -102,53 +102,69 @@ void NDInitializeDerivationGoal(ND_Derivation_p input, FormulaSet_p source)
 	input->goal = goal;
 }
 
-/*
- *   This is a skeleton of the idea and doesn't work at this point
- * 
+/*  Send a formula through the socket specified by socketDescriptor, then receive the score
+ *  int MUST be a socketDescriptor
+*/
+
+WFormula_p NDSelectHighestScoreThroughSocket(FormulaSet_p input, int socketDescriptor)
+{
+	char sendBuffer[1000],recvBuffer[1000];
+	WFormula_p handle = input->anchor->succ;
+	WFormula_p selected = input->anchor->succ;
+	float highestscore = 0;
+	
+	sending:
+	while(1)
+	{
+		bzero(&sendBuffer,sizeof(sendBuffer));
+		char *formula = WFormulaPrintString(handle);
+		ssize_t sent = send(socketDescriptor,formula,strlen(formula)+1,0);
+		if (sent > 0)
+		{
+			FREE(formula);
+			break;
+		}
+	}
+
+	while(1)
+	{
+		bzero(&recvBuffer,sizeof(recvBuffer));
+		ssize_t received = recv(socketDescriptor,recvBuffer,sizeof(recvBuffer),0);
+		if (received > 0)
+		{
+			float score = strtod(recvBuffer,0);
+			if (score > highestscore)
+			{
+				selected = handle;
+				highestscore = score;
+			}
+			handle = handle->succ;
+			if (handle == input->anchor)
+			{
+				return selected;
+			}
+			goto sending;
+		}
+	}
+	printf("\nscoring error, returning selected");
+	return selected;
+}
+
+/*  Buffer size could become a problem....
+ *  Long formulas could cause overflow
  * 
 */
 
-WFormula_p NDSelectHighestScoreThroughSocket(FormulaSet_p input, int port)
+char *WFormulaPrintString(WFormula_p input)
 {
-	#define MAX_BUFFER 1024
-	int SERVER_PORT = port;
-	
-	int serverFd, connectionFd;
-	struct sockaddr_in servaddr;
-	char formulabuffer[MAX_BUFFER+1];
-	
-	serverFd = socket(AF_INET,SOCK_STREAM, 0);
-	
-	memset(&servaddr, 0, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servaddr.sin_port = htons(SERVER_PORT);
-	
-	bind ( serverFd,
-		(struct sockaddr *)&servaddr, sizeof(servaddr));
-		
-	listen(serverFd, 5);
-	
-	WFormula_p handle = input->anchor->succ;
-	printf("\nawaiting a connection\n");
-	while(1)
-	{
-		connectionFd = accept(serverFd,
-			(struct sockaddr *)NULL, NULL);
-			
-		if (connectionFd >= 0) 
-		{
-			snprintf(formulabuffer,MAX_BUFFER,"\ntest\n");
-			write(connectionFd,formulabuffer,strlen(formulabuffer) );
-			break;
-			//send the score
-			//await response
-		}
-	}
-	close(connectionFd);
-	
-	printf("\nWingo\n");
-	return (WFormula_p) NULL;
+	char *formulabuffer = malloc(sizeof(char)*1024);
+	FILE *container = fopen("/dev/shm/form.dat","w");
+	WFormulaPrint(container,input,true);
+	fclose(container);
+	container = fopen("/dev/shm/form.dat","r");
+	fgets(formulabuffer,1024,container);
+	fclose(container);
+	return formulabuffer;
 }
 
 

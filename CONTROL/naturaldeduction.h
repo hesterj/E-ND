@@ -15,6 +15,7 @@
 #include <zfc.h>
 #include <nd_derivation.h>
 #include <time.h>
+#include <arpa/inet.h>
 
 typedef struct ndcell 
 {
@@ -38,6 +39,13 @@ typedef struct ndcell
 	WFormula_p goal;
 	
 }NDCell, *ND_p;
+
+/*
+typedef struct connectioncell
+{
+	
+}
+*/
 
 #define NDCellAlloc() (NDCell*)SizeMalloc(sizeof(NDCell))
 #define NDCellFree(junk) SizeFree(junk, sizeof(NDCell))

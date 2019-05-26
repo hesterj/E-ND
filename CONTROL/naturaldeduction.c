@@ -1337,6 +1337,25 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    bool success = false;
    int assumption_status = 0;
    
+   /*  Initialize connection to Scoring Server
+   */  
+   
+   	int socketDescriptor;
+	struct sockaddr_in serverAddress;
+
+	bzero(&serverAddress,sizeof(serverAddress));
+
+	serverAddress.sin_family=AF_INET;
+	serverAddress.sin_addr.s_addr=inet_addr("127.0.0.1");
+	serverAddress.sin_port=htons(5500);
+
+	socketDescriptor=socket(AF_INET,SOCK_STREAM,0);
+	
+	connect(socketDescriptor,(struct sockaddr*)&serverAddress,sizeof(serverAddress));
+   
+   /*  Initialize the proof state
+   */
+   
    FormulaSet_p axiom_archive = FormulaSetAlloc();
    
    //FormulaSetInsertSet(ndcontrol->nd_generated,state->f_axioms);
@@ -1351,6 +1370,10 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    printf("\n%ld\n",ndcontrol->nd_generated->members);
    int counter = 0;
    int success_state = 0;
+   
+   /*  Begin Proof Search
+   */
+   
    restart:
    
    while (success == false)
@@ -1389,7 +1412,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	   *  Choose highest score...
 	  */ 
 	  //selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
-	  selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,40001);
+	  selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
 	  /*
 	  */
 	  selected_copy = WFormulaFlatCopy(selected);

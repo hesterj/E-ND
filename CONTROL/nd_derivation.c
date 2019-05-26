@@ -162,7 +162,11 @@ char *WFormulaPrintString(WFormula_p input)
 	WFormulaPrint(container,input,true);
 	fclose(container);
 	container = fopen("/dev/shm/form.dat","r");
-	fgets(formulabuffer,1024,container);
+	char *ptr = fgets(formulabuffer,1024,container);
+	if (!ptr)
+	{
+		printf("WFormulaPrintString Error\n");
+	}
 	fclose(container);
 	return formulabuffer;
 }

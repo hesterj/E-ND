@@ -360,7 +360,7 @@ int main(int argc, char* argv[])
    CLState_p        state;
    ProofState_p     proofstate;
    ProofControl_p   proofcontrol;
-   Clause_p         success = NULL;
+   int         success = 0;
    //   filter_success;
    bool             out_of_clauses;
    char             *finals_state = "exists",
@@ -537,7 +537,7 @@ int main(int argc, char* argv[])
       //goto cleanup1;
       if (int_success > 0)
       {
-		  success = true;
+		  success = 1;
 	  }
       //ProofStateFree(proofstate);
       CLStateFree(state);
@@ -735,7 +735,7 @@ int main(int argc, char* argv[])
       if(success)
       {
          fprintf(GlobalOut, "# Saturated system contains the empty clause:\n");
-         ClausePrint(GlobalOut, success, true);
+         //ClausePrint(GlobalOut, success, true);
          fputc('\n',GlobalOut);
          fputc('\n',GlobalOut);
       }

@@ -670,7 +670,7 @@ WFormula_p NDNegIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b,
 	TFormula_p c_tform = c->tformula;
 	TFormula_p a_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,a_tform,NULL);
 	TFormula_p b_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,b_tform,NULL);
-	TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
+	//TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
 	/*
 	if (TFormulaEqual(a_tform,b_neg) || TFormulaEqual(a_neg,b_tform))
 	{
@@ -1335,7 +1335,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    WFormula_p selected = NULL;
    WFormula_p selected_copy = NULL;
    bool success = false;
-   int assumption_status = 0;
+   //int assumption_status = 0;
    
    /*  Initialize connection to Scoring Server
    */  
@@ -1379,7 +1379,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    while (success == false)
    {
 	  counter++;
-	  bool start_new_assumption = rand()%2;
+	  //bool start_new_assumption = rand()%2;
 	  /*
 	  if (start_new_assumption)
 	  {

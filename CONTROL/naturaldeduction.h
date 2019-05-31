@@ -87,7 +87,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
                   long answer_limit);
                   
 void NDGenerateAndScoreFormulas(ND_p ndcontrol, WFormula_p handle);
-int NDStartNewAssumption(ND_p ndcontrol);
+int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor);
 
 void NDProofSearch(ND_p control,ND_Derivation_p derivation);
 bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset);
@@ -97,6 +97,17 @@ bool NDDerivationGoalIsReached(ND_p control,ND_Derivation_p derivation);
 
 void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source);
 bool NDPDerivationGoalIsReached(ND_p control);
+
+void pstack_push_skip(PStack_p target, PStack_p source, Term_p skip);
+long nd_term_collect_subterms(Sig_p sig, Term_p term, PStack_p collector);
+long nd_collect_subterms(ND_p control, Sig_p sig, Term_p term, PStack_p collector);
+long nd_collect_subterms2(ND_p control, Sig_p sig, Term_p term, PStack_p collector);
+long nd_label_symbols(ND_p control,Term_p term);
+void NDSaturateLoop(ND_p ndcontrol, long loops);
+void ProofTest(ND_p ndcontrol);
+void ContradictionTest(ND_p ndcontrol);
+
+void NDResetState(ND_p ndcontrol);
                   
 // inline functions
                   
@@ -117,8 +128,6 @@ static __inline__ void UpdateControlSymbols(ND_p control)
 {
    PStack_p predicates_duplicates_removed = PStackRemoveDuplicatesInt(control->predicates);
    PStack_p functions_duplicates_removed = PStackRemoveDuplicatesInt(control->functions);
-   PStackFree(control->predicates);
-   PStackFree(control->functions);
    control->predicates = predicates_duplicates_removed;
    control->functions = functions_duplicates_removed;
 }
@@ -182,6 +191,7 @@ static __inline__ PStack_p PStackRemoveDuplicatesInt(PStack_p handle)
 			PStackPushInt(res,PStackElementInt(handle,i));
 		}
 	}
+	PStackFree(handle);
 	return res;
 }
 

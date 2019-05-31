@@ -4,15 +4,6 @@
  * 
 */
 
-void pstack_push_skip(PStack_p target, PStack_p source, Term_p skip);
-long nd_term_collect_subterms(Sig_p sig, Term_p term, PStack_p collector);
-long nd_collect_subterms(ND_p control, Sig_p sig, Term_p term, PStack_p collector);
-long nd_collect_subterms2(ND_p control, Sig_p sig, Term_p term, PStack_p collector);
-long nd_label_symbols(ND_p control,Term_p term);
-void NDSaturateLoop(ND_p ndcontrol, long loops);
-void ProofTest(ND_p ndcontrol);
-void ContradictionTest(ND_p ndcontrol);
-
 /*  Internal functions
  * 
  * 
@@ -369,7 +360,7 @@ void NDGenerateAndScoreFormulasSkeleton(ND_p ndcontrol,WFormula_p handle)
 	if (ndcontrol->nd_temporary_formulas->members == 0)
 	{
 		printf("\nno generated formulas\n");
-		return;
+		exit(0);
 	}
 	FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_temporary_formulas);
 	FormulaSetInsertSet(ndcontrol->nd_generated,ndcontrol->nd_temporary_formulas);
@@ -607,14 +598,14 @@ void NDAssumptionFree(ND_p initial)
 	FormulaSetFreeFormulas(initial->nd_derivation);
 	FormulaSetFreeFormulas(initial->nd_generated);
 	FormulaSetFreeFormulas(initial->nd_temporary_formulas);
-	WFormulaFree(initial->goal);
+	//WFormulaFree(initial->goal);
 	PStackFree(initial->predicates);
 	PStackFree(initial->functions);
 	FormulaSetFree(initial->nd_derivation);
 	FormulaSetFree(initial->nd_generated);
 	FormulaSetFree(initial->nd_temporary_formulas);
 	NDCellFree(initial);
-	WFormulaFree(initial->last_assumption);
+	//WFormulaFree(initial->last_assumption);
 }
 
 WFormula_p NDAndIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
@@ -635,6 +626,12 @@ WFormula_p NDOrIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
 	TFormula_p a_tform = a->tformula;
 	TFormula_p b_tform = b->tformula;
 	TFormula_p a_or_b = TFormulaFCodeAlloc(bank,bank->sig->or_code,a_tform,b_tform);
+	/*
+	printf("\nor introduction\n");
+	WFormulaPrint(GlobalOut,a,true);
+	printf("\n");
+	WFormulaPrint(GlobalOut,b,true);
+	*/
 	WFormula_p handle = WTFormulaAlloc(bank,a_or_b);
 	return handle;
 }
@@ -691,6 +688,8 @@ WFormula_p NDNegIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b,
 		//TermTopFree(b_neg);
 		return handle;
 	}
+	SubstBacktrack(subst1);
+	SubstBacktrack(subst2);
 	SubstFree(subst1);
 	SubstFree(subst2);
 	//TermTopFree(a_neg);
@@ -1370,7 +1369,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    printf("\n%ld\n",ndcontrol->nd_generated->members);
    int counter = 0;
    int success_state = 0;
-   
+   int assumptioncounter = 0;
    /*  Begin Proof Search
    */
    
@@ -1379,16 +1378,17 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    while (success == false)
    {
 	  counter++;
-	  //bool start_new_assumption = rand()%2;
-	  /*
-	  if (start_new_assumption)
+	  int start_new_assumption = rand()%6;  // 1/6 chance of starting new assumption
+	  
+	  if (start_new_assumption == 0)
 	  {
 		  // assumption status is 0 if assumption attempt is abandoned
 		  // 1 if contradiction found
 		  // 2 if goal was reached by lhs of sequent assumption
 		  printf("\nstart new assumption\n");
-		  assumption_status = 0;
-		  assumption_status = NDStartNewAssumption(ndcontrol);
+		  int assumption_status = 0;
+		  assumption_status = NDStartNewAssumption(ndcontrol,socketDescriptor);
+		  assumptioncounter++;
 		  printf("\nexit assumption\n");
 		  if (assumption_status == 0)
 		  {
@@ -1404,15 +1404,19 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 			  printf("\nreached goal in assumption\n");
 			  success = true;
 		  }
+		  if (assumptioncounter == 3)
+		  {
+			exit(0);
+		  }
 	  }
-	  */
+	  
 	  
 	  /*  Go through a socket to get the highest score from the scoring server
 	   *  Message sent is the string representation of the formula in ND generated, message received is the corresponding score.  
 	   *  Choose highest score...
 	  */ 
-	  //selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
-	  selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
+	  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+	  //selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
 	  /*
 	  */
 	  selected_copy = WFormulaFlatCopy(selected);
@@ -1438,14 +1442,9 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  if (ndcontrol->nd_derivation->members > 40)
 	  {
 		  printf("\nmax derivation length\n");
-		  FormulaSetFreeFormulas(ndcontrol->nd_derivation);
-		  FormulaSetFreeFormulas(ndcontrol->nd_generated);
+		  NDResetState(ndcontrol);
 		  FormulaSetCopyFormulas(ndcontrol->nd_generated,axiom_archive);
-		  VarBankResetVCounts(ndcontrol->terms->vars);
-		  VarBankResetVCounts(ndcontrol->freshvars);
-		  
 		  FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
-		  //break; //
 		  goto restart;
 	  }
    }
@@ -1494,7 +1493,7 @@ bool NDDerivationGoalIsReached(ND_p control, ND_Derivation_p derivation)
 	return false;
 }
 
-int NDStartNewAssumption(ND_p ndcontrol)
+int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 {
 	TFormula_p assumption = NULL;
 	WFormula_p assumption_formula = NULL;
@@ -1508,19 +1507,25 @@ int NDStartNewAssumption(ND_p ndcontrol)
 	// possible assumptions: negation of parent's goal, if goal is an implication 
 	// can choose left hand side of implication
 	
-	assumption = TFormulaFCodeAlloc(ndcontrol->terms,
-									ndcontrol->terms->sig->not_code,
-									ndcontrol->goal->tformula,
-									NULL);
-	assumption_formula = WTFormulaAlloc(ndcontrol->terms,assumption);
-	FormulaSetInsert(assumption_control->nd_derivation,assumption_formula);
-	assumption_control->last_assumption = assumption_formula;
+	if (ndcontrol->goal)  // if we are searching for contradiction there is no goal
+	{
+		assumption_control->goal = ndcontrol->goal;
+		assumption = TFormulaFCodeAlloc(assumption_control->terms,
+										assumption_control->terms->sig->not_code,
+										assumption_control->goal->tformula,
+										NULL);
+		assumption_formula = WTFormulaAlloc(assumption_control->terms,assumption);
+		
+		
+		printf("\nassumption_formula:\n");
+		WFormulaPrint(GlobalOut,assumption_formula,true);
+		
+		FormulaSetInsert(assumption_control->nd_derivation,assumption_formula);
+		assumption_control->last_assumption = assumption_formula;
+	}
 	
-	//assumption_control->goal = WTFormulaAlloc(ndcontrol->terms,assumption);
-	assumption_control->goal = ndcontrol->goal;
+	//add the previous steps to our assumption branch
 	FormulaSetCopyFormulas(assumption_control->nd_generated,ndcontrol->nd_derivation);
-	
-	FormulaSetUpdateControlSymbols(assumption_control,assumption_control->nd_generated);
 	
 	//check to see that we have something to select from
 	if (assumption_control->nd_generated->members == 0)
@@ -1541,45 +1546,68 @@ int NDStartNewAssumption(ND_p ndcontrol)
 		}
 		// engage in new derivation beginning with assumption of first step
 		// reuse much from the main loop
-		/*
-		bool start_new_assumption = rand()%2;
-		if (start_new_assumption)
+		int start_new_assumption = rand()%6;  // 1/6 chance of starting new assumption
+	    /*
+		if (start_new_assumption == 0)
 		{
-		  // assumption status is 0 if assumption attempt is abandoned
-		  // 1 if contradiction found
-		  // 2 if goal was reached by lhs of sequent assumption
-		  printf("\nstart new assumption\n");
-		  int assumption_status = NDStartNewAssumption(ndcontrol);
+			// assumption status is 0 if assumption attempt is abandoned
+			// 1 if contradiction found
+			// 2 if goal was reached by lhs of sequent assumption
+			printf("start new assumption\n");
+			int assumption_status = 0;
+			assumption_status = NDStartNewAssumption(ndcontrol,socketDescriptor);
+			//printf("\nexit assumption\n");
+			if (assumption_status == 0)
+			{
+				printf("no assumption success\n");
+			}
+			if (assumption_status == 1)
+			{
+				printf("\nproof by contradiction\n");
+				success = true;
+			}
+			if (assumption_status == 2)
+			{
+				printf("\nreached goal in assumption\n");
+				success = true;
+			}
 		}
 		*/
-
+		//selected = NULL;
 		selected = NDSelectHighestScoreRandomly(assumption_control->nd_generated);
+		if (!selected)
+		{
+			printf("NULL selected in assumption");
+			break;
+		}
+		//selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
 		selected_copy = WFormulaFlatCopy(selected);
 		FormulaSetInsert(assumption_control->nd_derivation,selected_copy);
-		printf("\ngenerated formulas in assumption: %ld\n",assumption_control->nd_generated->members);
-
+		printf("\n");
 		WFormulaPrint(GlobalOut,selected,true);
 		NDGenerateAndScoreFormulasSkeleton(assumption_control,selected);
-		//exit(0);
+		
 		if (NDFormulaSetCheckForContradictions(assumption_control,assumption_control->nd_derivation))
 		{
 			printf("\nAssumption led to contradiction\n");
 			success = true;
 			return_state = 1;
 		}
-		if (NDPDerivationGoalIsReached(assumption_control))
+		if ((ndcontrol->goal) && NDPDerivationGoalIsReached(assumption_control))
 		{
 			printf("\nreached goal of assumption\n");
 			success = true;
 			return_state = 2;
 		}
-		if (assumption_control->nd_derivation->members > 20)
+		if (assumption_control->nd_derivation->members > 50)
 		{
+			printf("\nexcess derivation size: %ld\n",assumption_control->nd_derivation->members);
 			break;
 		}
 	}
 	NDAssumptionFree(assumption_control);
 	printf("\nsurface\n");
+	//exit(0);
 	// change ndcontrol appropriately
 	// 1) if we obtained a contradiction, add the negation of the assumption to the parent derivation
 	// 2) if we obtained the goal, set our assumption as the new goal of parent
@@ -1661,4 +1689,12 @@ void ContradictionTest(ND_p ndcontrol)
 	printf("\n");
 	bool contra = NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_generated);
 	printf("\n%d\n",contra);
+}
+
+void NDResetState(ND_p ndcontrol)
+{
+	  FormulaSetFreeFormulas(ndcontrol->nd_derivation);
+	  FormulaSetFreeFormulas(ndcontrol->nd_generated);
+	  VarBankResetVCounts(ndcontrol->terms->vars);
+	  VarBankResetVCounts(ndcontrol->freshvars);
 }

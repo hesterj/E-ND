@@ -576,7 +576,7 @@ ND_p NDAllocAssumption(ND_p initial)
 {
 	ND_p handle = NDCellAlloc();
 	handle->last_assumption = NULL;
-	handle->derivation = PStackAlloc();
+	handle->derivation = PStackAlloc();  // leaking?
 	handle->absolutely_flagged_variables = initial->absolutely_flagged_variables;
 	handle->relatively_flagged_variables = initial->relatively_flagged_variables;
 	handle->predicates = PStackAlloc();
@@ -595,10 +595,11 @@ ND_p NDAllocAssumption(ND_p initial)
 
 void NDAssumptionFree(ND_p initial)
 {
-	FormulaSetFreeFormulas(initial->nd_derivation);
-	FormulaSetFreeFormulas(initial->nd_generated);
-	FormulaSetFreeFormulas(initial->nd_temporary_formulas);
+	//FormulaSetFreeFormulas(initial->nd_derivation);
+	//FormulaSetFreeFormulas(initial->nd_generated);
+	//FormulaSetFreeFormulas(initial->nd_temporary_formulas);
 	//WFormulaFree(initial->goal);
+	PStackFree(initial->derivation);
 	PStackFree(initial->predicates);
 	PStackFree(initial->functions);
 	FormulaSetFree(initial->nd_derivation);
@@ -676,22 +677,20 @@ WFormula_p NDNegIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b,
 		return handle;
 	}
 	*/
-	Subst_p subst1 = SubstAlloc();
-	Subst_p subst2 = SubstAlloc();
+	Subst_p subst1 = SubstAlloc();  // leaking??
+	Subst_p subst2 = SubstAlloc();  // leaking??
 	if (NDUnify(control,subst1,a_tform,b_neg) || NDUnify(control,subst2,a_neg,b_tform))
 	{
 		TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
 		WFormula_p handle = WTFormulaAlloc(bank,c_neg);
-		SubstFree(subst1);
-		SubstFree(subst2);
+		SubstDelete(subst1);
+		SubstDelete(subst2);
 		//TermTopFree(a_neg);
 		//TermTopFree(b_neg);
 		return handle;
 	}
-	SubstBacktrack(subst1);
-	SubstBacktrack(subst2);
-	SubstFree(subst1);
-	SubstFree(subst2);
+	SubstDelete(subst1);
+	SubstDelete(subst2);
 	//TermTopFree(a_neg);
 	//TermTopFree(b_neg);
 	//TermTopFree(c_neg);
@@ -1369,7 +1368,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    printf("\n%ld\n",ndcontrol->nd_generated->members);
    int counter = 0;
    int success_state = 0;
-   int assumptioncounter = 0;
+   //int assumptioncounter = 0;
    /*  Begin Proof Search
    */
    
@@ -1388,7 +1387,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 		  printf("\nstart new assumption\n");
 		  int assumption_status = 0;
 		  assumption_status = NDStartNewAssumption(ndcontrol,socketDescriptor);
-		  assumptioncounter++;
+		  //assumptioncounter++;
 		  printf("\nexit assumption\n");
 		  if (assumption_status == 0)
 		  {
@@ -1404,10 +1403,12 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 			  printf("\nreached goal in assumption\n");
 			  success = true;
 		  }
+		  /*
 		  if (assumptioncounter == 3)
 		  {
 			exit(0);
 		  }
+		  */
 	  }
 	  
 	  
@@ -1547,7 +1548,7 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 		// engage in new derivation beginning with assumption of first step
 		// reuse much from the main loop
 		int start_new_assumption = rand()%6;  // 1/6 chance of starting new assumption
-	    /*
+	    
 		if (start_new_assumption == 0)
 		{
 			// assumption status is 0 if assumption attempt is abandoned
@@ -1572,7 +1573,7 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 				success = true;
 			}
 		}
-		*/
+		
 		//selected = NULL;
 		selected = NDSelectHighestScoreRandomly(assumption_control->nd_generated);
 		if (!selected)

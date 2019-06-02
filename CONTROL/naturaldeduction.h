@@ -80,6 +80,7 @@ long NDAndElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected);
+long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 
 int NDSaturate(ProofState_p state, ProofControl_p control, long
                   step_limit, long proc_limit, long unproc_limit, long

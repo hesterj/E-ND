@@ -83,11 +83,6 @@ void ProofTest(ND_p ndcontrol)
 
 bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
 {
-	//printf("\nAttempting to unify:\n");
-	//TermPrint(GlobalOut,s,control->signature,DEREF_NEVER);
-	//printf("\n");
-	//TermPrint(GlobalOut,t,control->signature,DEREF_NEVER);
-	//printf("\n");
 	if (TermIsVar(s))
 	{
 		s = TermCopy(s,control->terms->vars,DEREF_NEVER);
@@ -117,12 +112,6 @@ bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
 		}
 		else
 		{
-			//printf("\nf_code fail\n");
-			//printf("\narities: %d %d\n",s->arity,t->arity);
-			//TermPrint(GlobalOut,s,control->signature,DEREF_NEVER);
-			//printf("\n");
-			//TermPrint(GlobalOut,t,control->signature,DEREF_NEVER);
-			//printf("\n%s %s\n",SigFindName(control->signature,s->f_code),SigFindName(control->signature,t->f_code));
 			return false;
 		}
 	}
@@ -147,25 +136,6 @@ bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
 	return true;
 }
 
-
-// Print the term pointers contained in handle
-/*
-static void PStackPrintTerms(ND_p control, PStack_p handle)
-{
-	PStackPointer i;
-	for(i=0; i<PStackGetSP(handle); i++)
-	{
-		printf("\n");
-		Term_p term = PStackElementP(handle,i);
-		if (term)
-		{
-			// This term print is bugged
-			//TermPrint(GlobalOut,control->signature,term,DEREF_NEVER);
-		}
-		//TFormulaTPTPPrint(GlobalOut,control->terms,term,true,true);
-	}
-}
-*/
 /*  Collect subterms using the style of the nd_label method, reducing the number
  *  of formulas that need to be labelled.
  *  
@@ -328,6 +298,8 @@ void NDGenerateAndScoreFormulas(ND_p ndcontrol,WFormula_p handle)
 	NDAndElimProcess(ndcontrol,ndcontrol->terms,handle);
 	NDImplElimProcess(ndcontrol,ndcontrol->terms,handle);
 	NDNegElimProcess(ndcontrol,ndcontrol->terms,handle);
+	NDUniversalElimProcess(ndcontrol,ndcontrol->terms,handle);
+	NDExistentialElimProcess(ndcontrol,ndcontrol->terms,handle);
 	
 	//printf("\ndumping %ld previous formulas...",ndcontrol->nd_generated->members);
 	//FormulaSetFreeFormulas(ndcontrol->nd_generated);
@@ -338,10 +310,6 @@ void NDGenerateAndScoreFormulas(ND_p ndcontrol,WFormula_p handle)
 
 void NDGenerateAndScoreFormulasSkeleton(ND_p ndcontrol,WFormula_p handle)
 {
-	//FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_generated);
-	//printf("\n");
-	//WFormulaPrint(GlobalOut,handle,true);
-	//printf("\n");
 	
 	NDAndIntProcess(ndcontrol,ndcontrol->terms,handle);
 	NDOrIntProcess(ndcontrol,ndcontrol->terms,handle);
@@ -353,6 +321,8 @@ void NDGenerateAndScoreFormulasSkeleton(ND_p ndcontrol,WFormula_p handle)
 	NDAndElimProcess(ndcontrol,ndcontrol->terms,handle);
 	NDImplElimProcess(ndcontrol,ndcontrol->terms,handle);
 	NDNegElimProcess(ndcontrol,ndcontrol->terms,handle);
+	NDUniversalElimProcess(ndcontrol,ndcontrol->terms,handle);
+	NDExistentialElimProcess(ndcontrol,ndcontrol->terms,handle);
 	
 	//printf("\ndumping %ld previous formulas...",ndcontrol->nd_generated->members);
 	//FormulaSetFreeFormulas(ndcontrol->nd_generated);
@@ -390,18 +360,7 @@ void pstack_push_skip(PStack_p target, PStack_p source, Term_p skip)
 long nd_label_symbols(ND_p control,Term_p term)
 {
 	Sig_p sig = control->signature;
-	//printf("\nlabelling\n");
-	//TermPrint(GlobalOut,term,sig,DEREF_NEVER);
-	//printf("\n%s\n",SigFindName(sig,term->f_code));
-	//printf("\n%ld\n",term->f_code);
-	//printf("\neqn: %ld neqn: %ld\n",sig->eqn_code,sig->neqn_code);
-	//printf("\n%d\n",term->arity);
-	/*
-	if (term->arity == 2 && ((term->args[0]->f_code == SigFindFCode(sig,"$true"))
-				|| (term->args[1]->f_code == SigFindFCode(sig,"$true"))
-				|| (term->args[0]->f_code == SigFindFCode(sig,"$false"))
-				|| (term->args[1]->f_code == SigFindFCode(sig,"$false"))))
-	*/
+
 	if (term->arity == 2 && ((term->args[0]->f_code == SIG_TRUE_CODE)
 				|| (term->args[1]->f_code == SIG_TRUE_CODE)
 				|| (term->args[0]->f_code == SIG_FALSE_CODE)
@@ -482,55 +441,6 @@ long nd_collect_subterms(ND_p control, Sig_p sig, Term_p term, PStack_p collecto
 	}
 	return res;
 }
-/*
-long nd_term_collect_subterms(Sig_p sig, Term_p term, PStack_p collector)
-{
-   long res = 0;
-   int i;
-   if (TermIsVar(term) || TermIsConst(term) || (term->arity == 0))
-   {
-	   PStackPushP(collector,term);
-	   res += 1;
-   }
-   else if (SigIsFunction(sig,term->f_code))
-   {
-	   PStackPushP(collector,term);
-	   res += 1;
-	   for (i=0; i<term->arity; i++)
-	   {
-		   PStackPushP(collector,term->args[i]);
-		   res += 1;
-		   res += nd_term_collect_subterms(sig,term->args[i],collector);
-	   }
-   }
-   else if (SigIsPredicate(sig,term->f_code) || (term->f_code == sig->eqn_code)
-											 || (term->f_code == sig->qall_code)
-											 || (term->f_code == sig->qex_code)
-											 || (term->f_code == sig->impl_code)
-											 || (term->f_code == sig->equiv_code)
-											 || (term->f_code == sig->and_code)
-											 || (term->f_code == sig->neqn_code)
-											 || (term->f_code == sig->or_code)
-											 || (term->f_code == sig->not_code))
-   {
-	   if (term->f_code == member)
-	   {
-		   for (i=0; i<term->arity; i++)
-		   {
-			   PStackPushP(collector,term->args[i]);
-			   res += 1;
-			   res += nd_term_collect_subterms(sig,term->args[i],collector);
-		   }
-	   }
-	   for (i=0; i<term->arity; i++)
-	   {
-		   res += nd_term_collect_subterms(sig,term->args[i],collector);
-	   }
-   }
-   return res;
-}
-*/
-
 
 /*  Externally declared functions
  *  
@@ -627,12 +537,6 @@ WFormula_p NDOrIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
 	TFormula_p a_tform = a->tformula;
 	TFormula_p b_tform = b->tformula;
 	TFormula_p a_or_b = TFormulaFCodeAlloc(bank,bank->sig->or_code,a_tform,b_tform);
-	/*
-	printf("\nor introduction\n");
-	WFormulaPrint(GlobalOut,a,true);
-	printf("\n");
-	WFormulaPrint(GlobalOut,b,true);
-	*/
 	WFormula_p handle = WTFormulaAlloc(bank,a_or_b);
 	return handle;
 }
@@ -668,34 +572,20 @@ WFormula_p NDNegIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b,
 	TFormula_p c_tform = c->tformula;
 	TFormula_p a_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,a_tform,NULL);
 	TFormula_p b_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,b_tform,NULL);
-	//TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
-	/*
-	if (TFormulaEqual(a_tform,b_neg) || TFormulaEqual(a_neg,b_tform))
-	{
-		TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
-		WFormula_p handle = WTFormulaAlloc(bank,c_neg);
-		return handle;
-	}
-	*/
+
+	WFormula_p handle = NULL;
+	
 	Subst_p subst1 = SubstAlloc();  // leaking??
 	Subst_p subst2 = SubstAlloc();  // leaking??
 	if (NDUnify(control,subst1,a_tform,b_neg) || NDUnify(control,subst2,a_neg,b_tform))
 	{
 		TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
-		WFormula_p handle = WTFormulaAlloc(bank,c_neg);
-		SubstDelete(subst1);
-		SubstDelete(subst2);
-		//TermTopFree(a_neg);
-		//TermTopFree(b_neg);
-		return handle;
+		handle = WTFormulaAlloc(bank,c_neg);
 	}
 	SubstDelete(subst1);
 	SubstDelete(subst2);
-	//TermTopFree(a_neg);
-	//TermTopFree(b_neg);
-	//TermTopFree(c_neg);
 	
-	return NULL;
+	return handle;
 }
 
 /*  Does not check if the ND rule is allowed!!!  Only does it if physically possible
@@ -724,13 +614,10 @@ WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p v
 	pstack_push_skip(control->relatively_flagged_variables,free_stack,term);
 	// push variable being introduced to absolutely flagged variables
 	PStackPushP(control->absolutely_flagged_variables,term);
-	
-	WFormula_p new_formula = FormulaMergeVars(formula,bank,term,variable);
-	new_tform = new_formula->tformula;
+
+	new_tform = TFormulaMergeVars(formula,bank,term,variable);
 	qall_new_tform = TFormulaQuantorAlloc(bank,bank->sig->qall_code,variable,new_tform);
 	qall_new_form = WTFormulaAlloc(bank,qall_new_tform);
-	
-	WFormulaFree(new_formula);
 	
 	PStackFree(free_stack);
 	PTreeFree(free_variables);
@@ -748,13 +635,10 @@ WFormula_p NDExistentialIntroduction(ND_p control,TB_p bank, Term_p term, Term_p
 	{
 		return NULL; //term is not a subterm of the formula
 	}
-	WFormula_p new_formula = FormulaMergeVars(formula,bank,term,variable);
 	
-	new_tform = new_formula->tformula;
+	new_tform = TFormulaMergeVars(formula,bank,term,variable);
 	qex_new_tform = TFormulaQuantorAlloc(bank,bank->sig->qex_code,variable,new_tform);
 	qex_new_form = WTFormulaAlloc(bank,qex_new_tform);
-	
-	WFormulaFree(new_formula);
 	
 	return qex_new_form;
 	
@@ -929,6 +813,9 @@ WFormula_p NDUniversalElimination(ND_p control,TB_p bank, WFormula_p a, Term_p s
 	matrix = a->tformula->args[1];
 	w_matrix = WTFormulaAlloc(bank,matrix);
 	target = FormulaMergeVars(w_matrix,bank,bound_variable,substitute);
+	
+	WFormulaFree(w_matrix);
+	
 	return target;
 }
 
@@ -960,6 +847,7 @@ WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p
 	w_matrix = WTFormulaAlloc(bank,matrix);
 	target = FormulaMergeVars(w_matrix,bank,bound_variable,substitute);
 	
+	WFormulaFree(w_matrix);
 	PStackFree(free_stack);
 	PTreeFree(free_variables);
 	return target;
@@ -973,19 +861,15 @@ WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p
 long NDAndIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
-	//FormulaSet_p target = control->nd_generated;
 	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
 	long counter = 0;
-	//printf("\nNEW ITERATION\n");
 	while(handle!=target->anchor)
 	{
 		WFormula_p generated = NDAndIntroduction(control,bank,selected,handle);
 		if (generated)
 		{
-			//printf("\n");
-			//WFormulaPrint(GlobalOut,generated,true);
 			FormulaSetInsert(temporary_store,generated);
 			counter++;
 		}
@@ -1004,15 +888,12 @@ long NDOrIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
-	//printf("\nNEW ITERATION\n");
 	long counter = 0;
 	while(handle!=target->anchor)
 	{
 		WFormula_p generated = NDOrIntroduction(control,bank,selected,handle);
 		if (generated)
 		{
-			//printf("\n");
-			//WFormulaPrint(GlobalOut,generated,true);
 			FormulaSetInsert(temporary_store,generated);
 			counter++;
 		}
@@ -1031,7 +912,6 @@ long NDImplIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	handle = target->anchor->succ;
-	//printf("\nNEW ITERATION\n");
 	long counter = 0;
 	while(handle!=target->anchor)
 	{
@@ -1237,8 +1117,6 @@ long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 		WFormula_p generated = NDImplElimination(control,bank,selected,handle);
 		if (generated)
 		{
-			//printf("\n");
-			//WFormulaPrint(GlobalOut,generated,true);
 			FormulaSetInsert(temporary_store,generated);
 			counter++;
 		}
@@ -1267,13 +1145,25 @@ long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 
 long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
-	printf("\nunimplemented\n");
+	FormulaSet_p temporary_store = control->nd_temporary_formulas;
+	Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	WFormula_p generated = NDUniversalElimination(control,bank,selected,freshvariable);
+	if (generated)
+	{
+		FormulaSetInsert(temporary_store,generated);
+	}
 	return 0;
 }
 
 long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
-	printf("\nunimplemented\n");
+	FormulaSet_p temporary_store = control->nd_temporary_formulas;
+	Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	WFormula_p generated = NDExistentialElimination(control,bank,selected,freshvariable);
+	if (generated)
+	{
+		FormulaSetInsert(temporary_store,generated);
+	}
 	return 0;
 }
 
@@ -1298,10 +1188,7 @@ bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
 			if (NDUnify(control,subst,negated_handle,res->tformula) || 
 				NDUnify(control,subst,negated_res,handle->tformula))
 			{
-				//TermFree(negated_handle);
 				SubstFree(subst);
-				//TermFree(negated_res);
-				//TermFree(negated_handle);
 				return true;
 			}
 			TermTopFree(negated_res);
@@ -1356,7 +1243,6 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    
    FormulaSet_p axiom_archive = FormulaSetAlloc();
    
-   //FormulaSetInsertSet(ndcontrol->nd_generated,state->f_axioms);
    FormulaSetCopyFormulas(ndcontrol->nd_generated,state->f_axioms);
    FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
    NDPInitializeDerivationGoal(ndcontrol,ndcontrol->nd_generated);
@@ -1368,7 +1254,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    printf("\n%ld\n",ndcontrol->nd_generated->members);
    int counter = 0;
    int success_state = 0;
-   //int assumptioncounter = 0;
+   
    /*  Begin Proof Search
    */
    

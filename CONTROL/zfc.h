@@ -37,5 +37,6 @@ WFormula_p WFormula_Comprehension(TB_p bank,
 								  PStack_p freevars, 
 								  WFormula_p input);
 WFormula_p FormulaMergeVars(WFormula_p formula,  TB_p bank, Term_p x, Term_p y);
+TFormula_p TFormulaMergeVars(WFormula_p formula,  TB_p bank, Term_p x, Term_p y);
 
 #endif

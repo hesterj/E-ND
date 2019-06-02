@@ -212,7 +212,6 @@ Clause_p ClauseMergeVars(Clause_p clause,  TB_p bank, Term_p x, Term_p y)
 WFormula_p FormulaMergeVars(WFormula_p formula,  TB_p bank, Term_p x, Term_p y)
 {
    Subst_p  subst = SubstAlloc();
-   //Clause_p new_clause;
    WFormula_p new_formula;
    TFormula_p new_tform;
    
@@ -222,4 +221,16 @@ WFormula_p FormulaMergeVars(WFormula_p formula,  TB_p bank, Term_p x, Term_p y)
    SubstDelete(subst);
 
    return new_formula;
+}
+
+TFormula_p TFormulaMergeVars(WFormula_p formula,  TB_p bank, Term_p x, Term_p y)
+{
+   Subst_p  subst = SubstAlloc();
+   TFormula_p new_tform;
+   
+   SubstAddBinding(subst, x,y);
+   new_tform = TBInsertNoProps(bank, formula->tformula, DEREF_ALWAYS);
+   SubstDelete(subst);
+
+   return new_tform;
 }

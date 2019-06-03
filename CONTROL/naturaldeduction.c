@@ -1189,6 +1189,11 @@ bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
 				NDUnify(control,subst,negated_res,handle->tformula))
 			{
 				SubstFree(subst);
+				printf("\nFound contradiction!\n");
+				WFormulaPrint(GlobalOut,handle,true);
+				printf("\n");
+				WFormulaPrint(GlobalOut,res,true);
+				printf("\nend contradiction pair\n");
 				return true;
 			}
 			TermTopFree(negated_res);
@@ -1263,8 +1268,9 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    while (success == false)
    {
 	  counter++;
-	  int start_new_assumption = rand()%6;  // 1/6 chance of starting new assumption
 	  
+	  int start_new_assumption = rand()%6;  // 1/6 chance of starting new assumption
+	  /*
 	  if (start_new_assumption == 0)
 	  {
 		  // assumption status is 0 if assumption attempt is abandoned
@@ -1279,24 +1285,22 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 		  {
 			  printf("\nno assumption success\n");
 		  }
-		  if (assumption_status == 1)
+		  else if (assumption_status == 1)
 		  {
 			  printf("\nproof by contradiction\n");
 			  success = true;
 		  }
-		  if (assumption_status == 2)
+		  else if (assumption_status == 2)
 		  {
 			  printf("\nreached goal in assumption\n");
 			  success = true;
 		  }
-		  /*
-		  if (assumptioncounter == 3)
+		  else
 		  {
-			exit(0);
+			  printf("assumption return invalid\n");
 		  }
-		  */
 	  }
-	  
+	  */
 	  
 	  /*  Go through a socket to get the highest score from the scoring server
 	   *  Message sent is the string representation of the formula in ND generated, message received is the corresponding score.  
@@ -1336,8 +1340,8 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  }
    }
    
-   //printf("\n Here is the derivation the loop succeeded in finding:\n");
-   //FormulaSetPrint(GlobalOut,ndcontrol->nd_derivation,true);
+   printf("\n Here is the derivation the loop succeeded in finding:\n");
+   FormulaSetPrint(GlobalOut,ndcontrol->nd_derivation,true);
    switch (success_state)
    {
 	   case 0:

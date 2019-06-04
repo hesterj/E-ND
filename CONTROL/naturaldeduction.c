@@ -605,6 +605,10 @@ WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p v
 	{
 		return NULL; //term is not a subterm of the formula
 	}
+	if (NDTermIsAbsolutelyFlagged(control,variable) || NDTermIsAbsolutelyFlagged(control,term))
+	{
+		return NULL; //do not universally quantify over symbols affected by some rules
+	}
 	PTree_p free_variables = NULL;
 	PStack_p free_stack = PStackAlloc();
 	TFormulaCollectFreeVars(bank, formula->tformula, &free_variables);
@@ -614,6 +618,7 @@ WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p v
 	pstack_push_skip(control->relatively_flagged_variables,free_stack,term);
 	// push variable being introduced to absolutely flagged variables
 	PStackPushP(control->absolutely_flagged_variables,term);
+	
 
 	new_tform = TFormulaMergeVars(formula,bank,term,variable);
 	qall_new_tform = TFormulaQuantorAlloc(bank,bank->sig->qall_code,variable,new_tform);
@@ -830,17 +835,24 @@ WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p
 	WFormula_p w_matrix,target;
 	TFormula_p matrix;
 	Term_p bound_variable;
+	
 	if (a->tformula->f_code != bank->sig->qex_code)
 	{
 		return NULL;
 	}
 	
+	substitute = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	
 	PTree_p free_variables = NULL;
 	PStack_p free_stack = PStackAlloc();
 	TFormulaCollectFreeVars(bank, a->tformula, &free_variables);
+	
 	PTreeToPStack(free_stack,free_variables);
-	PStackPushStack(control->relatively_flagged_variables,free_stack);
-	PStackPushP(control->absolutely_flagged_variables,substitute);
+	//PStackPushStack(control->relatively_flagged_variables,free_stack);
+	//PStackPushP(control->absolutely_flagged_variables,substitute);
+	NDRelativelyFlagTerms(control,free_stack);
+	NDAbsolutelyFlagTerm(control,substitute);
+	
 	
 	bound_variable = a->tformula->args[0];
 	matrix = a->tformula->args[1];
@@ -1158,7 +1170,7 @@ long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
-	Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	Term_p freshvariable = NULL;
 	WFormula_p generated = NDExistentialElimination(control,bank,selected,freshvariable);
 	if (generated)
 	{

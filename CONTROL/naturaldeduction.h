@@ -122,9 +122,19 @@ static __inline__ void PStackPrintFunCodes(ND_p control, PStack_p handle);
 static __inline__ void UpdateControlSymbols(ND_p control);
 //static void PStackPrintTerms(ND_p control, PStack_p handle);
 
+#define NDAbsolutelyFlagTerm(control,term) PStackPushP(control->absolutely_flagged_variables,term)
+#define NDRelativelyFlagTerms(control,stack) PStackPushStack(control->relatively_flagged_variables,stack)
+#define NDTermIsAbsolutelyFlagged(control,term) PStackFindTerm(control->absolutely_flagged_variables,term)
+#define NDTermIsRelateivelyFlagged(control,term) PStackFindTerm(control->relatively_flagged_variables,term)
+
 // remove duplicates in the predicates and function stacks
 
 void FormulaSetUpdateControlSymbols(ND_p control, FormulaSet_p target);
+
+/*  Inline function definitions
+*/
+
+
 static __inline__ void UpdateControlSymbols(ND_p control)
 {
    PStack_p predicates_duplicates_removed = PStackRemoveDuplicatesInt(control->predicates);

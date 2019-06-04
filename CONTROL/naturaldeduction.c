@@ -841,7 +841,10 @@ WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p
 		return NULL;
 	}
 	
-	substitute = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	//substitute = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	PStack_p empty_stack = PStackAlloc();
+	substitute = TermAllocNewSkolem(control->signature,empty_stack,0);
+	PStackFree(empty_stack);
 	
 	PTree_p free_variables = NULL;
 	PStack_p free_stack = PStackAlloc();
@@ -1280,9 +1283,9 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    while (success == false)
    {
 	  counter++;
-	  
-	  int start_new_assumption = rand()%6;  // 1/6 chance of starting new assumption
 	  /*
+	  int start_new_assumption = rand()%20;  // 1/20 chance of starting new assumption
+	  
 	  if (start_new_assumption == 0)
 	  {
 		  // assumption status is 0 if assumption attempt is abandoned
@@ -1342,7 +1345,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 		  success_state = 2;
 		  success = true;
 	  }
-	  if (ndcontrol->nd_derivation->members > 40)
+	  if (ndcontrol->nd_derivation->members > 100)
 	  {
 		  printf("\nmax derivation length\n");
 		  NDResetState(ndcontrol);

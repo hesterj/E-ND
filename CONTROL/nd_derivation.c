@@ -2,25 +2,22 @@
 #include "naturaldeduction.h"
 
 
-ND_Derivation_p NDDerivationAlloc(ProofState_p initial, WFormula_p goal)
+NDAssumption_p NDAssumptionAlloc(WFormula_p goal, WFormula_p assumption)
 {
-	ND_Derivation_p handle = NDDerivationCellAlloc();
-	handle->derivation = PStackAlloc();
-	handle->absolutely_flagged_variables = PStackAlloc();
-	handle->relatively_flagged_variables = PStackAlloc();
-	handle->predicates = PStackAlloc();
-	handle->functions = PStackAlloc();
-	handle->nd_derivation = FormulaSetAlloc();
-	handle->nd_generated = FormulaSetAlloc();
-	handle->nd_temporary_formulas = FormulaSetAlloc();
-	handle->generated_formulas = 0;
-	handle->signature = initial->signature;
-	handle->terms = initial->terms;
-	handle->freshvars = initial->freshvars;
+	NDAssumption_p handle = NDAssumptionCellAlloc();
 	
+	handle->nd_derivation = FormulaSetAlloc();
 	handle->goal = goal;
+	handle->assumption = assumption;
 	
 	return handle;
+}
+
+void NDAssumptionFree(NDAssumption_p junk)
+{
+	FormulaSetFree(junk->nd_derivation);
+	// what to do with goal/assumption?  junk formulaset to stop valgrind warnings?
+	NDAssumptionCellFree(junk);
 }
 
 void NDScoreFormulaRandomly(WFormula_p input)
@@ -66,7 +63,7 @@ WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input)
 	//printf("\n");
 	return res;
 }
-
+/*
 void NDInitializeDerivationGoal(ND_Derivation_p input, FormulaSet_p source)
 {
 	WFormula_p handle = source->anchor->succ;
@@ -101,7 +98,7 @@ void NDInitializeDerivationGoal(ND_Derivation_p input, FormulaSet_p source)
 	}
 	input->goal = goal;
 }
-
+*/
 /*  Send a formula through the socket specified by socketDescriptor, then receive the score
  *  int MUST be a socketDescriptor
 */

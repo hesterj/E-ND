@@ -23,8 +23,6 @@ typedef struct ndcell
 	PStack_p absolutely_flagged_variables;
 	PStack_p relatively_flagged_variables;
 	
-	WFormula_p last_assumption;
-	
 	PStack_p predicates;
 	PStack_p functions;
 	
@@ -36,7 +34,14 @@ typedef struct ndcell
 	TB_p          terms;
 	Sig_p         signature;
 	
+	//void* master;
 	WFormula_p goal;
+	WFormula_p last_assumption;
+	//ND_Derivation_p last_assumption_branch;  // The most recent assumption on this level of the proof.  Must be initialized at start of assumption
+	
+   struct nd_set_cell* set;      /* Is the formula in a set? */
+   struct ndcell* pred;        /* For fomula sets = doubly  */
+   struct ndcell* succ;        /* linked lists */
 	
 }NDCell, *ND_p;
 
@@ -51,7 +56,7 @@ typedef struct connectioncell
 #define NDCellFree(junk) SizeFree(junk, sizeof(NDCell))
 ND_p NDAlloc(ProofState_p initial);
 ND_p NDAllocAssumption(ND_p initial);
-void NDAssumptionFree(ND_p initial);
+void NDAssumptionControlFree(ND_p initial);
 void NDFree(ND_p initial);
 
 WFormula_p NDAndIntroduction(ND_p control, TB_p bank, WFormula_p a, WFormula_p b);
@@ -66,7 +71,8 @@ WFormula_p NDOrElimination(ND_p control,TB_p bank, WFormula_p a,WFormula_p b);
 WFormula_p NDImplElimination(ND_p control,TB_p bank, WFormula_p a,WFormula_p b);
 WFormula_p NDNegationElimination(ND_p control,TB_p bank, WFormula_p a);
 WFormula_p NDUniversalElimination(ND_p control,TB_p bank, WFormula_p a, Term_p substitute);
-WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p substitute);
+WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p substitute);  // Quine
+WFormula_p NDExistentialElimination2(ND_p control,TB_p bank, WFormula_p existential, WFormula_p psi);  //Gentzen
 
 long NDAndIntProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDOrIntProcess(ND_p control,TB_p bank,WFormula_p selected);
@@ -81,20 +87,20 @@ long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected);
-
+/*
 int NDSaturate(ProofState_p state, ProofControl_p control, long
                   step_limit, long proc_limit, long unproc_limit, long
                   total_limit,  long generated_limit, long tb_insert_limit,
                   long answer_limit);
-                  
+*/
 void NDGenerateAndScoreFormulas(ND_p ndcontrol, WFormula_p handle);
 int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor);
 
-void NDProofSearch(ND_p control,ND_Derivation_p derivation);
+//void NDProofSearch(ND_p control,ND_Derivation_p derivation);
 bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset);
 bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t);
-bool NDDerivationCheckForContradictions(ND_Derivation_p derivation);
-bool NDDerivationGoalIsReached(ND_p control,ND_Derivation_p derivation);
+bool NDAssumptionCheckForContradictions(NDAssumption_p derivation);
+bool NDAssumptionGoalIsReached(ND_p control,NDAssumption_p derivation);
 
 void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source);
 bool NDPDerivationGoalIsReached(ND_p control);

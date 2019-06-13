@@ -31,6 +31,7 @@
 #include <cte_simplesorts.h>
 #include <cco_scheduling.h>
 #include <e_version.h>
+#include <ndsaturate.h>
 
 
 /*---------------------------------------------------------------------*/
@@ -583,11 +584,11 @@ int main(int argc, char* argv[])
          //TSTPOUT(GlobalOut, neg_conjectures?"Theorem":"Unsatisfiable");
          if (int_success == 2)
          {
-			 printf("# SZS Status Theorem\n");
+			 fprintf(GlobalOut,"# SZS Status Theorem\n");
 		 }
 		 else
 		 {
-			 printf("# SZS Status Unsatisfiable\n");
+			 fprintf(GlobalOut,"# SZS Status Unsatisfiable\n");
 		 }
          proofstate->status_reported = true;
          retval = PROOF_FOUND;

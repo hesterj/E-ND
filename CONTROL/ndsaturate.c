@@ -52,7 +52,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    FormulaSetCopyFormulas(axiom_archive,ndcontrol->nd_generated);
    
    srand(time(0));
-   printf("\n%ld\n",ndcontrol->nd_generated->members);
+   //printf("\n%ld\n",ndcontrol->nd_generated->members);
    int counter = 0;
    int success_state = 0;
    
@@ -65,35 +65,36 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    {
 	  counter++;
 	  
-	  int start_new_assumption = rand()%100;  // 1/100 chance of starting new assumption...
+	  //int start_new_assumption = rand()%100;  // 1/100 chance of starting new assumption...
+	  int start_new_assumption = 1;
 	  
 	  if (start_new_assumption == 0)
 	  {
 		  // assumption status is 0 if assumption attempt is abandoned
 		  // 1 if contradiction found
 		  // 2 if goal was reached by lhs of sequent assumption
-		  printf("\nstart new assumption\n");
+		  //printf("\nstart new assumption\n");
 		  int assumption_status = 0;
 		  assumption_status = NDStartNewAssumption(ndcontrol,socketDescriptor);
 		  //assumptioncounter++;
-		  printf("\nexit assumption\n");
+		  //printf("\nexit assumption\n");
 		  if (assumption_status == 0)
 		  {
-			  printf("\nno assumption success\n");
+			  //printf("\nno assumption success\n");
 		  }
 		  else if (assumption_status == 1)
 		  {
-			  printf("\nproof by contradiction\n");
+			  //printf("\nproof by contradiction\n");
 			  success = true;
 		  }
 		  else if (assumption_status == 2)
 		  {
-			  printf("\nreached goal in assumption\n");
+			  //printf("\nreached goal in assumption\n");
 			  success = true;
 		  }
 		  else
 		  {
-			  printf("assumption return invalid\n");
+			  //printf("assumption return invalid\n");
 		  }
 	  }
 	  
@@ -109,50 +110,76 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  selected_copy = WFormulaFlatCopy(selected);
 	  FormulaSetInsert(ndcontrol->nd_derivation,selected_copy);
 	  //printf("\ngenerated formulas in main loop: %ld\n",ndcontrol->nd_generated->members);
-	  printf("\n");
+	  //printf("\n");
 	  WFormulaPrint(GlobalOut,selected,true);
 	  //printf("\n___generating___\n");
 	  NDGenerateAndScoreFormulas(ndcontrol,selected);
+	  
+	  // Link together the nd_derivation and nd_generated formula sets to check for 
+	  // contradictions and the goal.  This MUST be undone for another iteration 
+	  // of proofs search to occur without crashing.  Similar action is taken
+	  // when checking for end condition in the assumption proof loop
+	  
+	  WFormula_p aroot = ndcontrol->nd_derivation->anchor;
+	  WFormula_p apred = ndcontrol->nd_derivation->anchor->pred;
+	  WFormula_p broot = ndcontrol->nd_generated->anchor;
+	  WFormula_p bsucc = ndcontrol->nd_generated->anchor->succ;
+	  WFormula_p bpred = ndcontrol->nd_generated->anchor->pred;
+	  
+	  //printf("\nformulas: %ld\nchecking for contradiction/n",ndcontrol->nd_derivation->members+ndcontrol->nd_generated->members);
+	  
 	  if (NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_derivation))
 	  {
-		  //printf("\nfound contradiction\n");
+		  
 		  success_state = 1;
 		  success = true;
 	  }
-	  //printf("\nchecking for goal reach\n");
+	  
+	  apred->succ = bsucc;
+	  bsucc->pred = apred;
+	  bpred->succ = aroot;
+	  aroot->pred = bpred;
+	  
 	  if ((ndcontrol->goal) && NDPDerivationGoalIsReached(ndcontrol))
 	  {
-		  //printf("\nreached goal\n");
 		  success_state = 2;
 		  success = true;
 	  }
+	  // undo the damage done to the formula set structure
+	  apred->succ = aroot;
+	  aroot->pred = apred;
+	  bsucc->pred = broot;
+	  bpred->succ = broot;
+	  
+	  // if the derivation has gone on too long, try again
 	  if (ndcontrol->nd_derivation->members > 200)
 	  {
-		  printf("\nmax derivation length\n");
+		  //printf("\nmax derivation length\n");
 		  NDResetState(ndcontrol);
 		  FormulaSetCopyFormulas(ndcontrol->nd_generated,axiom_archive);
 		  FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
 		  goto restart;
 	  }
+	  
    }
    
-   printf("\n Here is the derivation the loop succeeded in finding:\n");
+   //printf("\n Here is the derivation the loop succeeded in finding:\n");
    FormulaSetPrint(GlobalOut,ndcontrol->nd_derivation,true);
    switch (success_state)
    {
 	   case 0:
-	      printf("\nfailure\n");
+	      //printf("\nfailure\n");
 	      NDFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 0;
 	      
 	   case 1: 
-	      printf("\ncontradiction\n");
+	      //printf("\ncontradiction\n");
 	      NDFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 1;
 	   case 2:
-	      printf("\nreached goal\n");
+	      //printf("\nreached goal\n");
 	      NDFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 2;
@@ -172,6 +199,7 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 	WFormula_p selected = NULL;
 	WFormula_p selected_copy = NULL;
 	ND_p assumption_control = NDAllocAssumption(ndcontrol);
+	NDSetInsert(ndcontrol->set,assumption_control);
 	int return_state = 0;
 	
 	// select the assumption
@@ -179,7 +207,11 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 	// if goal is an implication can choose left hand side of implication
 	// otherwise, can assume an instantiation of an existentially quantified formula, goal is parents goal
 	
-	if (ndcontrol->goal)  // if we are searching for contradiction there is no goal
+	//NEED METHODS TO CHOOSE THE ASSUMPTION FORMULA AND GOAL
+	//Both assumption formula and the ultimate goal should be subformulas of the goal of the master.
+	//At the moment the only possibility is to negate the goal of the parent and search for a contradiction
+	
+	if (ndcontrol->goal)  // if we are searching for contradiction there is no goal, this should never happen unless just running on axiom sets with no conjecture
 	{
 		assumption_control->goal = ndcontrol->goal;
 		assumption = TFormulaFCodeAlloc(assumption_control->terms,
@@ -189,22 +221,14 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 		assumption_formula = WTFormulaAlloc(assumption_control->terms,assumption);
 		
 		
-		printf("\nassumption_formula:\n");
+		//printf("\nassumption_formula:\n");
 		WFormulaPrint(GlobalOut,assumption_formula,true);
 		
 		FormulaSetInsert(assumption_control->nd_derivation,assumption_formula);
 		assumption_control->last_assumption = assumption_formula;
+		WFormula_p assumption_formula_copy = WFormulaFlatCopy(assumption_formula);
+		FormulaSetInsert(assumption_control->branch_formulas,assumption_formula_copy);
 	}
-	
-	//Allocate the derivation for this branch, ensures that parent has access to it when the branch is closed
-	/*
-	if(ndcontrol->last_assumption_branch)
-	{
-		NDDerivationFree(ndcontrol->last_assumption_branch);
-	}
-	ND_Derivation_p branch = NDDerivationAlloc(assumption_control->goal,assumption_formula);
-	ndcontrol->last_assumption_branch = branch;
-	*/
 	
 	//add the previous steps to our assumption branch
 	FormulaSetCopyFormulas(assumption_control->nd_generated,ndcontrol->nd_derivation);
@@ -212,17 +236,17 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 	//check to see that we have something to select from
 	if (assumption_control->nd_generated->members == 0)
 	{
-		printf("\nno generated formulas in assumption, surfacing\n");
+		//printf("\nno generated formulas in assumption, surfacing\n");
 		return_state = 0;
 		success = true; // skip the while loop and give up the assumtion: no axioms??
 	}
-	printf("\nentering assumption dive\n");
+	//printf("\nentering assumption dive\n");
 	// for now the only possible assumption is the negation of the parent's goal, done above
 	while (success == false)
 	{
 		if (assumption_control->nd_generated->members == 0)
 		{
-			printf("\nout of generated formulas\n");
+			//printf("\nout of generated formulas\n");
 			return_state = 0;
 			break;
 		}
@@ -258,41 +282,48 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 		*/
 		//selected = NULL;
 		selected = NDSelectHighestScoreRandomly(assumption_control->nd_generated);
+		selected_copy = WFormulaFlatCopy(selected);
+		FormulaSetInsert(assumption_control->branch_formulas,selected_copy);
 		if (!selected)
 		{
-			printf("NULL selected in assumption");
+			//printf("NULL selected in assumption");
 			break;
 		}
 		//selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
-		//selected_copy = WFormulaFlatCopy(selected);
-		//FormulaSetInsert(branch->nd_derivation,selected_copy);
 		FormulaSetExtractEntry(selected);
 		FormulaSetInsert(assumption_control->nd_derivation,selected);
-		printf("\n");
+		//printf("\n");
 		WFormulaPrint(GlobalOut,selected,true);
-		NDGenerateAndScoreFormulasSkeleton(assumption_control,selected);
+		NDGenerateAndScoreFormulas(assumption_control,selected);
+		
+		// Link together the nd_derivation and nd_generated formula sets to check for 
+		// contradictions and the goal.  This MUST be undone for another iteration 
+		// of proofs search to occur without crashing.  Similar action is taken
+		// when checking for end condition in the main proof loop
 		
 		if (NDFormulaSetCheckForContradictions(assumption_control,assumption_control->nd_derivation))
 		{
-			printf("\nAssumption led to contradiction\n");
+			//printf("\nAssumption led to contradiction\n");
 			success = true;
 			return_state = 1;
 		}
 		if ((ndcontrol->goal) && NDPDerivationGoalIsReached(assumption_control))
 		{
-			printf("\nreached goal of assumption\n");
+			//printf("\nreached goal of assumption\n");
 			success = true;
 			return_state = 2;
 		}
 		if (assumption_control->nd_derivation->members > 50)
 		{
-			printf("\nexcess derivation size: %ld\n",assumption_control->nd_derivation->members);
+			//printf("\nexcess derivation size: %ld\n",assumption_control->nd_derivation->members);
 			break;
 		}
 	}
-	NDAssumptionControlFree(assumption_control);
-	printf("\nsurface\n");
-	//exit(0);
+	//NDAssumptionControlFree(assumption_control);
+	NDCloseAssumption(assumption_control);
+	//printf("\nsurface\n");
+	//  
+	
 	// change ndcontrol appropriately
 	// 1) if we obtained a contradiction, add the negation of the assumption to the parent derivation
 	// 2) if we obtained the goal, set our assumption as the new goal of parent

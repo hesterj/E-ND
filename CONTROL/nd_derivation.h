@@ -15,7 +15,7 @@
 #include <zfc.h>
 #include <cio_multiplexer.h>
 #include <cco_eserver.h>
-
+/*
 typedef struct assumptioncell 
 {
 	WFormula_p goal;
@@ -28,11 +28,12 @@ typedef struct assumptioncell
 #define NDAssumptionCellFree(junk) SizeFree(junk,sizeof(NDAssumption))
 NDAssumption_p NDAssumptionAlloc(WFormula_p goal,WFormula_p assumption);
 void NDAssumptionFree(NDAssumption_p junk);
-
+*/
 WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input);
 void NDScoreFormulaRandomly(WFormula_p input);
 void NDScoreFormulaSetRandomly(FormulaSet_p input);
-void NDInitializeDerivationGoal(NDAssumption_p input, FormulaSet_p source);
+//bool NDCheckIfFormulaIsInstantiationOfExistential(ND_p control, WFormula_p existential, WFormula_p instantiation); //cant be in this file
+//void NDInitializeDerivationGoal(NDAssumption_p input, FormulaSet_p source);
 
 WFormula_p NDSelectHighestScoreThroughSocket(FormulaSet_p input, int port);
 WFormula_p NDSelectHighestScoreThroughFile(FormulaSet_p input);

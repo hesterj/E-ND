@@ -1,7 +1,7 @@
 
 #include "naturaldeduction.h"
 
-
+/*
 NDAssumption_p NDAssumptionAlloc(WFormula_p goal, WFormula_p assumption)
 {
 	NDAssumption_p handle = NDAssumptionCellAlloc();
@@ -19,7 +19,7 @@ void NDAssumptionFree(NDAssumption_p junk)
 	// what to do with goal/assumption?  junk formulaset to stop valgrind warnings?
 	NDAssumptionCellFree(junk);
 }
-
+*/
 void NDScoreFormulaRandomly(WFormula_p input)
 {
 	float score = (float)rand()/(float)(RAND_MAX);
@@ -168,4 +168,13 @@ char *WFormulaPrintString(WFormula_p input)
 	return formulabuffer;
 }
 
+// INCOMPLETE!
+/*
+bool NDCheckIfFormulaIsInstantiationOfExistential(ND_p control, WFormula_p existential,WFormula_p instantiation)
+{
+	FunCode funcode = existential->tformula->fun_code;
+	if (funcode != control->signature->qex_code) return false;
+	return true;
+}
+*/
 

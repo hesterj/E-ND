@@ -12,14 +12,14 @@ typedef struct nd_set_cell
    long       members;
    DStr_p     identifier;
 }NDSetCell, *NDSet_p;
-
+/*
 typedef struct nd_assumption_set_cell
 {
    NDAssumption_p anchor;
    long       members;
    DStr_p     identifier;
 }NDAssumptionSetCell, *NDAssumptionSet_p;
-
+*/
 #define NDSetCellAlloc()    (NDSetCell*)SizeMalloc(sizeof(NDSetCell))
 #define NDSetCellFree(junk) SizeFree(junk, sizeof(NDSetCell))
 #define      NDSetEmpty(set)\

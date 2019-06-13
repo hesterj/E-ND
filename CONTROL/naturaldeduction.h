@@ -29,15 +29,17 @@ typedef struct ndcell
 	FormulaSet_p nd_derivation;
 	FormulaSet_p nd_generated;
 	FormulaSet_p nd_temporary_formulas;
+	FormulaSet_p branch_formulas; // the formulas that are exlusive to this branch
+	
 	long generated_formulas;
 	VarBank_p     freshvars;
 	TB_p          terms;
 	Sig_p         signature;
 	
-	//void* master;
 	WFormula_p goal;
 	WFormula_p last_assumption;
-	//ND_Derivation_p last_assumption_branch;  // The most recent assumption on this level of the proof.  Must be initialized at start of assumption
+	
+	bool active;
 	
    struct nd_set_cell* set;      /* Is the formula in a set? */
    struct ndcell* pred;        /* For fomula sets = doubly  */
@@ -58,6 +60,7 @@ ND_p NDAlloc(ProofState_p initial);
 ND_p NDAllocAssumption(ND_p initial);
 void NDAssumptionControlFree(ND_p initial);
 void NDFree(ND_p initial);
+void NDCloseAssumption(ND_p initial);
 
 WFormula_p NDAndIntroduction(ND_p control, TB_p bank, WFormula_p a, WFormula_p b);
 WFormula_p NDOrIntroduction(ND_p control, TB_p bank, WFormula_p a, WFormula_p b);
@@ -99,8 +102,8 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor);
 //void NDProofSearch(ND_p control,ND_Derivation_p derivation);
 bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset);
 bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t);
-bool NDAssumptionCheckForContradictions(NDAssumption_p derivation);
-bool NDAssumptionGoalIsReached(ND_p control,NDAssumption_p derivation);
+//bool NDAssumptionCheckForContradictions(NDAssumption_p derivation);
+//bool NDAssumptionGoalIsReached(ND_p control,NDAssumption_p derivation);
 
 void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source);
 bool NDPDerivationGoalIsReached(ND_p control);

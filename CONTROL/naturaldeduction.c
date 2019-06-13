@@ -329,7 +329,7 @@ void NDGenerateAndScoreFormulasSkeleton(ND_p ndcontrol,WFormula_p handle)
 	//printf("\ninserting %ld temporary formulas...",ndcontrol->nd_temporary_formulas->members);
 	if (ndcontrol->nd_temporary_formulas->members == 0)
 	{
-		printf("\nno generated formulas\n");
+		//printf("\nno generated formulas\n");
 		exit(0);
 	}
 	FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_temporary_formulas);
@@ -465,6 +465,7 @@ ND_p NDAlloc(ProofState_p initial)
 	handle->freshvars = initial->freshvars;
 	handle->goal = NULL;
 	handle->last_assumption = NULL;
+	handle->active = true;
 	//handle->last_assumption_branch = NULL;
 	//handle->master = handle;
 	return handle;
@@ -498,14 +499,17 @@ ND_p NDAllocAssumption(ND_p initial)
 	FormulaSetCopyFormulas(handle->nd_derivation,initial->nd_derivation);
 	handle->nd_generated = FormulaSetAlloc(); //alloc
 	handle->nd_temporary_formulas = FormulaSetAlloc();  // alloc
+	handle->branch_formulas = FormulaSetAlloc(); //alloc
 	handle->generated_formulas = 0;
 	handle->signature = initial->signature;
 	handle->terms = initial->terms;
 	handle->freshvars = initial->freshvars;
 	handle->goal = NULL;
 	handle->derivation = NULL;
+	handle->active = true;
 	//handle->last_assumption_branch = NULL;
 	//handle->master = initial->master;
+	//NDSetInsert(initial->set,handle);
 	return handle;
 }
 
@@ -521,7 +525,25 @@ void NDAssumptionControlFree(ND_p initial)
 	FormulaSetFree(initial->nd_derivation);
 	FormulaSetFree(initial->nd_generated);
 	FormulaSetFree(initial->nd_temporary_formulas);
+	FormulaSetFree(initial->branch_formulas);
 	NDCellFree(initial);
+	//WFormulaFree(initial->last_assumption);
+}
+
+void NDCloseAssumption(ND_p initial)
+{
+	//FormulaSetFreeFormulas(initial->nd_derivation);
+	//FormulaSetFreeFormulas(initial->nd_generated);
+	//FormulaSetFreeFormulas(initial->nd_temporary_formulas);
+	//WFormulaFree(initial->goal);
+	//PStackFree(initial->derivation);
+	PStackFree(initial->predicates);
+	PStackFree(initial->functions);
+	FormulaSetFree(initial->nd_derivation);
+	FormulaSetFree(initial->nd_generated);
+	FormulaSetFree(initial->nd_temporary_formulas);
+	initial->active = false;
+	//NDCellFree(initial);
 	//WFormulaFree(initial->last_assumption);
 }
 
@@ -1233,11 +1255,11 @@ bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
 				NDUnify(control,subst,negated_res,handle->tformula))
 			{
 				SubstFree(subst);
-				printf("\nFound contradiction!\n");
-				WFormulaPrint(GlobalOut,handle,true);
-				printf("\n");
-				WFormulaPrint(GlobalOut,res,true);
-				printf("\nend contradiction pair\n");
+				//printf("\nFound contradiction!\n");
+				//WFormulaPrint(GlobalOut,handle,true);
+				//printf("\n");
+				//WFormulaPrint(GlobalOut,res,true);
+				//printf("\nend contradiction pair\n");
 				return true;
 			}
 			TermTopFree(negated_res);
@@ -1250,7 +1272,7 @@ bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
 	}
 	return false;
 }
-
+/*
 bool NDAssumptionGoalIsReached(ND_p control, NDAssumption_p derivation)
 {
 	WFormula_p handle = derivation->nd_derivation->anchor->succ;
@@ -1266,7 +1288,7 @@ bool NDAssumptionGoalIsReached(ND_p control, NDAssumption_p derivation)
 	}
 	return false;
 }
-
+*/
 void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source)
 {
 	WFormula_p handle = source->anchor->succ;
@@ -1277,26 +1299,26 @@ void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source)
 		{
 			if (handle->tformula->f_code != input->terms->sig->not_code)
 			{
-				printf("\nnegated conjecture is not a negation, searching for contradiction\n");
+				//printf("\nnegated conjecture is not a negation, searching for contradiction\n");
 				//goal = handle;
 				break;
 			}
 			goal = WTFormulaAlloc(input->terms,handle->tformula->args[0]);
-			printf("\nFound negated goal:\n");
-			WFormulaPrint(GlobalOut,goal,true);
+			//printf("\nFound negated goal:\n");
+			//WFormulaPrint(GlobalOut,goal,true);
 			//printf("\nExtracting negated conjecture:\n");
 			FormulaSetExtractEntry(handle);
-			printf("\n");
+			//printf("\n");
 			break;
 		}
 		if (FormulaQueryType(handle) == CPTypeConjecture)
 		{
 			goal = handle;
-			printf("\nFound goal:\n");
-			WFormulaPrint(GlobalOut,goal,true);
+			//printf("\nFound goal:\n");
+			//WFormulaPrint(GlobalOut,goal,true);
 			//printf("\nExtracting conjecture:\n");
 			FormulaSetExtractEntry(handle);
-			printf("\n");
+			//printf("\n");
 			break;
 		}
 		handle = handle->succ;

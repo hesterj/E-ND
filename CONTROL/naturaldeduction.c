@@ -393,7 +393,8 @@ long nd_label_symbols(ND_p control,Term_p term)
 											 || (term->f_code == sig->qex_code)
 											 || (term->f_code == sig->impl_code)
 											 || (term->f_code == sig->equiv_code)
-											 || (term->f_code == sig->and_code))
+											 || (term->f_code == sig->and_code)
+											 || (term->f_code == sig->bimpl_code))
 	{
 		//printf("\nfound a boolean\n");
 		for (int i=0; i<term->arity; i++)

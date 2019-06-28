@@ -24,8 +24,8 @@ void NDScoreFormulaRandomly(WFormula_p input)
 {
 	float score = (float)rand()/(float)(RAND_MAX);
 	//float denom = (float) input->tformula->v_count;
-	//denom += (float) input->tformula->f_count;
-	//score = score/denom;
+	float denom = (float) input->tformula->f_count;
+	score = score/denom;
 	//score = (float)rand()*score;
 	input->score = score;
 }

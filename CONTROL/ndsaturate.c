@@ -110,7 +110,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  selected_copy = WFormulaFlatCopy(selected);
 	  FormulaSetInsert(ndcontrol->nd_derivation,selected_copy);
 	  //printf("\ngenerated formulas in main loop: %ld\n",ndcontrol->nd_generated->members);
-	  //printf("\n");
+	  printf("\n#");
 	  WFormulaPrint(GlobalOut,selected,true);
 	  //printf("\n___generating___\n");
 	  NDGenerateAndScoreFormulas(ndcontrol,selected);
@@ -152,7 +152,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  bpred->succ = broot;
 	  
 	  // if the derivation has gone on too long, try again
-	  if (ndcontrol->nd_derivation->members > 200)
+	  if (ndcontrol->nd_derivation->members > 10)
 	  {
 		  //printf("\nmax derivation length\n");
 		  NDResetState(ndcontrol);

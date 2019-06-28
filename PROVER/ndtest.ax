@@ -1,6 +1,7 @@
 %test for building a proof
-fof(goal,axiom, ((![X]:(P(X)&Q(X)))
+fof(ax1,axiom, ((![X]:(P(X)&Q(X)))
 =>((![X]:P(X))&(![X]:Q(X))))).
+fof(ax2,axiom,(![X]:(P(X)&Q(X)))).
 
 %contradiction for checking to see unification works
 %fof(goal2,axiom, ~((![X]:(P(X)&Q(X)))

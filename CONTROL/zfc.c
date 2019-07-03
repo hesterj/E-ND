@@ -215,6 +215,11 @@ WFormula_p FormulaMergeVars(WFormula_p formula,  TB_p bank, Term_p x, Term_p y)
    WFormula_p new_formula;
    TFormula_p new_tform;
    
+   if (!TermHasFCode(formula->tformula,x->f_code))
+   {
+		return NULL;
+	}
+   
    SubstAddBinding(subst, x,y);
    new_tform = TBInsertNoProps(bank, formula->tformula, DEREF_ALWAYS);
    new_formula = WTFormulaAlloc(bank,new_tform);

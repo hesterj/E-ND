@@ -87,6 +87,7 @@ long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected);
 WFormula_p NDEqualityIntroduction(ND_p control, TB_p bank, Term_p term);
 WFormula_p NDEqualityEliminationLeft(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality);
 WFormula_p NDEqualityEliminationRight(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality);
+long NDEqualityEliminationProcess(ND_p control, TB_p bank, WFormula_p selected);
 
 long NDOrElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDAndElimProcess(ND_p control,TB_p bank,WFormula_p selected);

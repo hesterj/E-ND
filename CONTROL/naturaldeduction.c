@@ -919,6 +919,10 @@ WFormula_p NDExistentialElimination2(ND_p control,TB_p bank, WFormula_p existent
 	return psi;
 }
 
+/*  Equality Rules
+ *
+*/
+
 WFormula_p NDEqualityIntroduction(ND_p control, TB_p bank, Term_p term)
 {
 	Eqn_p equals = EqnAlloc(term,term,bank,true);
@@ -946,6 +950,36 @@ WFormula_p NDEqualityEliminationRight(ND_p control, TB_p bank, WFormula_p substi
 	Term_p t = equality->tformula->args[0];
 	Term_p s = equality->tformula->args[1];
 	return FormulaMergeVars(substituted,bank,s,t);
+}
+
+long NDEqualityEliminationProcess(ND_p control, TB_p bank, WFormula_p selected)
+{
+	FormulaSet_p target = control->nd_derivation;
+	FormulaSet_p temporary_store = control->nd_temporary_formulas;
+	WFormula_p handle = target->anchor->succ;
+	long counter = 0;
+	while (handle != target->anchor)
+	{
+		if (handle->tformula->f_code != bank->sig->eqn_code)
+		{
+			handle = handle->succ;
+			continue;
+		}
+		WFormula_p left = NDEqualityEliminationLeft(control,bank,selected,handle);
+		WFormula_p right = NDEqualityEliminationRight(control,bank,selected,handle);
+		if (left)
+		{
+			FormulaSetInsert(temporary_store,left);
+			counter++;
+		}
+		if (right)
+		{
+			FormulaSetInsert(temporary_store,right);
+			counter++;
+		}
+		handle = handle->succ;
+	}
+	return counter;
 }
 
 

@@ -919,6 +919,35 @@ WFormula_p NDExistentialElimination2(ND_p control,TB_p bank, WFormula_p existent
 	return psi;
 }
 
+WFormula_p NDEqualityIntroduction(ND_p control, TB_p bank, Term_p term)
+{
+	Eqn_p equals = EqnAlloc(term,term,bank,true);
+	TFormula_p equals_tf = TFormulaLitAlloc(equals);
+	return WTFormulaAlloc(bank,equals_tf);
+}
+
+WFormula_p NDEqualityEliminationLeft(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality)
+{
+	if (equality->tformula->f_code != bank->sig->eqn_code)
+	{
+		return NULL;
+	}
+	Term_p s = equality->tformula->args[0];
+	Term_p t = equality->tformula->args[1];
+	return FormulaMergeVars(substituted,bank,s,t);
+}
+
+WFormula_p NDEqualityEliminationRight(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality)
+{
+	if (equality->tformula->f_code != bank->sig->eqn_code)
+	{
+		return NULL;
+	}
+	Term_p t = equality->tformula->args[0];
+	Term_p s = equality->tformula->args[1];
+	return FormulaMergeVars(substituted,bank,s,t);
+}
+
 
 /*  Make all possible and introductions with the ND_p and formula passed
  * 

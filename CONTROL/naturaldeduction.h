@@ -84,12 +84,18 @@ long NDNegIntProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected);
 
+WFormula_p NDEqualityIntroduction(ND_p control, TB_p bank, Term_p term);
+WFormula_p NDEqualityEliminationLeft(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality);
+WFormula_p NDEqualityEliminationRight(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality);
+
 long NDOrElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDAndElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected);
 long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected);
+
+
 /*
 int NDSaturate(ProofState_p state, ProofControl_p control, long
                   step_limit, long proc_limit, long unproc_limit, long

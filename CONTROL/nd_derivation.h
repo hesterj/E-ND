@@ -37,6 +37,9 @@ void NDScoreFormulaSetRandomly(FormulaSet_p input);
 
 WFormula_p NDSelectHighestScoreThroughSocket(FormulaSet_p input, int port);
 WFormula_p NDSelectHighestScoreThroughFile(FormulaSet_p input);
+long NDFormulaWeight(WFormula_p input);
 char *WFormulaPrintString(WFormula_p input);
+
+bool FormulaSetContainsFormula(FormulaSet_p set, WFormula_p formula);
 
 #endif

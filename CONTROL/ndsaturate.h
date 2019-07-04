@@ -12,5 +12,6 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
                   long answer_limit);
                  
 int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor);
+bool NDFormulaAlreadyKnown(ND_p control, WFormula_p formula);
 
 #endif

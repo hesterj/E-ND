@@ -301,6 +301,8 @@ void NDGenerateAndScoreFormulas(ND_p ndcontrol,WFormula_p handle)
 	NDUniversalElimProcess(ndcontrol,ndcontrol->terms,handle);
 	NDExistentialElimProcess(ndcontrol,ndcontrol->terms,handle);
 	
+	//NDEqualityEliminationProcess(ndcontrol,ndcontrol->terms,handle);
+	
 	//printf("\ndumping %ld previous formulas...",ndcontrol->nd_generated->members);
 	//FormulaSetFreeFormulas(ndcontrol->nd_generated);
 	//printf("\ninserting %ld temporary formulas...",ndcontrol->nd_temporary_formulas->members);
@@ -650,6 +652,12 @@ WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p v
 	
 
 	new_tform = TFormulaMergeVars(formula,bank,term,variable);
+	
+	if (!new_tform)
+	{
+		return NULL;
+	}
+	
 	qall_new_tform = TFormulaQuantorAlloc(bank,bank->sig->qall_code,variable,new_tform);
 	qall_new_form = WTFormulaAlloc(bank,qall_new_tform);
 	
@@ -671,6 +679,12 @@ WFormula_p NDExistentialIntroduction(ND_p control,TB_p bank, Term_p term, Term_p
 	}
 	
 	new_tform = TFormulaMergeVars(formula,bank,term,variable);
+	
+	if (!new_tform)
+	{
+		return NULL;
+	}
+	
 	qex_new_tform = TFormulaQuantorAlloc(bank,bank->sig->qex_code,variable,new_tform);
 	qex_new_form = WTFormulaAlloc(bank,qex_new_tform);
 	
@@ -932,7 +946,9 @@ WFormula_p NDEqualityIntroduction(ND_p control, TB_p bank, Term_p term)
 
 WFormula_p NDEqualityEliminationLeft(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality)
 {
-	if (equality->tformula->f_code != bank->sig->eqn_code)
+	if ((equality->tformula->f_code != bank->sig->eqn_code) || 
+		(equality->tformula->args[0]->f_code == SIG_TRUE_CODE) || 
+		(equality->tformula->args[1]->f_code == SIG_TRUE_CODE))
 	{
 		return NULL;
 	}
@@ -943,7 +959,9 @@ WFormula_p NDEqualityEliminationLeft(ND_p control, TB_p bank, WFormula_p substit
 
 WFormula_p NDEqualityEliminationRight(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality)
 {
-	if (equality->tformula->f_code != bank->sig->eqn_code)
+	if ((equality->tformula->f_code != bank->sig->eqn_code) || 
+		(equality->tformula->args[0]->f_code == SIG_TRUE_CODE) || 
+		(equality->tformula->args[1]->f_code == SIG_TRUE_CODE))
 	{
 		return NULL;
 	}
@@ -1117,6 +1135,19 @@ long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	long res = 0;
 	WFormula_p generated;
 	Term_p constant;
+	
+	//printf("\NMAX VAR CODE: %ld\n",TermFindMaxVarCode(selected->tformula));
+	/*
+	FunCode min_code = TermFindMaxVarCode(selected->tformula);
+	assert(min_code < 0);
+	min_code -= 2;
+	Term_p freshvariable = VarBankFCodeFind(bank->vars,min_code);
+	if (!freshvariable)
+	{
+		//printf("allocing a\n");
+		freshvariable = VarBankVarAlloc(bank->vars,min_code,control->freshvars->sort_table->default_type);
+	}
+	*/
 	Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
 	PStack_p stack = PStackAlloc();
 	
@@ -1160,7 +1191,20 @@ long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	long res = 0;
 	WFormula_p generated;
 	Term_p constant;
-	Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	
+	//printf("\NMAX VAR CODE: %ld\n",TermFindMaxVarCode(selected->tformula));
+	
+	FunCode min_code = TermFindMaxVarCode(selected->tformula);
+	assert(min_code < 0);
+	min_code -= 2;
+	Term_p freshvariable = VarBankFCodeFind(bank->vars,min_code);
+	if (!freshvariable)
+	{
+		//printf("allocing a\n");
+		freshvariable = VarBankVarAlloc(bank->vars,min_code,control->freshvars->sort_table->default_type);
+	}
+	
+	//Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
 	PStack_p stack = PStackAlloc();
 	
 	nd_label_symbols(control,selected->tformula);
@@ -1275,8 +1319,18 @@ long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 
 long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {
+	//printf("\NMAX VAR CODE: %ld\n",TermFindMaxVarCode(selected->tformula));
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
-	Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	FunCode min_code = TermFindMaxVarCode(selected->tformula);
+	assert(min_code < 0);
+	min_code -= 2;
+	Term_p freshvariable = VarBankFCodeFind(bank->vars,min_code);
+	if (!freshvariable)
+	{
+		//printf("allocing a\n");
+		freshvariable = VarBankVarAlloc(bank->vars,min_code,control->freshvars->sort_table->default_type);
+	}
+	//Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
 	WFormula_p generated = NDUniversalElimination(control,bank,selected,freshvariable);
 	if (generated)
 	{
@@ -1363,22 +1417,22 @@ void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source)
 		{
 			if (handle->tformula->f_code != input->terms->sig->not_code)
 			{
-				//printf("\nnegated conjecture is not a negation, searching for contradiction\n");
+				printf("\nnegated conjecture is not a negation, searching for contradiction\n");
 				//goal = handle;
 				break;
 			}
 			goal = WTFormulaAlloc(input->terms,handle->tformula->args[0]);
-			//printf("\nFound negated goal:\n");
+			printf("\nFound negated goal, searching for direct proof:\n");
 			//WFormulaPrint(GlobalOut,goal,true);
 			//printf("\nExtracting negated conjecture:\n");
 			FormulaSetExtractEntry(handle);
 			//printf("\n");
 			break;
 		}
-		if (FormulaQueryType(handle) == CPTypeConjecture)
+		else if (FormulaQueryType(handle) == CPTypeConjecture)
 		{
 			goal = handle;
-			//printf("\nFound goal:\n");
+			printf("\nFound goal, searching for direct proof:\n");
 			//WFormulaPrint(GlobalOut,goal,true);
 			//printf("\nExtracting conjecture:\n");
 			FormulaSetExtractEntry(handle);
@@ -1396,11 +1450,15 @@ void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source)
 
 bool NDPDerivationGoalIsReached(ND_p control)
 {
-	WFormula_p handle = control->nd_derivation->anchor->succ;
-	while (handle != control->nd_derivation->anchor)
+	WFormula_p handle = control->nd_generated->anchor->succ;
+	//printf("\nformula in goal is reach %ld:\n",control->nd_generated->members);
+	//WFormulaPrint(GlobalOut,handle,true);
+	//printf("\n");
+	//TFormulaTPTPPrint(GlobalOut,control->terms,handle->tformula,true,true);
+	while (handle != control->nd_generated->anchor)
 	{
 		Subst_p subst = SubstAlloc();
-		if (NDUnify(control,subst,handle->tformula,control->goal->tformula))
+		if (handle && NDUnify(control,subst,handle->tformula,control->goal->tformula))
 		{
 			return true;
 		}
@@ -1436,3 +1494,5 @@ void NDResetState(ND_p ndcontrol)
 	  VarBankResetVCounts(ndcontrol->terms->vars);
 	  VarBankResetVCounts(ndcontrol->freshvars);
 }
+
+

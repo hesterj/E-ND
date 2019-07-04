@@ -283,8 +283,11 @@ static __inline__ Term_p TermDeref(Term_p term, DerefType_p deref)
 
    if(*deref == DEREF_ALWAYS)
    {
+		//printf("\n");
       while(term->binding)
       {
+			if (term->binding == term) break; // John
+			//printf("")
          term = term->binding;
       }
    }

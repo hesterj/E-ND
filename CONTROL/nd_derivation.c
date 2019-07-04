@@ -30,6 +30,11 @@ void NDScoreFormulaRandomly(WFormula_p input)
 	input->score = score;
 }
 
+long NDFormulaWeight(WFormula_p input)
+{
+	return TermWeightCompute(input->tformula,1,1);
+}
+
 void NDScoreFormulaSetRandomly(FormulaSet_p input)
 {
 	WFormula_p handle = input->anchor->succ;
@@ -44,7 +49,7 @@ void NDScoreFormulaSetRandomly(FormulaSet_p input)
 
 WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input)
 {
-	NDScoreFormulaSetRandomly(input);
+	//NDScoreFormulaSetRandomly(input);
 	//printf("\nsuccessfully scored.  seleccting highest score\n");
 	WFormula_p handle = input->anchor->succ;
 	WFormula_p res = input->anchor->succ;
@@ -58,9 +63,10 @@ WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input)
 		}
 		handle = handle->succ;
 	}
-	//printf("\nMax score: %f\n",maxscore);
-	//WFormulaPrint(GlobalOut,res,true);
-	//printf("\n");
+	printf("\nMax score: %f, remaining formulas: %ld\n",maxscore,input->members);
+	WFormulaPrint(GlobalOut,res,true);
+	printf("%ld\n",NDFormulaWeight(res));
+	
 	return res;
 }
 /*
@@ -177,4 +183,18 @@ bool NDCheckIfFormulaIsInstantiationOfExistential(ND_p control, WFormula_p exist
 	return true;
 }
 */
+
+bool FormulaSetContainsFormula(FormulaSet_p set, WFormula_p formula)
+{
+	if (set->members == 0) return false;
+	WFormula_p handle = set->anchor->succ;
+	TFormula_p formula_tf = formula->tformula;
+	while (handle != set->anchor)
+	{
+		TFormula_p handle_tf = handle->tformula;
+		if (TermStructEqual(formula_tf,handle_tf)) return true;
+		handle = handle->succ;
+	}
+	return false;
+}
 

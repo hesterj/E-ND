@@ -53,7 +53,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    
    srand(time(0));
    //printf("\n%ld\n",ndcontrol->nd_generated->members);
-   int counter = 0;
+   // int counter = 0;
    int success_state = 0;
    
    /*  Begin Proof Search
@@ -61,9 +61,11 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    
    restart:
    
+   //counter = 0;
+   
    while (success == false)
    {
-	  counter++;
+	  //counter=1;
 	  
 	  //int start_new_assumption = rand()%100;  // 1/100 chance of starting new assumption...
 	  int start_new_assumption = 1;
@@ -103,17 +105,37 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	   *  Message sent is the string representation of the formula in ND generated, message received is the corresponding score.  
 	   *  Choose highest score...
 	  */ 
-	  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+	  NDScoreFormulaSetRandomly(ndcontrol->nd_generated);
+	  
+	  for (;;)
+	  {
+		  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+		  if (!NDFormulaAlreadyKnown(ndcontrol,selected))
+		  {
+			  printf("found one\n");
+			  break;
+		  }
+		  FormulaSetExtractEntry(selected);
+		  WFormulaFree(selected);
+	  }
+	  
 	  //selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
 	  /*
 	  */
 	  selected_copy = WFormulaFlatCopy(selected);
 	  FormulaSetInsert(ndcontrol->nd_derivation,selected_copy);
 	  //printf("\ngenerated formulas in main loop: %ld\n",ndcontrol->nd_generated->members);
-	  printf("\n#");
-	  WFormulaPrint(GlobalOut,selected,true);
+
 	  //printf("\n___generating___\n");
 	  NDGenerateAndScoreFormulas(ndcontrol,selected);
+	  printf("\n# %ld\n#", ndcontrol->nd_generated->members);
+	  WFormulaPrint(GlobalOut,selected,true);
+	  
+	  if ((ndcontrol->goal) && (ndcontrol->nd_generated->members > 0) && NDPDerivationGoalIsReached(ndcontrol))
+	  {
+		  success_state = 2;
+		  success = true;
+	  }
 	  
 	  // Link together the nd_derivation and nd_generated formula sets to check for 
 	  // contradictions and the goal.  This MUST be undone for another iteration 
@@ -128,6 +150,11 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  
 	  //printf("\nformulas: %ld\nchecking for contradiction/n",ndcontrol->nd_derivation->members+ndcontrol->nd_generated->members);
 	  
+	  apred->succ = bsucc;
+	  bsucc->pred = apred;
+	  bpred->succ = aroot;
+	  aroot->pred = bpred;
+	  
 	  if (NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_derivation))
 	  {
 		  
@@ -140,11 +167,6 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  bpred->succ = aroot;
 	  aroot->pred = bpred;
 	  
-	  if ((ndcontrol->goal) && NDPDerivationGoalIsReached(ndcontrol))
-	  {
-		  success_state = 2;
-		  success = true;
-	  }
 	  // undo the damage done to the formula set structure
 	  apred->succ = aroot;
 	  aroot->pred = apred;
@@ -330,3 +352,16 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 	// free the unnecessary parts of the current derivation
 	return return_state;
 }
+
+bool NDFormulaAlreadyKnown(ND_p control, WFormula_p formula)
+{
+	FormulaSet_p derivation = control->nd_derivation;
+	FormulaSet_p generated = control->nd_generated;
+	FormulaSet_p temp = control->nd_temporary_formulas;
+	FormulaSet_p branch = control->branch_formulas;
+	bool known = (FormulaSetContainsFormula(derivation,formula)  ||
+					  FormulaSetContainsFormula(temp,formula)       ||
+					  FormulaSetContainsFormula(branch,formula));
+	return known;
+}
+

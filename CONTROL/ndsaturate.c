@@ -45,7 +45,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    FormulaSet_p axiom_archive = FormulaSetAlloc();
    
    FormulaSetCopyFormulas(ndcontrol->nd_generated,state->f_axioms);
-   FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
+   //FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
    NDPInitializeDerivationGoal(ndcontrol,ndcontrol->nd_generated);
    FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_generated);
    
@@ -54,12 +54,16 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    srand(time(0));
    //printf("\n%ld\n",ndcontrol->nd_generated->members);
    // int counter = 0;
+   
    int success_state = 0;
    
    /*  Begin Proof Search
    */
-   
+   //exit(0);
    restart:
+   
+   selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+   NDGenerateAndScoreFormulas(ndcontrol,selected);
    
    //counter = 0;
    
@@ -106,13 +110,14 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	   *  Choose highest score...
 	  */ 
 	  NDScoreFormulaSetRandomly(ndcontrol->nd_generated);
+	  //selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
 	  
-	  for (;;)
+	  while(true)
 	  {
 		  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
 		  if (!NDFormulaAlreadyKnown(ndcontrol,selected))
 		  {
-			  printf("found one\n");
+			  //printf("found one\n");
 			  break;
 		  }
 		  FormulaSetExtractEntry(selected);
@@ -162,11 +167,6 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 		  success = true;
 	  }
 	  
-	  apred->succ = bsucc;
-	  bsucc->pred = apred;
-	  bpred->succ = aroot;
-	  aroot->pred = bpred;
-	  
 	  // undo the damage done to the formula set structure
 	  apred->succ = aroot;
 	  aroot->pred = apred;
@@ -177,31 +177,38 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  if (ndcontrol->nd_derivation->members > 10)
 	  {
 		  //printf("\nmax derivation length\n");
+		  //printf("brr\n");
+		  //FormulaSetPrint(GlobalOut,ndcontrol->nd_generated,true);
+		  //printf("\nnd_derivation\n");
+		  //FormulaSetPrint(GlobalOut,ndcontrol->nd_derivation,true);
+		  //exit(0);
+		  
 		  NDResetState(ndcontrol);
 		  FormulaSetCopyFormulas(ndcontrol->nd_generated,axiom_archive);
-		  FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
+		  //FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
+		  printf("\n_____________\n");
 		  goto restart;
 	  }
 	  
    }
    
-   //printf("\n Here is the derivation the loop succeeded in finding:\n");
+   printf("\n Here is the derivation the loop succeeded in finding:\n");
    FormulaSetPrint(GlobalOut,ndcontrol->nd_derivation,true);
    switch (success_state)
    {
 	   case 0:
-	      //printf("\nfailure\n");
+	      printf("\nFailure\n");
 	      NDFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 0;
 	      
 	   case 1: 
-	      //printf("\ncontradiction\n");
+	      printf("\Contradiction\n");
 	      NDFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 1;
 	   case 2:
-	      //printf("\nreached goal\n");
+	      printf("\nReached goal\n");
 	      NDFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 2;
@@ -338,6 +345,7 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 		if (assumption_control->nd_derivation->members > 50)
 		{
 			//printf("\nexcess derivation size: %ld\n",assumption_control->nd_derivation->members);
+			
 			break;
 		}
 	}
@@ -359,9 +367,7 @@ bool NDFormulaAlreadyKnown(ND_p control, WFormula_p formula)
 	FormulaSet_p generated = control->nd_generated;
 	FormulaSet_p temp = control->nd_temporary_formulas;
 	FormulaSet_p branch = control->branch_formulas;
-	bool known = (FormulaSetContainsFormula(derivation,formula)  ||
-					  FormulaSetContainsFormula(temp,formula)       ||
-					  FormulaSetContainsFormula(branch,formula));
+	bool known = FormulaSetContainsFormula(derivation,formula);
 	return known;
 }
 

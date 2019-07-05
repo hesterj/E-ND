@@ -233,7 +233,7 @@ TFormula_p TFormulaMergeVars(WFormula_p formula,  TB_p bank, Term_p x, Term_p y)
    Subst_p  subst = SubstAlloc();
    TFormula_p new_tform;
    
-   if (!TermHasFCode(x,y->f_code) || (x->f_code == y->f_code))
+   if (!TermHasFCode(formula->tformula,x->f_code) || (x->f_code == y->f_code))
    {
 		return NULL;
 	}

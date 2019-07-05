@@ -287,7 +287,9 @@ void NDSaturateLoop(ND_p ndcontrol, long loops)
 
 void NDGenerateAndScoreFormulas(ND_p ndcontrol,WFormula_p handle)
 {
-	
+	//printf("\n generating formulas for: ");
+	//WFormulaPrint(GlobalOut,handle,true);
+	//printf("\n");
 	NDAndIntProcess(ndcontrol,ndcontrol->terms,handle);
 	NDOrIntProcess(ndcontrol,ndcontrol->terms,handle);
 	NDImplIntProcess(ndcontrol,ndcontrol->terms,handle);
@@ -634,12 +636,17 @@ WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p v
 	
 	if (!TermIsSubterm(handle,term,DEREF_NEVER))
 	{
+		//printf("term not subterm\n");
 		return NULL; //term is not a subterm of the formula
 	}
-	if (NDTermIsAbsolutelyFlagged(control,variable) || NDTermIsAbsolutelyFlagged(control,term))
+	// Check this....
+	//if (NDTermIsAbsolutelyFlagged(control,variable) || NDTermIsAbsolutelyFlagged(control,term))
+	if (NDTermIsAbsolutelyFlagged(control,term))
 	{
+		//printf("flagging error\n");
 		return NULL; //do not universally quantify over symbols affected by some rules
 	}
+	
 	PTree_p free_variables = NULL;
 	PStack_p free_stack = PStackAlloc();
 	TFormulaCollectFreeVars(bank, formula->tformula, &free_variables);
@@ -650,8 +657,18 @@ WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p v
 	// push variable being introduced to absolutely flagged variables
 	PStackPushP(control->absolutely_flagged_variables,term);
 	
+	//printf("\nUniversalIntroductionTest\n");
+	//WFormulaPrint(GlobalOut,formula,true);
+	//printf("\nfreshvariable: ");
+	//TermPrint(GlobalOut,variable,control->signature,DEREF_NEVER);
+	//printf("\nterm: ");
+	//TermPrint(GlobalOut,term,control->signature,DEREF_NEVER);
+	//printf("\n");
 
 	new_tform = TFormulaMergeVars(formula,bank,term,variable);
+	
+	//printf("replaced\n");
+	//TFormulaTPTPPrint(GlobalOut,bank,new_tform,true,true);
 	
 	if (!new_tform)
 	{
@@ -1166,13 +1183,23 @@ long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 			continue;
 		}
 		//relatively and absolutely flagged vars are handled in NDUniversalIntroduction
+		//printf("\nUniversalIntProcessTest\n");
+		//WFormulaPrint(GlobalOut,selected,true);
+		//printf("\nfreshvariable");
+		//TermPrint(GlobalOut,freshvariable,control->signature,DEREF_NEVER);
+		//printf("\nterm");
+		//TermPrint(GlobalOut,constant,control->signature,DEREF_NEVER);
 		generated = NDUniversalIntroduction(control,bank,constant,freshvariable,selected);
 		if (generated)
 		{
+			//printf("\nuniversal int done\n");
+			//WFormulaPrint(GlobalOut,generated,true);
 			FormulaSetInsert(temporary_store,generated);
+			//exit(0);
 		}
-	}
+		//else printf("nothing generated\n");
 	
+	}
 	PStackFree(stack);
 	PStackFree(duplicate_terms_removed);
 	return res;
@@ -1193,7 +1220,7 @@ long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	Term_p constant;
 	
 	//printf("\NMAX VAR CODE: %ld\n",TermFindMaxVarCode(selected->tformula));
-	
+	/*
 	FunCode min_code = TermFindMaxVarCode(selected->tformula);
 	assert(min_code < 0);
 	min_code -= 2;
@@ -1203,8 +1230,8 @@ long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 		//printf("allocing a\n");
 		freshvariable = VarBankVarAlloc(bank->vars,min_code,control->freshvars->sort_table->default_type);
 	}
-	
-	//Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
+	*/
+	Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
 	PStack_p stack = PStackAlloc();
 	
 	nd_label_symbols(control,selected->tformula);
@@ -1338,6 +1365,12 @@ long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 	}
 	return 0;
 }
+
+/*  This doesn't work...
+ * 
+ * 
+ * 
+*/
 
 long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 {

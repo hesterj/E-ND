@@ -487,7 +487,7 @@ void NDFree(ND_p initial)
 	FormulaSetFree(initial->nd_derivation);
 	FormulaSetFree(initial->nd_generated);
 	FormulaSetFree(initial->nd_temporary_formulas);
-	WFormulaFree(initial->goal);
+	//WFormulaFree(initial->goal);
 	NDCellFree(initial);
 }
 
@@ -1406,11 +1406,11 @@ bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
 				NDUnify(control,subst,negated_res,handle->tformula))
 			{
 				SubstFree(subst);
-				//printf("\nFound contradiction!\n");
-				//WFormulaPrint(GlobalOut,handle,true);
-				//printf("\n");
-				//WFormulaPrint(GlobalOut,res,true);
-				//printf("\nend contradiction pair\n");
+				fprintf(GlobalOut, "\nFound contradiction!\n");
+				WFormulaPrint(GlobalOut,handle,true);
+				fprintf(GlobalOut, "\n");
+				WFormulaPrint(GlobalOut,res,true);
+				fprintf(GlobalOut, "\nend contradiction pair\n");
 				return true;
 			}
 			TermTopFree(negated_res);

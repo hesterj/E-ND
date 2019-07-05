@@ -63,9 +63,9 @@ WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input)
 		}
 		handle = handle->succ;
 	}
-	//printf("\nMax score: %f, remaining formulas: %ld\n",maxscore,input->members);
-	//WFormulaPrint(GlobalOut,res,true);
-	//printf("%ld\n",NDFormulaWeight(res));
+	printf("\nMax score: %f, remaining formulas: %ld\n",maxscore,input->members);
+	WFormulaPrint(GlobalOut,res,true);
+	printf("%ld\n",NDFormulaWeight(res));
 	
 	return res;
 }

@@ -22,22 +22,22 @@ typedef struct assumptioncell
 	WFormula_p assumption;
 	FormulaSet_p nd_derivation;
 	
-}NDAssumption, *NDAssumption_p;
+}TableauAssumption, *TableauAssumption_p;
 
-#define NDAssumptionCellAlloc() (NDAssumption*)SizeMalloc(sizeof(NDAssumption))
-#define NDAssumptionCellFree(junk) SizeFree(junk,sizeof(NDAssumption))
-NDAssumption_p NDAssumptionAlloc(WFormula_p goal,WFormula_p assumption);
-void NDAssumptionFree(NDAssumption_p junk);
+#define TableauAssumptionCellAlloc() (TableauAssumption*)SizeMalloc(sizeof(TableauAssumption))
+#define TableauAssumptionCellFree(junk) SizeFree(junk,sizeof(TableauAssumption))
+TableauAssumption_p TableauAssumptionAlloc(WFormula_p goal,WFormula_p assumption);
+void TableauAssumptionFree(TableauAssumption_p junk);
 */
-WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input);
-void NDScoreFormulaRandomly(WFormula_p input);
-void NDScoreFormulaSetRandomly(FormulaSet_p input);
-//bool NDCheckIfFormulaIsInstantiationOfExistential(ND_p control, WFormula_p existential, WFormula_p instantiation); //cant be in this file
-//void NDInitializeDerivationGoal(NDAssumption_p input, FormulaSet_p source);
+WFormula_p TableauSelectHighestScoreRandomly(FormulaSet_p input);
+void TableauScoreFormulaRandomly(WFormula_p input);
+void TableauScoreFormulaSetRandomly(FormulaSet_p input);
+//bool TableauCheckIfFormulaIsInstantiationOfExistential(Tableau_p control, WFormula_p existential, WFormula_p instantiation); //cant be in this file
+//void TableauInitializeDerivationGoal(TableauAssumption_p input, FormulaSet_p source);
 
-WFormula_p NDSelectHighestScoreThroughSocket(FormulaSet_p input, int port);
-WFormula_p NDSelectHighestScoreThroughFile(FormulaSet_p input);
-long NDFormulaWeight(WFormula_p input);
+WFormula_p TableauSelectHighestScoreThroughSocket(FormulaSet_p input, int port);
+WFormula_p TableauSelectHighestScoreThroughFile(FormulaSet_p input);
+long TableauFormulaWeight(WFormula_p input);
 char *WFormulaPrintString(WFormula_p input);
 
 bool FormulaSetContainsFormula(FormulaSet_p set, WFormula_p formula);

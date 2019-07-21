@@ -9,15 +9,15 @@
  * 
 */
 
-int NDSaturate(ProofState_p state, ProofControl_p control, long
+int TableauSaturate(ProofState_p state, ProofControl_p control, long
                   step_limit, long proc_limit, long unproc_limit, long
                   total_limit, long generated_limit, long tb_insert_limit,
                   long answer_limit)          
 {
-   ND_p ndcontrol = NDAlloc(state);
-   NDSet_p ndset = NDSetAlloc();
-   //ND_Derivation_p derivation = NDDerivationAlloc(NULL,NULL);
-   NDSetInsert(ndset,ndcontrol);
+   Tableau_p ndcontrol = TableauAlloc(state);
+   TableauSet_p ndset = TableauSetAlloc();
+   //Tableau_Derivation_p derivation = TableauDerivationAlloc(NULL,NULL);
+   TableauSetInsert(ndset,ndcontrol);
    WFormula_p selected = NULL;
    WFormula_p selected_copy = NULL;
    bool success = false;
@@ -46,7 +46,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    
    FormulaSetCopyFormulas(ndcontrol->nd_generated,state->f_axioms);
    //FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
-   NDPInitializeDerivationGoal(ndcontrol,ndcontrol->nd_generated);
+   TableauPInitializeDerivationGoal(ndcontrol,ndcontrol->nd_generated);
    FormulaSetUpdateControlSymbols(ndcontrol,ndcontrol->nd_generated);
    
    FormulaSetCopyFormulas(axiom_archive,ndcontrol->nd_generated);
@@ -62,8 +62,8 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    //exit(0);
    restart:
    
-   selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
-   NDGenerateAndScoreFormulas(ndcontrol,selected);
+   selected = TableauSelectHighestScoreRandomly(ndcontrol->nd_generated);
+   TableauGenerateAndScoreFormulas(ndcontrol,selected);
    
    //counter = 0;
    
@@ -81,7 +81,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 		  // 2 if goal was reached by lhs of sequent assumption
 		  //printf("\nstart new assumption\n");
 		  int assumption_status = 0;
-		  assumption_status = NDStartNewAssumption(ndcontrol,socketDescriptor);
+		  assumption_status = TableauStartNewAssumption(ndcontrol,socketDescriptor);
 		  //assumptioncounter++;
 		  //printf("\nexit assumption\n");
 		  if (assumption_status == 0)
@@ -106,16 +106,16 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  
 	  
 	  /*  Go through a socket to get the highest score from the scoring server
-	   *  Message sent is the string representation of the formula in ND generated, message received is the corresponding score.  
+	   *  Message sent is the string representation of the formula in Tableau generated, message received is the corresponding score.  
 	   *  Choose highest score...
 	  */ 
-	  NDScoreFormulaSetRandomly(ndcontrol->nd_generated);
-	  //selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+	  TableauScoreFormulaSetRandomly(ndcontrol->nd_generated);
+	  //selected = TableauSelectHighestScoreRandomly(ndcontrol->nd_generated);
 	  
 	  while(true)
 	  {
-		  selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
-		  if (!NDFormulaAlreadyKnown(ndcontrol,selected))
+		  selected = TableauSelectHighestScoreRandomly(ndcontrol->nd_generated);
+		  if (!TableauFormulaAlreadyKnown(ndcontrol,selected))
 		  {
 			  //printf("found one\n");
 			  break;
@@ -124,7 +124,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 		  WFormulaFree(selected);
 	  }
 	  
-	  //selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
+	  //selected = TableauSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
 	  /*
 	  */
 	  selected_copy = WFormulaFlatCopy(selected);
@@ -132,11 +132,11 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  //printf("\ngenerated formulas in main loop: %ld\n",ndcontrol->nd_generated->members);
 
 	  //printf("\n___generating___\n");
-	  NDGenerateAndScoreFormulas(ndcontrol,selected);
+	  TableauGenerateAndScoreFormulas(ndcontrol,selected);
 	  printf("\n# %ld\n#", ndcontrol->nd_generated->members);
 	  WFormulaPrint(GlobalOut,selected,true);
 	  
-	  if ((ndcontrol->goal) && (ndcontrol->nd_generated->members > 0) && NDPDerivationGoalIsReached(ndcontrol))
+	  if ((ndcontrol->goal) && (ndcontrol->nd_generated->members > 0) && TableauPDerivationGoalIsReached(ndcontrol))
 	  {
 		  success_state = 2;
 		  success = true;
@@ -160,7 +160,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 	  bpred->succ = aroot;
 	  aroot->pred = bpred;
 	  
-	  if (NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_derivation))
+	  if (TableauFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_derivation))
 	  {
 		  
 		  success_state = 1;
@@ -183,7 +183,7 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
 		  //FormulaSetPrint(GlobalOut,ndcontrol->nd_derivation,true);
 		  //exit(0);
 		  
-		  NDResetState(ndcontrol);
+		  TableauResetState(ndcontrol);
 		  FormulaSetCopyFormulas(ndcontrol->nd_generated,axiom_archive);
 		  //FormulaSetCopyFormulas(ndcontrol->nd_derivation,state->f_axioms);
 		  printf("\n_____________\n");
@@ -198,37 +198,37 @@ int NDSaturate(ProofState_p state, ProofControl_p control, long
    {
 	   case 0:
 	      printf("\nFailure\n");
-	      NDFree(ndcontrol);
+	      TableauFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 0;
 	      
 	   case 1: 
-	      printf("\Contradiction\n");
-	      NDFree(ndcontrol);
+	      printf("\nContradiction\n");
+	      TableauFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 1;
 	   case 2:
 	      printf("\nReached goal\n");
-	      NDFree(ndcontrol);
+	      TableauFree(ndcontrol);
 	      FormulaSetFree(axiom_archive);
 	      return 2;
    }
-   NDSetFree(ndset);
+   TableauSetFree(ndset);
    FormulaSetFree(axiom_archive);
    //FormulaSetFree(ndcontrol->nd_generated);
    //FormulaSetFree(ndcontrol->nd_temporary_formulas);
    return 0;
 }
 
-int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
+int TableauStartNewAssumption(Tableau_p ndcontrol, int socketDescriptor)
 {
 	TFormula_p assumption = NULL;
 	WFormula_p assumption_formula = NULL;
 	bool success = false;
 	WFormula_p selected = NULL;
 	WFormula_p selected_copy = NULL;
-	ND_p assumption_control = NDAllocAssumption(ndcontrol);
-	NDSetInsert(ndcontrol->set,assumption_control);
+	Tableau_p assumption_control = TableauAllocAssumption(ndcontrol);
+	TableauSetInsert(ndcontrol->set,assumption_control);
 	int return_state = 0;
 	
 	// select the assumption
@@ -236,7 +236,7 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 	// if goal is an implication can choose left hand side of implication
 	// otherwise, can assume an instantiation of an existentially quantified formula, goal is parents goal
 	
-	//NEED METHODS TO CHOOSE THE ASSUMPTION FORMULA AND GOAL
+	//NEED METHODS TO CHOOSE THE ASSUMPTION FORMULA ATableau GOAL
 	//Both assumption formula and the ultimate goal should be subformulas of the goal of the master.
 	//At the moment the only possibility is to negate the goal of the parent and search for a contradiction
 	
@@ -291,7 +291,7 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 			// 2 if goal was reached by lhs of sequent assumption
 			printf("start new assumption\n");
 			int assumption_status = 0;
-			assumption_status = NDStartNewAssumption(ndcontrol,socketDescriptor);
+			assumption_status = TableauStartNewAssumption(ndcontrol,socketDescriptor);
 			//printf("\nexit assumption\n");
 			if (assumption_status == 0)
 			{
@@ -310,7 +310,7 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 		}
 		*/
 		//selected = NULL;
-		selected = NDSelectHighestScoreRandomly(assumption_control->nd_generated);
+		selected = TableauSelectHighestScoreRandomly(assumption_control->nd_generated);
 		selected_copy = WFormulaFlatCopy(selected);
 		FormulaSetInsert(assumption_control->branch_formulas,selected_copy);
 		if (!selected)
@@ -318,25 +318,25 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 			//printf("NULL selected in assumption");
 			break;
 		}
-		//selected = NDSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
+		//selected = TableauSelectHighestScoreThroughSocket(ndcontrol->nd_generated,socketDescriptor);
 		FormulaSetExtractEntry(selected);
 		FormulaSetInsert(assumption_control->nd_derivation,selected);
 		//printf("\n");
 		WFormulaPrint(GlobalOut,selected,true);
-		NDGenerateAndScoreFormulas(assumption_control,selected);
+		TableauGenerateAndScoreFormulas(assumption_control,selected);
 		
 		// Link together the nd_derivation and nd_generated formula sets to check for 
 		// contradictions and the goal.  This MUST be undone for another iteration 
 		// of proofs search to occur without crashing.  Similar action is taken
 		// when checking for end condition in the main proof loop
 		
-		if (NDFormulaSetCheckForContradictions(assumption_control,assumption_control->nd_derivation))
+		if (TableauFormulaSetCheckForContradictions(assumption_control,assumption_control->nd_derivation))
 		{
 			//printf("\nAssumption led to contradiction\n");
 			success = true;
 			return_state = 1;
 		}
-		if ((ndcontrol->goal) && NDPDerivationGoalIsReached(assumption_control))
+		if ((ndcontrol->goal) && TableauPDerivationGoalIsReached(assumption_control))
 		{
 			//printf("\nreached goal of assumption\n");
 			success = true;
@@ -349,8 +349,8 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 			break;
 		}
 	}
-	//NDAssumptionControlFree(assumption_control);
-	NDCloseAssumption(assumption_control);
+	//TableauAssumptionControlFree(assumption_control);
+	TableauCloseAssumption(assumption_control);
 	//printf("\nsurface\n");
 	//  
 	
@@ -361,12 +361,12 @@ int NDStartNewAssumption(ND_p ndcontrol, int socketDescriptor)
 	return return_state;
 }
 
-bool NDFormulaAlreadyKnown(ND_p control, WFormula_p formula)
+bool TableauFormulaAlreadyKnown(Tableau_p control, WFormula_p formula)
 {
 	FormulaSet_p derivation = control->nd_derivation;
-	FormulaSet_p generated = control->nd_generated;
-	FormulaSet_p temp = control->nd_temporary_formulas;
-	FormulaSet_p branch = control->branch_formulas;
+	//FormulaSet_p generated = control->nd_generated;
+	//FormulaSet_p temp = control->nd_temporary_formulas;
+	//FormulaSet_p branch = control->branch_formulas;
 	bool known = FormulaSetContainsFormula(derivation,formula);
 	return known;
 }

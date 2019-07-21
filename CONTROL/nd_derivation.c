@@ -2,9 +2,9 @@
 #include "naturaldeduction.h"
 
 /*
-NDAssumption_p NDAssumptionAlloc(WFormula_p goal, WFormula_p assumption)
+TableauAssumption_p TableauAssumptionAlloc(WFormula_p goal, WFormula_p assumption)
 {
-	NDAssumption_p handle = NDAssumptionCellAlloc();
+	TableauAssumption_p handle = TableauAssumptionCellAlloc();
 	
 	handle->nd_derivation = FormulaSetAlloc();
 	handle->goal = goal;
@@ -13,14 +13,14 @@ NDAssumption_p NDAssumptionAlloc(WFormula_p goal, WFormula_p assumption)
 	return handle;
 }
 
-void NDAssumptionFree(NDAssumption_p junk)
+void TableauAssumptionFree(TableauAssumption_p junk)
 {
 	FormulaSetFree(junk->nd_derivation);
 	// what to do with goal/assumption?  junk formulaset to stop valgrind warnings?
-	NDAssumptionCellFree(junk);
+	TableauAssumptionCellFree(junk);
 }
 */
-void NDScoreFormulaRandomly(WFormula_p input)
+void TableauScoreFormulaRandomly(WFormula_p input)
 {
 	float score = (float)rand()/(float)(RAND_MAX);
 	//float denom = (float) input->tformula->v_count;
@@ -30,26 +30,26 @@ void NDScoreFormulaRandomly(WFormula_p input)
 	input->score = score;
 }
 
-long NDFormulaWeight(WFormula_p input)
+long TableauFormulaWeight(WFormula_p input)
 {
 	return TermWeightCompute(input->tformula,1,1);
 }
 
-void NDScoreFormulaSetRandomly(FormulaSet_p input)
+void TableauScoreFormulaSetRandomly(FormulaSet_p input)
 {
 	WFormula_p handle = input->anchor->succ;
 	while(handle!=input->anchor)
 	{
-		NDScoreFormulaRandomly(handle);
+		TableauScoreFormulaRandomly(handle);
 		//WFormulaPrint(GlobalOut,handle,true);
 		//printf("\n%f\n",handle->score);
 		handle = handle->succ;
 	}
 }
 
-WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input)
+WFormula_p TableauSelectHighestScoreRandomly(FormulaSet_p input)
 {
-	//NDScoreFormulaSetRandomly(input);
+	//TableauScoreFormulaSetRandomly(input);
 	//printf("\nsuccessfully scored.  seleccting highest score\n");
 	WFormula_p handle = input->anchor->succ;
 	WFormula_p res = input->anchor->succ;
@@ -65,12 +65,12 @@ WFormula_p NDSelectHighestScoreRandomly(FormulaSet_p input)
 	}
 	printf("\nMax score: %f, remaining formulas: %ld\n",maxscore,input->members);
 	WFormulaPrint(GlobalOut,res,true);
-	printf("%ld\n",NDFormulaWeight(res));
+	printf("%ld\n",TableauFormulaWeight(res));
 	
 	return res;
 }
 /*
-void NDInitializeDerivationGoal(ND_Derivation_p input, FormulaSet_p source)
+void TableauInitializeDerivationGoal(Tableau_Derivation_p input, FormulaSet_p source)
 {
 	WFormula_p handle = source->anchor->succ;
 	WFormula_p goal = NULL;
@@ -109,7 +109,7 @@ void NDInitializeDerivationGoal(ND_Derivation_p input, FormulaSet_p source)
  *  int MUST be a socketDescriptor
 */
 
-WFormula_p NDSelectHighestScoreThroughSocket(FormulaSet_p input, int socketDescriptor)
+WFormula_p TableauSelectHighestScoreThroughSocket(FormulaSet_p input, int socketDescriptor)
 {
 	char sendBuffer[1000],recvBuffer[1000];
 	WFormula_p handle = input->anchor->succ;
@@ -176,7 +176,7 @@ char *WFormulaPrintString(WFormula_p input)
 
 // INCOMPLETE!
 /*
-bool NDCheckIfFormulaIsInstantiationOfExistential(ND_p control, WFormula_p existential,WFormula_p instantiation)
+bool TableauCheckIfFormulaIsInstantiationOfExistential(Tableau_p control, WFormula_p existential,WFormula_p instantiation)
 {
 	FunCode funcode = existential->tformula->fun_code;
 	if (funcode != control->signature->qex_code) return false;

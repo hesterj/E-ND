@@ -1,11 +1,11 @@
 #include "ndset.h"
 
-NDSet_p NDSetAlloc(void)
+TableauSet_p TableauSetAlloc(void)
 {
-   NDSet_p set = NDSetCellAlloc();
+   TableauSet_p set = TableauSetCellAlloc();
 
    set->members = 0;
-   set->anchor  = NDCellAlloc();
+   set->anchor  = TableauCellAlloc();
    set->anchor->succ = set->anchor;
    set->anchor->pred = set->anchor;
    set->identifier = DStrAlloc();
@@ -13,35 +13,35 @@ NDSet_p NDSetAlloc(void)
    return set;
 }
 
-void         NDSetFree(NDSet_p set)
+void         TableauSetFree(TableauSet_p set)
 {
    assert(set);
 
-   NDSetFreeNDs(set);
-   NDCellFree(set->anchor);
+   TableauSetFreeTableaus(set);
+   TableauCellFree(set->anchor);
    DStrFree(set->identifier);
-   NDSetCellFree(set);
+   TableauSetCellFree(set);
 }
 
-void         NDSetFreeNDs(NDSet_p set)
+void         TableauSetFreeTableaus(TableauSet_p set)
 {
    assert(set);
 
-   while(!NDSetEmpty(set))
+   while(!TableauSetEmpty(set))
    {
-      NDSetDeleteEntry(set->anchor->succ);
+      TableauSetDeleteEntry(set->anchor->succ);
    }
 }
 
-void		 NDSetDeleteEntry(ND_p nd)
+void		 TableauSetDeleteEntry(Tableau_p nd)
 {
    assert(nd);
 
-   NDSetExtractEntry(nd);
-   NDFree(nd);
+   TableauSetExtractEntry(nd);
+   TableauFree(nd);
 }
 
-ND_p   NDSetExtractEntry(ND_p nd)
+Tableau_p   TableauSetExtractEntry(Tableau_p nd)
 {
    assert(nd);
    assert(nd->set);
@@ -56,7 +56,7 @@ ND_p   NDSetExtractEntry(ND_p nd)
    return nd;
 }
 
-void         NDSetInsert(NDSet_p set, ND_p newnd)
+void         TableauSetInsert(TableauSet_p set, Tableau_p newnd)
 {
    assert(set);
    assert(newnd);

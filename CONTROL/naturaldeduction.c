@@ -10,7 +10,7 @@
  * 
 */
 
-void ProofTest(ND_p ndcontrol)
+void ProofTest(Tableau_p ndcontrol)
 {
    printf("\n");
    TFormulaTPTPPrint(GlobalOut,ndcontrol->terms,ndcontrol->nd_generated->anchor->succ->tformula->args[0],true,true);
@@ -25,16 +25,16 @@ void ProofTest(ND_p ndcontrol)
    //printf("\n");
    //TermPrint(GlobalOut,x,ndcontrol->signature,true);
    Term_p y1 = VarBankGetFreshVar(ndcontrol->terms->vars,STIndividuals);
-   WFormula_p f1 = NDUniversalElimination(ndcontrol,ndcontrol->terms,start,y1);
-   WFormula_p f2 = NDAndElimination(ndcontrol,ndcontrol->terms,f1,0);
+   WFormula_p f1 = TableauUniversalElimination(ndcontrol,ndcontrol->terms,start,y1);
+   WFormula_p f2 = TableauAndElimination(ndcontrol,ndcontrol->terms,f1,0);
    Term_p x = VarBankGetFreshVar(ndcontrol->terms->vars,STIndividuals);
-   WFormula_p f3 = NDUniversalIntroduction(ndcontrol,ndcontrol->terms,y1,x,f2);
+   WFormula_p f3 = TableauUniversalIntroduction(ndcontrol,ndcontrol->terms,y1,x,f2);
    Term_p y2 = VarBankGetFreshVar(ndcontrol->terms->vars,STIndividuals);
-   WFormula_p f4 = NDUniversalElimination(ndcontrol,ndcontrol->terms,start,y2);
-   WFormula_p f5 = NDAndElimination(ndcontrol,ndcontrol->terms,f4,1);
-   WFormula_p f6 = NDUniversalIntroduction(ndcontrol,ndcontrol->terms,y2,x,f5);
-   WFormula_p f7 = NDAndIntroduction(ndcontrol,ndcontrol->terms,f3,f6);
-   WFormula_p f8 = NDImplIntroduction(ndcontrol,ndcontrol->terms,start,f7);
+   WFormula_p f4 = TableauUniversalElimination(ndcontrol,ndcontrol->terms,start,y2);
+   WFormula_p f5 = TableauAndElimination(ndcontrol,ndcontrol->terms,f4,1);
+   WFormula_p f6 = TableauUniversalIntroduction(ndcontrol,ndcontrol->terms,y2,x,f5);
+   WFormula_p f7 = TableauAndIntroduction(ndcontrol,ndcontrol->terms,f3,f6);
+   WFormula_p f8 = TableauImplIntroduction(ndcontrol,ndcontrol->terms,start,f7);
    
    TFormula_p var_renamed = f8->tformula;
    var_renamed = TFormulaVarRename(ndcontrol->terms,var_renamed);
@@ -67,8 +67,8 @@ void ProofTest(ND_p ndcontrol)
    //bool success = SubstComputeMatch(f_renamed,goal,temp_subst);
    //bool success_2 = SubstComputeMgu(f_renamed,goal,temp_subst);
    
-   bool success = NDUnify(ndcontrol,subst,f_renamed->tformula,goal->tformula);
-   //bool success_2 = NDUnify(ndcontrol,subst,f8->tformula,f7->tformula);
+   bool success = TableauUnify(ndcontrol,subst,f_renamed->tformula,goal->tformula);
+   //bool success_2 = TableauUnify(ndcontrol,subst,f8->tformula,f7->tformula);
    
    //printf("\nsuccess: %d success2: %d\n",success,success_2);
    printf("\nsuccess: %d\n",success);
@@ -81,7 +81,7 @@ void ProofTest(ND_p ndcontrol)
 */
 
 
-bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
+bool TableauUnify(Tableau_p control, Subst_p subst, Term_p s, Term_p t)
 {
 	if (TermIsVar(s))
 	{
@@ -102,7 +102,7 @@ bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
 			int arity = (s->arity > t->arity) ? t->arity : s->arity;
 			for (int i=0; i<arity; i++)
 			{
-				bool temp1 = NDUnify(control, subst, s->args[i],t->args[i]);
+				bool temp1 = TableauUnify(control, subst, s->args[i],t->args[i]);
 				if (!temp1) 
 				{
 					//printf("\ntemp1 fail\n");
@@ -117,7 +117,7 @@ bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
 	}
 	else if (!TermIsVar(s))
 	{
-		bool temp2 = NDUnify(control,subst,t,s);
+		bool temp2 = TableauUnify(control,subst,t,s);
 		if (!temp2)
 		{ 
 			//printf("\ntemp2 fail\n");
@@ -142,7 +142,7 @@ bool NDUnify(ND_p control, Subst_p subst, Term_p s, Term_p t)
  * 
 */
 
-long nd_collect_subterms2(ND_p control, Sig_p sig, Term_p term, PStack_p collector)
+long nd_collect_subterms2(Tableau_p control, Sig_p sig, Term_p term, PStack_p collector)
 {
 	//printf("\nlabelling: ");
 	//TermPrint(GlobalOut,term,sig,DEREF_NEVER);
@@ -218,7 +218,7 @@ long nd_collect_subterms2(ND_p control, Sig_p sig, Term_p term, PStack_p collect
 
 
 
-void FormulaSetUpdateControlSymbols(ND_p control, FormulaSet_p target)
+void FormulaSetUpdateControlSymbols(Tableau_p control, FormulaSet_p target)
 {
 	WFormula_p handle = target->anchor->succ;
 	//printf("\nLabelling formulas... %ld of them\n",target->members);
@@ -239,9 +239,9 @@ void FormulaSetUpdateControlSymbols(ND_p control, FormulaSet_p target)
 	UpdateControlSymbols(control);
 }
 
-//NDSaturateLoop is a test method for checking how the inference rules work when applied multiple times
+//TableauSaturateLoop is a test method for checking how the inference rules work when applied multiple times
 
-void NDSaturateLoop(ND_p ndcontrol, long loops)
+void TableauSaturateLoop(Tableau_p ndcontrol, long loops)
 {
    WFormula_p handle;
    long i;
@@ -256,16 +256,16 @@ void NDSaturateLoop(ND_p ndcontrol, long loops)
 		  WFormulaPrint(GlobalOut,handle,true);
 		  printf("\n");
 		  
-		  NDAndIntProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDOrIntProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDImplIntProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDNegIntProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDUniversalIntProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDExistentialIntProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDOrElimProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDAndElimProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDImplElimProcess(ndcontrol,ndcontrol->terms,handle);
-		  NDNegElimProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauAndIntProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauOrIntProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauImplIntProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauNegIntProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauUniversalIntProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauExistentialIntProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauOrElimProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauAndElimProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauImplElimProcess(ndcontrol,ndcontrol->terms,handle);
+		  TableauNegElimProcess(ndcontrol,ndcontrol->terms,handle);
 		  // universal and existential elimination process needs to be included
 
 		  handle = handle->succ;
@@ -285,25 +285,25 @@ void NDSaturateLoop(ND_p ndcontrol, long loops)
  * 
 */
 
-void NDGenerateAndScoreFormulas(ND_p ndcontrol,WFormula_p handle)
+void TableauGenerateAndScoreFormulas(Tableau_p ndcontrol,WFormula_p handle)
 {
 	//printf("\n generating formulas for: ");
 	//WFormulaPrint(GlobalOut,handle,true);
 	//printf("\n");
-	NDAndIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDOrIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDImplIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDNegIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDUniversalIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDExistentialIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDOrElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDAndElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDImplElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDNegElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDUniversalElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDExistentialElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauAndIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauOrIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauImplIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauNegIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauUniversalIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauExistentialIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauOrElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauAndElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauImplElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauNegElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauUniversalElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauExistentialElimProcess(ndcontrol,ndcontrol->terms,handle);
 	
-	//NDEqualityEliminationProcess(ndcontrol,ndcontrol->terms,handle);
+	//TableauEqualityEliminationProcess(ndcontrol,ndcontrol->terms,handle);
 	
 	//printf("\ndumping %ld previous formulas...",ndcontrol->nd_generated->members);
 	//FormulaSetFreeFormulas(ndcontrol->nd_generated);
@@ -312,21 +312,21 @@ void NDGenerateAndScoreFormulas(ND_p ndcontrol,WFormula_p handle)
 	FormulaSetInsertSet(ndcontrol->nd_generated,ndcontrol->nd_temporary_formulas);
 }
 
-void NDGenerateAndScoreFormulasSkeleton(ND_p ndcontrol,WFormula_p handle)
+void TableauGenerateAndScoreFormulasSkeleton(Tableau_p ndcontrol,WFormula_p handle)
 {
 	
-	NDAndIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDOrIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDImplIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDNegIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDUniversalIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDExistentialIntProcess(ndcontrol,ndcontrol->terms,handle);
-	NDOrElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDAndElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDImplElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDNegElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDUniversalElimProcess(ndcontrol,ndcontrol->terms,handle);
-	NDExistentialElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauAndIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauOrIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauImplIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauNegIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauUniversalIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauExistentialIntProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauOrElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauAndElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauImplElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauNegElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauUniversalElimProcess(ndcontrol,ndcontrol->terms,handle);
+	TableauExistentialElimProcess(ndcontrol,ndcontrol->terms,handle);
 	
 	//printf("\ndumping %ld previous formulas...",ndcontrol->nd_generated->members);
 	//FormulaSetFreeFormulas(ndcontrol->nd_generated);
@@ -361,7 +361,7 @@ void pstack_push_skip(PStack_p target, PStack_p source, Term_p skip)
    }
 }
 
-long nd_label_symbols(ND_p control,Term_p term)
+long nd_label_symbols(Tableau_p control,Term_p term)
 {
 	Sig_p sig = control->signature;
 
@@ -424,7 +424,7 @@ long nd_label_symbols(ND_p control,Term_p term)
 	return 0;
 }
 
-long nd_collect_subterms(ND_p control, Sig_p sig, Term_p term, PStack_p collector)
+long nd_collect_subterms(Tableau_p control, Sig_p sig, Term_p term, PStack_p collector)
 {
 	long res = 0;
 	if (term->f_code > 0)
@@ -453,9 +453,9 @@ long nd_collect_subterms(ND_p control, Sig_p sig, Term_p term, PStack_p collecto
  * 
 */
 
-ND_p NDAlloc(ProofState_p initial)
+Tableau_p TableauAlloc(ProofState_p initial)
 {
-	ND_p handle = NDCellAlloc();
+	Tableau_p handle = TableauCellAlloc();
 	handle->derivation = PStackAlloc();
 	handle->absolutely_flagged_variables = PStackAlloc();
 	handle->relatively_flagged_variables = PStackAlloc();
@@ -476,7 +476,7 @@ ND_p NDAlloc(ProofState_p initial)
 	return handle;
 }
 
-void NDFree(ND_p initial)
+void TableauFree(Tableau_p initial)
 {
 	PStackFree(initial->derivation);
 	PStackFree(initial->absolutely_flagged_variables);
@@ -488,12 +488,12 @@ void NDFree(ND_p initial)
 	FormulaSetFree(initial->nd_generated);
 	FormulaSetFree(initial->nd_temporary_formulas);
 	//WFormulaFree(initial->goal);
-	NDCellFree(initial);
+	TableauCellFree(initial);
 }
 
-ND_p NDAllocAssumption(ND_p initial)
+Tableau_p TableauAllocAssumption(Tableau_p initial)
 {
-	ND_p handle = NDCellAlloc();
+	Tableau_p handle = TableauCellAlloc();
 	handle->last_assumption = NULL;
 	//handle->derivation = PStackAlloc();  // leaking?
 	handle->absolutely_flagged_variables = initial->absolutely_flagged_variables;
@@ -514,11 +514,11 @@ ND_p NDAllocAssumption(ND_p initial)
 	handle->active = true;
 	//handle->last_assumption_branch = NULL;
 	//handle->master = initial->master;
-	//NDSetInsert(initial->set,handle);
+	//TableauSetInsert(initial->set,handle);
 	return handle;
 }
 
-void NDAssumptionControlFree(ND_p initial)
+void TableauAssumptionControlFree(Tableau_p initial)
 {
 	//FormulaSetFreeFormulas(initial->nd_derivation);
 	//FormulaSetFreeFormulas(initial->nd_generated);
@@ -531,11 +531,11 @@ void NDAssumptionControlFree(ND_p initial)
 	FormulaSetFree(initial->nd_generated);
 	FormulaSetFree(initial->nd_temporary_formulas);
 	FormulaSetFree(initial->branch_formulas);
-	NDCellFree(initial);
+	TableauCellFree(initial);
 	//WFormulaFree(initial->last_assumption);
 }
 
-void NDCloseAssumption(ND_p initial)
+void TableauCloseAssumption(Tableau_p initial)
 {
 	//FormulaSetFreeFormulas(initial->nd_derivation);
 	//FormulaSetFreeFormulas(initial->nd_generated);
@@ -548,11 +548,11 @@ void NDCloseAssumption(ND_p initial)
 	FormulaSetFree(initial->nd_generated);
 	FormulaSetFree(initial->nd_temporary_formulas);
 	initial->active = false;
-	//NDCellFree(initial);
+	//TableauFree(initial);
 	//WFormulaFree(initial->last_assumption);
 }
 
-WFormula_p NDAndIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
+WFormula_p TableauAndIntroduction(Tableau_p control,TB_p bank, WFormula_p a, WFormula_p b)
 {
 	TFormula_p a_tform = a->tformula;
 	TFormula_p b_tform = b->tformula;
@@ -565,7 +565,7 @@ WFormula_p NDAndIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
 	return handle;
 }
 
-WFormula_p NDOrIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
+WFormula_p TableauOrIntroduction(Tableau_p control,TB_p bank, WFormula_p a, WFormula_p b)
 {
 	TFormula_p a_tform = a->tformula;
 	TFormula_p b_tform = b->tformula;
@@ -579,7 +579,7 @@ WFormula_p NDOrIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
  * 
 */
 
-WFormula_p NDImplIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b)
+WFormula_p TableauImplIntroduction(Tableau_p control,TB_p bank, WFormula_p a, WFormula_p b)
 {
 	TFormula_p a_tform = a->tformula;
 	TFormula_p b_tform = b->tformula;
@@ -594,7 +594,7 @@ WFormula_p NDImplIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b
  * 
 */
 
-WFormula_p NDNegIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b, WFormula_p c)
+WFormula_p TableauNegIntroduction(Tableau_p control,TB_p bank, WFormula_p a, WFormula_p b, WFormula_p c)
 {
 	if (!a || !b || !c)
 	{
@@ -610,7 +610,7 @@ WFormula_p NDNegIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b,
 	
 	Subst_p subst1 = SubstAlloc();  // leaking??
 	Subst_p subst2 = SubstAlloc();  // leaking??
-	if (NDUnify(control,subst1,a_tform,b_neg) || NDUnify(control,subst2,a_neg,b_tform))
+	if (TableauUnify(control,subst1,a_tform,b_neg) || TableauUnify(control,subst2,a_neg,b_tform))
 	{
 		TFormula_p c_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,c_tform,NULL);
 		handle = WTFormulaAlloc(bank,c_neg);
@@ -621,13 +621,13 @@ WFormula_p NDNegIntroduction(ND_p control,TB_p bank, WFormula_p a, WFormula_p b,
 	return handle;
 }
 
-/*  Does not check if the ND rule is allowed!!!  Only does it if physically possible
+/*  Does not check if the Tableau rule is allowed!!!  Only does it if physically possible
  *  Return NULL if term is not a subterm of the formula
  *  Replaces term with variable, absolutely flags term
  *  Absolutely and relatively flags variables
 */
 
-WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p variable, WFormula_p formula)
+WFormula_p TableauUniversalIntroduction(Tableau_p control,TB_p bank, Term_p term, Term_p variable, WFormula_p formula)
 {
 	
 	TFormula_p handle = formula->tformula;
@@ -640,8 +640,8 @@ WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p v
 		return NULL; //term is not a subterm of the formula
 	}
 	// Check this....
-	//if (NDTermIsAbsolutelyFlagged(control,variable) || NDTermIsAbsolutelyFlagged(control,term))
-	if (NDTermIsAbsolutelyFlagged(control,term))
+	//if (TableauTermIsAbsolutelyFlagged(control,variable) || TableauTermIsAbsolutelyFlagged(control,term))
+	if (TableauTermIsAbsolutelyFlagged(control,term))
 	{
 		//printf("flagging error\n");
 		return NULL; //do not universally quantify over symbols affected by some rules
@@ -684,7 +684,7 @@ WFormula_p NDUniversalIntroduction(ND_p control,TB_p bank, Term_p term, Term_p v
 	
 }
 
-WFormula_p NDExistentialIntroduction(ND_p control,TB_p bank, Term_p term, Term_p variable, WFormula_p formula)
+WFormula_p TableauExistentialIntroduction(Tableau_p control,TB_p bank, Term_p term, Term_p variable, WFormula_p formula)
 {
 	TFormula_p handle = formula->tformula;
 	TFormula_p new_tform,qex_new_tform;
@@ -716,7 +716,7 @@ WFormula_p NDExistentialIntroduction(ND_p control,TB_p bank, Term_p term, Term_p
 
 // CHECK THIS
 
-WFormula_p NDAndElimination(ND_p control,TB_p bank, WFormula_p conjunct, int select)
+WFormula_p TableauAndElimination(Tableau_p control,TB_p bank, WFormula_p conjunct, int select)
 {
 	assert(select==0 || select==1);
 	WFormula_p target;
@@ -736,7 +736,7 @@ WFormula_p NDAndElimination(ND_p control,TB_p bank, WFormula_p conjunct, int sel
  * 
 */
 
-WFormula_p NDOrElimination(ND_p control,TB_p bank, WFormula_p a,WFormula_p b)
+WFormula_p TableauOrElimination(Tableau_p control,TB_p bank, WFormula_p a,WFormula_p b)
 {
 	WFormula_p disjunct,negated,target;
 	TFormula_p tform,unnegated;
@@ -789,14 +789,14 @@ WFormula_p NDOrElimination(ND_p control,TB_p bank, WFormula_p a,WFormula_p b)
 	return NULL;
 }
 
-/* As NDOrElimination
+/* As TableauOrElimination
  * 
  * 
  * 
  * 
 */
 
-WFormula_p NDImplElimination(ND_p control,TB_p bank, WFormula_p a,WFormula_p b)
+WFormula_p TableauImplElimination(Tableau_p control,TB_p bank, WFormula_p a,WFormula_p b)
 {
 	WFormula_p sequent,assumption,target;
 	TFormula_p tform;
@@ -842,7 +842,7 @@ WFormula_p NDImplElimination(ND_p control,TB_p bank, WFormula_p a,WFormula_p b)
  * 
 */
 
-WFormula_p NDNegationElimination(ND_p control,TB_p bank, WFormula_p a)
+WFormula_p TableauNegationElimination(Tableau_p control,TB_p bank, WFormula_p a)
 {
 	TFormula_p interior;
 	WFormula_p handle;
@@ -865,7 +865,7 @@ WFormula_p NDNegationElimination(ND_p control,TB_p bank, WFormula_p a)
  * 
 */
 
-WFormula_p NDUniversalElimination(ND_p control,TB_p bank, WFormula_p a, Term_p substitute)
+WFormula_p TableauUniversalElimination(Tableau_p control,TB_p bank, WFormula_p a, Term_p substitute)
 {
 	WFormula_p w_matrix,target;
 	TFormula_p matrix;
@@ -891,7 +891,7 @@ WFormula_p NDUniversalElimination(ND_p control,TB_p bank, WFormula_p a, Term_p s
  *   and as written may be unsound due to the necessary restrictions
 */
 
-WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p substitute)
+WFormula_p TableauExistentialElimination(Tableau_p control,TB_p bank, WFormula_p a, Term_p substitute)
 {
 	WFormula_p w_matrix,target;
 	TFormula_p matrix;
@@ -914,8 +914,8 @@ WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p
 	PTreeToPStack(free_stack,free_variables);
 	//PStackPushStack(control->relatively_flagged_variables,free_stack);
 	//PStackPushP(control->absolutely_flagged_variables,substitute);
-	NDRelativelyFlagTerms(control,free_stack);
-	NDAbsolutelyFlagTerm(control,substitute);
+	TableauRelativelyFlagTerms(control,free_stack);
+	TableauAbsolutelyFlagTerm(control,substitute);
 	
 	
 	bound_variable = a->tformula->args[0];
@@ -942,11 +942,11 @@ WFormula_p NDExistentialElimination(ND_p control,TB_p bank, WFormula_p a, Term_p
  * 
 */
 
-WFormula_p NDExistentialElimination2(ND_p control,TB_p bank, WFormula_p existential, WFormula_p psi)
+WFormula_p TableauExistentialElimination2(Tableau_p control,TB_p bank, WFormula_p existential, WFormula_p psi)
 {
 	// check that psi is conclusion of the most recent derivation, and that this derivation is founded by a formula of form phi(t/v)
-	TFormula_p existential_tformula = existential->tformula;
-	TFormula_p existential_matrix = existential_tformula->args[1];
+	//TFormula_p existential_tformula = existential->tformula;
+	//TFormula_p existential_matrix = existential_tformula->args[1];
 	return psi;
 }
 
@@ -954,14 +954,14 @@ WFormula_p NDExistentialElimination2(ND_p control,TB_p bank, WFormula_p existent
  *
 */
 
-WFormula_p NDEqualityIntroduction(ND_p control, TB_p bank, Term_p term)
+WFormula_p TableauEqualityIntroduction(Tableau_p control, TB_p bank, Term_p term)
 {
 	Eqn_p equals = EqnAlloc(term,term,bank,true);
 	TFormula_p equals_tf = TFormulaLitAlloc(equals);
 	return WTFormulaAlloc(bank,equals_tf);
 }
 
-WFormula_p NDEqualityEliminationLeft(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality)
+WFormula_p TableauEqualityEliminationLeft(Tableau_p control, TB_p bank, WFormula_p substituted, WFormula_p equality)
 {
 	if ((equality->tformula->f_code != bank->sig->eqn_code) || 
 		(equality->tformula->args[0]->f_code == SIG_TRUE_CODE) || 
@@ -974,7 +974,7 @@ WFormula_p NDEqualityEliminationLeft(ND_p control, TB_p bank, WFormula_p substit
 	return FormulaMergeVars(substituted,bank,s,t);
 }
 
-WFormula_p NDEqualityEliminationRight(ND_p control, TB_p bank, WFormula_p substituted, WFormula_p equality)
+WFormula_p TableauEqualityEliminationRight(Tableau_p control, TB_p bank, WFormula_p substituted, WFormula_p equality)
 {
 	if ((equality->tformula->f_code != bank->sig->eqn_code) || 
 		(equality->tformula->args[0]->f_code == SIG_TRUE_CODE) || 
@@ -987,7 +987,7 @@ WFormula_p NDEqualityEliminationRight(ND_p control, TB_p bank, WFormula_p substi
 	return FormulaMergeVars(substituted,bank,s,t);
 }
 
-long NDEqualityEliminationProcess(ND_p control, TB_p bank, WFormula_p selected)
+long TableauEqualityEliminationProcess(Tableau_p control, TB_p bank, WFormula_p selected)
 {
 	FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
@@ -1000,8 +1000,8 @@ long NDEqualityEliminationProcess(ND_p control, TB_p bank, WFormula_p selected)
 			handle = handle->succ;
 			continue;
 		}
-		WFormula_p left = NDEqualityEliminationLeft(control,bank,selected,handle);
-		WFormula_p right = NDEqualityEliminationRight(control,bank,selected,handle);
+		WFormula_p left = TableauEqualityEliminationLeft(control,bank,selected,handle);
+		WFormula_p right = TableauEqualityEliminationRight(control,bank,selected,handle);
 		if (left)
 		{
 			FormulaSetInsert(temporary_store,left);
@@ -1018,12 +1018,12 @@ long NDEqualityEliminationProcess(ND_p control, TB_p bank, WFormula_p selected)
 }
 
 
-/*  Make all possible and introductions with the ND_p and formula passed
+/*  Make all possible and introductions with the Tableau_p and formula passed
  * 
  * 
 */
 
-long NDAndIntProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauAndIntProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
 	FormulaSet_p target = control->nd_derivation;
@@ -1032,7 +1032,7 @@ long NDAndIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	long counter = 0;
 	while(handle!=target->anchor)
 	{
-		WFormula_p generated = NDAndIntroduction(control,bank,selected,handle);
+		WFormula_p generated = TableauAndIntroduction(control,bank,selected,handle);
 		if (generated)
 		{
 			FormulaSetInsert(temporary_store,generated);
@@ -1047,7 +1047,7 @@ long NDAndIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	return counter;
 }
 
-long NDOrIntProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauOrIntProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
 	FormulaSet_p target = control->nd_derivation;
@@ -1056,7 +1056,7 @@ long NDOrIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	long counter = 0;
 	while(handle!=target->anchor)
 	{
-		WFormula_p generated = NDOrIntroduction(control,bank,selected,handle);
+		WFormula_p generated = TableauOrIntroduction(control,bank,selected,handle);
 		if (generated)
 		{
 			FormulaSetInsert(temporary_store,generated);
@@ -1071,7 +1071,7 @@ long NDOrIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	return counter;
 }
 
-long NDImplIntProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauImplIntProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
 	FormulaSet_p target = control->nd_derivation;
@@ -1080,7 +1080,7 @@ long NDImplIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	long counter = 0;
 	while(handle!=target->anchor)
 	{
-		WFormula_p generated = NDImplIntroduction(control,bank,selected,handle);
+		WFormula_p generated = TableauImplIntroduction(control,bank,selected,handle);
 		if (generated)
 		{
 			//printf("\n");
@@ -1108,7 +1108,7 @@ long NDImplIntProcess(ND_p control,TB_p bank,WFormula_p selected)
  * Need to check that the formula alt_handle is ONLY the most recent nondiscarded assumption in the proof
 */  
 
-long NDNegIntProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauNegIntProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle,alt_handle;
 	FormulaSet_p target = control->nd_derivation;
@@ -1121,7 +1121,7 @@ long NDNegIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	{
 		while (alt_handle!=target->anchor)
 		{
-			WFormula_p generated = NDNegIntroduction(control,bank,selected,handle,alt_handle);
+			WFormula_p generated = TableauNegIntroduction(control,bank,selected,handle,alt_handle);
 			if (generated)
 			{
 				//WFormulaPrint(GlobalOut,generated,true);
@@ -1142,7 +1142,7 @@ long NDNegIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 //replace an arbitrary constant with a fresh variable
 // need to adjust this for flagged variables (?)
 
-long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauUniversalIntProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	if (!selected)
 	{
@@ -1182,14 +1182,14 @@ long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 		{
 			continue;
 		}
-		//relatively and absolutely flagged vars are handled in NDUniversalIntroduction
+		//relatively and absolutely flagged vars are handled in TableauUniversalIntroduction
 		//printf("\nUniversalIntProcessTest\n");
 		//WFormulaPrint(GlobalOut,selected,true);
 		//printf("\nfreshvariable");
 		//TermPrint(GlobalOut,freshvariable,control->signature,DEREF_NEVER);
 		//printf("\nterm");
 		//TermPrint(GlobalOut,constant,control->signature,DEREF_NEVER);
-		generated = NDUniversalIntroduction(control,bank,constant,freshvariable,selected);
+		generated = TableauUniversalIntroduction(control,bank,constant,freshvariable,selected);
 		if (generated)
 		{
 			//printf("\nuniversal int done\n");
@@ -1208,7 +1208,7 @@ long NDUniversalIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 //replace the terms of selected with existentially quantified variables
 // need to check that they do not replace terms that are already bound
 
-long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauExistentialIntProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	if (!selected)
 	{
@@ -1249,7 +1249,7 @@ long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 			continue;
 		}
 		// no flags are needed for existential introduction
-		generated = NDExistentialIntroduction(control,bank,constant,freshvariable,selected);
+		generated = TableauExistentialIntroduction(control,bank,constant,freshvariable,selected);
 		if (generated)
 		{
 			FormulaSetInsert(temporary_store,generated);
@@ -1261,12 +1261,12 @@ long NDExistentialIntProcess(ND_p control,TB_p bank,WFormula_p selected)
 	return res;
 }
 
-long NDAndElimProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauAndElimProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	//FormulaSet_p target = control->nd_derivation;
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
-	WFormula_p generated0 = NDAndElimination(control,bank,selected,0);
-	WFormula_p generated1 = NDAndElimination(control,bank,selected,1);
+	WFormula_p generated0 = TableauAndElimination(control,bank,selected,0);
+	WFormula_p generated1 = TableauAndElimination(control,bank,selected,1);
 	if (generated0)
 	{
 		FormulaSetInsert(temporary_store,generated0);
@@ -1278,7 +1278,7 @@ long NDAndElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 	return 0;
 }
 
-long NDOrElimProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauOrElimProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
 	long counter = 0;
@@ -1288,7 +1288,7 @@ long NDOrElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 	//printf("\nNEW ITERATION\n");
 	while(handle!=target->anchor)
 	{
-		WFormula_p generated = NDOrElimination(control,bank,selected,handle);
+		WFormula_p generated = TableauOrElimination(control,bank,selected,handle);
 		if (generated)
 		{
 			//printf("\n");
@@ -1305,7 +1305,7 @@ long NDOrElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 	return counter;
 }
 
-long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauImplElimProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	WFormula_p handle;
 	FormulaSet_p target = control->nd_derivation;
@@ -1315,7 +1315,7 @@ long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 	//printf("\nNEW ITERATION\n");
 	while(handle!=target->anchor)
 	{
-		WFormula_p generated = NDImplElimination(control,bank,selected,handle);
+		WFormula_p generated = TableauImplElimination(control,bank,selected,handle);
 		if (generated)
 		{
 			FormulaSetInsert(temporary_store,generated);
@@ -1330,10 +1330,10 @@ long NDImplElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 	return counter;
 }
 
-long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauNegElimProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
-	WFormula_p generated = NDNegationElimination(control,bank,selected);
+	WFormula_p generated = TableauNegationElimination(control,bank,selected);
 	if (generated)
 	{
 		FormulaSetInsert(temporary_store,generated);
@@ -1342,9 +1342,9 @@ long NDNegElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 }
 
 // The below two methods need the substitution of arbitrary terms-  
-// How to do this?  Need to read ND ATP paper again
+// How to do this?  Need to read Tableau ATP paper again
 
-long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauUniversalElimProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	//printf("\NMAX VAR CODE: %ld\n",TermFindMaxVarCode(selected->tformula));
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
@@ -1358,7 +1358,7 @@ long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 		freshvariable = VarBankVarAlloc(bank->vars,min_code,control->freshvars->sort_table->default_type);
 	}
 	//Term_p freshvariable = VarBankGetFreshVar(control->freshvars,control->freshvars->sort_table->default_type);
-	WFormula_p generated = NDUniversalElimination(control,bank,selected,freshvariable);
+	WFormula_p generated = TableauUniversalElimination(control,bank,selected,freshvariable);
 	if (generated)
 	{
 		FormulaSetInsert(temporary_store,generated);
@@ -1372,11 +1372,11 @@ long NDUniversalElimProcess(ND_p control,TB_p bank,WFormula_p selected)
  * 
 */
 
-long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected)
+long TableauExistentialElimProcess(Tableau_p control,TB_p bank,WFormula_p selected)
 {
 	FormulaSet_p temporary_store = control->nd_temporary_formulas;
 	Term_p freshvariable = NULL;
-	WFormula_p generated = NDExistentialElimination(control,bank,selected,freshvariable);
+	WFormula_p generated = TableauExistentialElimination(control,bank,selected,freshvariable);
 	if (generated)
 	{
 		FormulaSetInsert(temporary_store,generated);
@@ -1387,7 +1387,7 @@ long NDExistentialElimProcess(ND_p control,TB_p bank,WFormula_p selected)
 //Check generated set for contradictory formulas
 //Iterates through formulaset, checking the rest to see if they are the negation of handle
 
-bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
+bool TableauFormulaSetCheckForContradictions(Tableau_p control, FormulaSet_p formulaset)
 {
 	TB_p bank = control->terms;
 	WFormula_p handle = formulaset->anchor->succ;
@@ -1402,8 +1402,8 @@ bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
 			
 			negated_res = TFormulaFCodeAllocNoShare(bank,bank->sig->not_code,res->tformula,NULL);
 			
-			if (NDUnify(control,subst,negated_handle,res->tformula) || 
-				NDUnify(control,subst,negated_res,handle->tformula))
+			if (TableauUnify(control,subst,negated_handle,res->tformula) || 
+				TableauUnify(control,subst,negated_res,handle->tformula))
 			{
 				SubstFree(subst);
 				fprintf(GlobalOut, "\nFound contradiction!\n");
@@ -1424,13 +1424,13 @@ bool NDFormulaSetCheckForContradictions(ND_p control, FormulaSet_p formulaset)
 	return false;
 }
 /*
-bool NDAssumptionGoalIsReached(ND_p control, NDAssumption_p derivation)
+bool TableauAssumptionGoalIsReached(Tableau_p control, TableauAssumption_p derivation)
 {
 	WFormula_p handle = derivation->nd_derivation->anchor->succ;
 	while (handle != derivation->nd_derivation->anchor)
 	{
 		Subst_p subst = SubstAlloc();
-		if (NDUnify(control,subst,handle->tformula,derivation->goal->tformula))
+		if (TableauUnify(control,subst,handle->tformula,derivation->goal->tformula))
 		{
 			return true;
 		}
@@ -1440,7 +1440,7 @@ bool NDAssumptionGoalIsReached(ND_p control, NDAssumption_p derivation)
 	return false;
 }
 */
-void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source)
+void TableauPInitializeDerivationGoal(Tableau_p input, FormulaSet_p source)
 {
 	WFormula_p handle = source->anchor->succ;
 	WFormula_p goal = NULL;
@@ -1481,7 +1481,7 @@ void NDPInitializeDerivationGoal(ND_p input, FormulaSet_p source)
 	input->goal = goal;
 }
 
-bool NDPDerivationGoalIsReached(ND_p control)
+bool TableauPDerivationGoalIsReached(Tableau_p control)
 {
 	WFormula_p handle = control->nd_generated->anchor->succ;
 	//printf("\nformula in goal is reach %ld:\n",control->nd_generated->members);
@@ -1491,7 +1491,7 @@ bool NDPDerivationGoalIsReached(ND_p control)
 	while (handle != control->nd_generated->anchor)
 	{
 		Subst_p subst = SubstAlloc();
-		if (handle && NDUnify(control,subst,handle->tformula,control->goal->tformula))
+		if (handle && TableauUnify(control,subst,handle->tformula,control->goal->tformula))
 		{
 			return true;
 		}
@@ -1501,14 +1501,14 @@ bool NDPDerivationGoalIsReached(ND_p control)
 	return false;
 }
 
-void ContradictionTest(ND_p ndcontrol)
+void ContradictionTest(Tableau_p ndcontrol)
 {
 	TB_p bank = ndcontrol->terms;
-	WFormula_p selected = NDSelectHighestScoreRandomly(ndcontrol->nd_generated);
+	WFormula_p selected = TableauSelectHighestScoreRandomly(ndcontrol->nd_generated);
 	printf("\nSelected:\n");
 	WFormulaPrint(GlobalOut,selected,true);
 	printf("\n");
-	NDGenerateAndScoreFormulas(ndcontrol,selected);
+	TableauGenerateAndScoreFormulas(ndcontrol,selected);
 	TFormula_p s_tform = selected->tformula;
 	TFormula_p s_neg = TFormulaFCodeAlloc(bank,bank->sig->not_code,s_tform,NULL);
 	WFormula_p s_neg_formula = WTFormulaAlloc(bank,s_neg);
@@ -1516,11 +1516,11 @@ void ContradictionTest(ND_p ndcontrol)
 	printf("\n");
 	FormulaSetPrint(GlobalOut,ndcontrol->nd_generated,true);
 	printf("\n");
-	bool contra = NDFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_generated);
+	bool contra = TableauFormulaSetCheckForContradictions(ndcontrol,ndcontrol->nd_generated);
 	printf("\n%d\n",contra);
 }
 
-void NDResetState(ND_p ndcontrol)
+void TableauResetState(Tableau_p ndcontrol)
 {
 	  FormulaSetFreeFormulas(ndcontrol->nd_derivation);
 	  FormulaSetFreeFormulas(ndcontrol->nd_generated);

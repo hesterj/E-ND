@@ -1,6 +1,6 @@
-#ifndef NDSET
+#ifndef TableauSET
 
-#define NDSET
+#define TableauSET
 
 
 #include <clb_plist.h>
@@ -8,28 +8,28 @@
 
 typedef struct nd_set_cell
 {
-   ND_p anchor;
+   Tableau_p anchor;
    long       members;
    DStr_p     identifier;
-}NDSetCell, *NDSet_p;
+}TableauSetCell, *TableauSet_p;
 /*
 typedef struct nd_assumption_set_cell
 {
-   NDAssumption_p anchor;
+   TableauAssumption_p anchor;
    long       members;
    DStr_p     identifier;
-}NDAssumptionSetCell, *NDAssumptionSet_p;
+}TableauAssumptionSetCell, *TableauAssumptionSet_p;
 */
-#define NDSetCellAlloc()    (NDSetCell*)SizeMalloc(sizeof(NDSetCell))
-#define NDSetCellFree(junk) SizeFree(junk, sizeof(NDSetCell))
-#define      NDSetEmpty(set)\
+#define TableauSetCellAlloc()    (TableauSetCell*)SizeMalloc(sizeof(TableauSetCell))
+#define TableauSetCellFree(junk) SizeFree(junk, sizeof(TableauSetCell))
+#define      TableauSetEmpty(set)\
              ((set)->anchor->succ == (set)->anchor)
 
-NDSet_p NDSetAlloc(void);
-void         NDSetFreeNDs(NDSet_p set);
-void         NDSetFree(NDSet_p set);
-void		 NDSetDeleteEntry(ND_p nd);
-ND_p   NDSetExtractEntry(ND_p form);
-void         NDSetInsert(NDSet_p set, ND_p newnd);
+TableauSet_p TableauSetAlloc(void);
+void         TableauSetFreeTableaus(TableauSet_p set);
+void         TableauSetFree(TableauSet_p set);
+void		 TableauSetDeleteEntry(Tableau_p nd);
+Tableau_p   TableauSetExtractEntry(Tableau_p form);
+void         TableauSetInsert(TableauSet_p set, Tableau_p newnd);
 
 #endif
